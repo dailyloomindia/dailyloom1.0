@@ -1,6 +1,6 @@
-import {createStorefrontClient, storefrontRedirect} from '@shopify/hydrogen';
-import {createRequestHandler, getBuyerIp, type AppLoadContext} from '@shopify/remix-oxygen';
-import {createHydrogenContext, type HydrogenSession} from '@shopify/hydrogen';
+import {storefrontRedirect} from '@shopify/hydrogen';
+import {createRequestHandler, type AppLoadContext} from '@shopify/remix-oxygen';
+import {createHydrogenContext} from '@shopify/hydrogen';
 
 export default {
   async fetch(
@@ -32,14 +32,26 @@ export default {
       const response = await handleRequest(request);
 
       if (response.status === 404) {
-        // Check for redirects
-        return storefrontRedirect({request, response, storefront});
+        // Skip redirect check for known browser requests
+        const url = new URL(request.url);
+        if (url.pathname.includes('.well-known') ||
+            url.pathname.includes('favicon') ||
+            url.pathname.includes('.json')) {
+          return response;
+        }
+
+        // Try to check for redirects, but don't fail if it errors
+        try {
+          return storefrontRedirect({request, response, storefront});
+        } catch (redirectError) {
+          console.warn('Redirect check failed:', redirectError);
+          return response;
+        }
       }
 
       return response;
     } catch (error) {
-      // eslint-disable-next-line no-console
-      console.error(error);
+      console.error('Server error:', error);
       return new Response('An unexpected error occurred', {status: 500});
     }
   },

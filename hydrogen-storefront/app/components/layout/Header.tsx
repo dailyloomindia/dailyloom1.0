@@ -1,5 +1,5 @@
 import {Link, useLocation} from '@remix-run/react';
-import {motion, AnimatePresence, useScroll, useTransform} from 'framer-motion';
+import {motion, AnimatePresence} from 'framer-motion';
 import {useState, useEffect} from 'react';
 import clsx from 'clsx';
 
@@ -29,13 +29,6 @@ export function Header({shop, cart, menu}: HeaderProps) {
   const [isScrolled, setIsScrolled] = useState(false);
   const location = useLocation();
 
-  const {scrollY} = useScroll();
-  const headerBg = useTransform(
-    scrollY,
-    [0, 100],
-    ['rgba(250, 245, 236, 0)', 'rgba(250, 245, 236, 0.95)'],
-  );
-
   useEffect(() => {
     const handleScroll = () => {
       setIsScrolled(window.scrollY > 50);
@@ -51,42 +44,53 @@ export function Header({shop, cart, menu}: HeaderProps) {
 
   const cartCount = cart?.totalQuantity || 0;
 
+  // Check if we're on the homepage for transparent header
+  const isHomepage = location.pathname === '/';
+
   return (
     <>
-      <motion.header
-        style={{backgroundColor: headerBg}}
+      <header
         className={clsx(
           'fixed top-0 left-0 right-0 z-50 transition-all duration-500',
-          isScrolled && 'backdrop-blur-md shadow-soft',
+          isScrolled
+            ? 'bg-cream-100/95 backdrop-blur-md shadow-subtle'
+            : isHomepage
+              ? 'bg-transparent'
+              : 'bg-cream-100',
         )}
       >
-        <div className="container-premium">
+        <div className="container-luxury">
           <nav className="flex items-center justify-between h-20 md:h-24">
             {/* Logo */}
             <Link
               to="/"
-              className="relative z-10 flex items-center gap-3"
+              className="relative z-10 flex items-center"
             >
               <motion.div
                 whileHover={{scale: 1.02}}
                 className="flex items-center"
               >
-                <span className="font-display text-2xl md:text-3xl tracking-tight text-charcoal-950">
-                  Daily
-                </span>
-                <span className="font-display text-2xl md:text-3xl tracking-tight text-primary-600 ml-1">
-                  Loom
+                <span
+                  className={clsx(
+                    'font-display text-xl md:text-2xl tracking-widest transition-colors duration-300',
+                    isScrolled || !isHomepage
+                      ? 'text-charcoal-950'
+                      : 'text-cream-100',
+                  )}
+                >
+                  DAILY LOOM
                 </span>
               </motion.div>
             </Link>
 
             {/* Desktop Navigation */}
-            <div className="hidden lg:flex items-center gap-12">
-              {menu.map((item, index) => (
+            <div className="hidden lg:flex items-center gap-10">
+              {menu.map((item) => (
                 <NavLink
                   key={item.id}
                   to={new URL(item.url).pathname}
-                  index={index}
+                  isScrolled={isScrolled}
+                  isHomepage={isHomepage}
                 >
                   {item.title}
                 </NavLink>
@@ -94,10 +98,15 @@ export function Header({shop, cart, menu}: HeaderProps) {
             </div>
 
             {/* Right side actions */}
-            <div className="flex items-center gap-6">
+            <div className="flex items-center gap-4">
               {/* Search */}
               <button
-                className="p-2 hover:bg-charcoal-50 rounded-full transition-colors"
+                className={clsx(
+                  'p-2 rounded-full transition-colors',
+                  isScrolled || !isHomepage
+                    ? 'hover:bg-charcoal-100 text-charcoal-900'
+                    : 'hover:bg-white/10 text-cream-100',
+                )}
                 aria-label="Search"
               >
                 <SearchIcon />
@@ -106,14 +115,19 @@ export function Header({shop, cart, menu}: HeaderProps) {
               {/* Cart */}
               <Link
                 to="/cart"
-                className="relative p-2 hover:bg-charcoal-50 rounded-full transition-colors"
+                className={clsx(
+                  'relative p-2 rounded-full transition-colors',
+                  isScrolled || !isHomepage
+                    ? 'hover:bg-charcoal-100 text-charcoal-900'
+                    : 'hover:bg-white/10 text-cream-100',
+                )}
               >
                 <CartIcon />
                 {cartCount > 0 && (
                   <motion.span
                     initial={{scale: 0}}
                     animate={{scale: 1}}
-                    className="absolute -top-1 -right-1 w-5 h-5 bg-primary-600 text-cream-50 text-xs flex items-center justify-center rounded-full"
+                    className="absolute -top-1 -right-1 w-5 h-5 bg-primary-500 text-cream-100 text-xs flex items-center justify-center rounded-full"
                   >
                     {cartCount}
                   </motion.span>
@@ -123,28 +137,54 @@ export function Header({shop, cart, menu}: HeaderProps) {
               {/* Mobile menu toggle */}
               <button
                 onClick={() => setIsMenuOpen(!isMenuOpen)}
-                className="lg:hidden relative z-10 p-2"
+                className={clsx(
+                  'lg:hidden relative z-10 p-2',
+                  isScrolled || !isHomepage
+                    ? 'text-charcoal-900'
+                    : 'text-cream-100',
+                )}
                 aria-label="Toggle menu"
               >
                 <motion.div className="w-6 h-5 flex flex-col justify-between">
                   <motion.span
                     animate={isMenuOpen ? {rotate: 45, y: 8} : {rotate: 0, y: 0}}
-                    className="w-full h-0.5 bg-charcoal-950 origin-left"
+                    className={clsx(
+                      'w-full h-0.5 origin-left',
+                      isMenuOpen
+                        ? 'bg-charcoal-950'
+                        : isScrolled || !isHomepage
+                          ? 'bg-charcoal-950'
+                          : 'bg-cream-100',
+                    )}
                   />
                   <motion.span
                     animate={isMenuOpen ? {opacity: 0} : {opacity: 1}}
-                    className="w-full h-0.5 bg-charcoal-950"
+                    className={clsx(
+                      'w-full h-0.5',
+                      isMenuOpen
+                        ? 'bg-charcoal-950'
+                        : isScrolled || !isHomepage
+                          ? 'bg-charcoal-950'
+                          : 'bg-cream-100',
+                    )}
                   />
                   <motion.span
                     animate={isMenuOpen ? {rotate: -45, y: -8} : {rotate: 0, y: 0}}
-                    className="w-full h-0.5 bg-charcoal-950 origin-left"
+                    className={clsx(
+                      'w-full h-0.5 origin-left',
+                      isMenuOpen
+                        ? 'bg-charcoal-950'
+                        : isScrolled || !isHomepage
+                          ? 'bg-charcoal-950'
+                          : 'bg-cream-100',
+                    )}
                   />
                 </motion.div>
               </button>
             </div>
           </nav>
         </div>
-      </motion.header>
+      </header>
 
       {/* Mobile Menu Overlay */}
       <AnimatePresence>
@@ -154,7 +194,7 @@ export function Header({shop, cart, menu}: HeaderProps) {
             animate={{opacity: 1}}
             exit={{opacity: 0}}
             transition={{duration: 0.3}}
-            className="fixed inset-0 bg-cream-50 z-40 lg:hidden"
+            className="fixed inset-0 bg-cream-100 z-40 lg:hidden"
           >
             <motion.nav
               initial={{opacity: 0, y: 20}}
@@ -172,7 +212,7 @@ export function Header({shop, cart, menu}: HeaderProps) {
                 >
                   <Link
                     to={new URL(item.url).pathname}
-                    className="font-display text-4xl text-charcoal-950 hover:text-primary-600 transition-colors"
+                    className="font-display text-3xl text-charcoal-950 hover:text-primary-600 transition-colors tracking-wide"
                   >
                     {item.title}
                   </Link>
@@ -189,7 +229,7 @@ export function Header({shop, cart, menu}: HeaderProps) {
                 <Link to="/account" className="text-sm text-charcoal-600 hover:text-charcoal-950">
                   Account
                 </Link>
-                <Link to="/contact" className="text-sm text-charcoal-600 hover:text-charcoal-950">
+                <Link to="/pages/contact" className="text-sm text-charcoal-600 hover:text-charcoal-950">
                   Contact
                 </Link>
               </motion.div>
@@ -204,31 +244,42 @@ export function Header({shop, cart, menu}: HeaderProps) {
 function NavLink({
   to,
   children,
-  index,
+  isScrolled,
+  isHomepage,
 }: {
   to: string;
   children: React.ReactNode;
-  index: number;
+  isScrolled: boolean;
+  isHomepage: boolean;
 }) {
   const location = useLocation();
   const isActive = location.pathname === to;
 
   return (
-    <motion.div
-      initial={{opacity: 0, y: -10}}
-      animate={{opacity: 1, y: 0}}
-      transition={{delay: index * 0.1}}
+    <Link
+      to={to}
+      className={clsx(
+        'text-sm tracking-wide uppercase transition-colors relative py-2',
+        isScrolled || !isHomepage
+          ? isActive
+            ? 'text-primary-600'
+            : 'text-charcoal-700 hover:text-charcoal-950'
+          : isActive
+            ? 'text-cream-100'
+            : 'text-cream-200 hover:text-cream-100',
+      )}
     >
-      <Link
-        to={to}
-        className={clsx(
-          'nav-link py-2',
-          isActive && 'text-charcoal-950 after:w-full',
-        )}
-      >
-        {children}
-      </Link>
-    </motion.div>
+      {children}
+      {isActive && (
+        <motion.span
+          layoutId="underline"
+          className={clsx(
+            'absolute bottom-0 left-0 right-0 h-0.5',
+            isScrolled || !isHomepage ? 'bg-primary-500' : 'bg-cream-100',
+          )}
+        />
+      )}
+    </Link>
   );
 }
 
