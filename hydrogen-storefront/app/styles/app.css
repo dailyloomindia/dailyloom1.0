@@ -1113,9 +1113,9 @@
 /* ========================================
    MAIN CONTENT SPACING (for fixed header)
    ======================================== */
-main {
+/* main {
   padding-top: 70px;
-}
+} */
 
 @media (max-width: 768px) {
   main {
