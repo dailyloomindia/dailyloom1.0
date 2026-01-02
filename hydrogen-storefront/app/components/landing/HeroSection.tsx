@@ -55,7 +55,7 @@ export function HeroSection() {
       >
         {/* Main content - positioned top-right */}
         <div className="flex-1 flex items-start justify-end pt-32 md:pt-40 px-10 md:px-16 lg:px-20">
-          <div className="text-right max-w-lg">
+          <div className="text-center max-w-lg">
             {/* Brand Name */}
             <motion.h1
               initial={{opacity: 0, scale: 1.05}}

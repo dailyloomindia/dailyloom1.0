@@ -58,7 +58,7 @@ export function Footer({shop}: FooterProps) {
               </p>
               {/* Social Links */}
               <div className="flex gap-4">
-                <SocialLink href="https://instagram.com/dailyloom" label="Instagram">
+                <SocialLink href="https://instagram.com/dailyloom.in" label="Instagram">
                   <InstagramIcon />
                 </SocialLink>
                 <SocialLink href="https://facebook.com/dailyloom" label="Facebook">
