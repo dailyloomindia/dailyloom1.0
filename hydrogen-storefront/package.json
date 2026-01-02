@@ -1,0 +1,56 @@
+{
+  "name": "daily-loom-hydrogen",
+  "private": true,
+  "sideEffects": false,
+  "version": "1.0.0",
+  "description": "Daily Loom - Premium Handloom Home Textiles",
+  "type": "module",
+  "scripts": {
+    "dev": "shopify hydrogen dev --codegen",
+    "build": "shopify hydrogen build --codegen",
+    "preview": "npm run build && shopify hydrogen preview",
+    "lint": "eslint --no-error-on-unmatched-pattern --ext .js,.ts,.jsx,.tsx .",
+    "typecheck": "tsc --noEmit",
+    "codegen": "shopify hydrogen codegen"
+  },
+  "dependencies": {
+    "@remix-run/react": "^2.14.0",
+    "@remix-run/server-runtime": "^2.14.0",
+    "@shopify/hydrogen": "^2024.10.1",
+    "@shopify/remix-oxygen": "^2.0.9",
+    "@react-three/fiber": "^8.17.10",
+    "@react-three/drei": "^9.117.0",
+    "three": "^0.170.0",
+    "framer-motion": "^11.13.1",
+    "graphql": "^16.9.0",
+    "graphql-tag": "^2.12.6",
+    "isbot": "^5.1.17",
+    "react": "^18.3.1",
+    "react-dom": "^18.3.1",
+    "clsx": "^2.1.1"
+  },
+  "devDependencies": {
+    "@graphql-codegen/cli": "^5.0.3",
+    "@remix-run/dev": "^2.14.0",
+    "@remix-run/eslint-config": "^2.14.0",
+    "@shopify/cli": "^3.72.1",
+    "@shopify/hydrogen-codegen": "^0.3.1",
+    "@shopify/mini-oxygen": "^3.0.6",
+    "@shopify/oxygen-workers-types": "^4.1.6",
+    "@tailwindcss/typography": "^0.5.15",
+    "@types/react": "^18.3.12",
+    "@types/react-dom": "^18.3.1",
+    "@types/three": "^0.170.0",
+    "autoprefixer": "^10.4.20",
+    "eslint": "^8.57.1",
+    "postcss": "^8.4.49",
+    "prettier": "^3.4.2",
+    "tailwindcss": "^3.4.16",
+    "typescript": "^5.7.2",
+    "vite": "^5.4.11",
+    "vite-tsconfig-paths": "^5.1.3"
+  },
+  "engines": {
+    "node": ">=18.0.0"
+  }
+}

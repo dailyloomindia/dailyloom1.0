@@ -1,0 +1,376 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* ========================================
+   DAILY LOOM - PREMIUM HANDLOOM TEXTILES
+   Global Styles & Design System
+   ======================================== */
+
+@layer base {
+  /* Premium font imports */
+  @import url('https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;0,600;0,700;1,300;1,400;1,500&family=Inter:wght@300;400;500;600&family=Playfair+Display:ital,wght@0,400;0,500;0,600;1,400;1,500&display=swap');
+
+  :root {
+    --color-primary: #b5976d;
+    --color-cream: #faf5ec;
+    --color-charcoal: #1a1a1a;
+    --color-gold: #dbb040;
+    --color-sage: #7b8967;
+
+    /* Premium transitions */
+    --transition-premium: cubic-bezier(0.25, 0.46, 0.45, 0.94);
+    --transition-smooth: cubic-bezier(0.16, 1, 0.3, 1);
+
+    /* Spacing system */
+    --section-padding: clamp(4rem, 10vw, 8rem);
+    --container-max: 1440px;
+  }
+
+  html {
+    @apply antialiased;
+    scroll-behavior: smooth;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+    text-rendering: optimizeLegibility;
+  }
+
+  body {
+    @apply bg-cream-50 text-charcoal-950 font-sans;
+    font-feature-settings: "kern" 1, "liga" 1;
+  }
+
+  /* Premium text selection */
+  ::selection {
+    @apply bg-primary-200 text-charcoal-950;
+  }
+
+  /* Smooth focus styles */
+  *:focus-visible {
+    @apply outline-none ring-2 ring-primary-400 ring-offset-2 ring-offset-cream-50;
+  }
+
+  /* Headings */
+  h1, h2, h3, h4, h5, h6 {
+    @apply font-display font-normal tracking-tight;
+  }
+
+  h1 {
+    @apply text-hero;
+  }
+
+  h2 {
+    @apply text-display-lg;
+  }
+
+  h3 {
+    @apply text-display-md;
+  }
+}
+
+@layer components {
+  /* Premium container */
+  .container-premium {
+    @apply w-full max-w-[1440px] mx-auto px-6 md:px-10 lg:px-16;
+  }
+
+  /* Section padding */
+  .section-padding {
+    @apply py-16 md:py-24 lg:py-32;
+  }
+
+  /* Premium button base */
+  .btn-premium {
+    @apply relative inline-flex items-center justify-center px-8 py-4
+           font-sans text-sm font-medium tracking-extra-wide uppercase
+           transition-all duration-500 ease-premium
+           overflow-hidden;
+  }
+
+  .btn-primary {
+    @apply btn-premium bg-charcoal-950 text-cream-50
+           hover:bg-charcoal-800;
+  }
+
+  .btn-primary::before {
+    content: '';
+    @apply absolute inset-0 bg-gradient-to-r from-primary-500/20 to-gold-500/20
+           translate-x-[-100%] transition-transform duration-700;
+  }
+
+  .btn-primary:hover::before {
+    @apply translate-x-0;
+  }
+
+  .btn-secondary {
+    @apply btn-premium bg-transparent text-charcoal-950
+           border border-charcoal-950
+           hover:bg-charcoal-950 hover:text-cream-50;
+  }
+
+  .btn-ghost {
+    @apply btn-premium bg-transparent text-charcoal-950
+           hover:bg-charcoal-50;
+  }
+
+  /* Premium card styles */
+  .card-premium {
+    @apply relative bg-white rounded-sm overflow-hidden
+           shadow-soft transition-all duration-500 ease-premium;
+  }
+
+  .card-premium:hover {
+    @apply shadow-premium -translate-y-1;
+  }
+
+  /* Image hover zoom effect */
+  .img-zoom-container {
+    @apply overflow-hidden;
+  }
+
+  .img-zoom {
+    @apply transition-transform duration-700 ease-premium;
+  }
+
+  .img-zoom-container:hover .img-zoom {
+    @apply scale-105;
+  }
+
+  /* Text reveal animation */
+  .text-reveal {
+    @apply overflow-hidden;
+  }
+
+  .text-reveal-inner {
+    @apply transform translate-y-full;
+    animation: textReveal 0.8s var(--transition-smooth) forwards;
+  }
+
+  @keyframes textReveal {
+    to {
+      transform: translateY(0);
+    }
+  }
+
+  /* Horizontal line decoration */
+  .line-accent {
+    @apply relative;
+  }
+
+  .line-accent::after {
+    content: '';
+    @apply absolute left-0 bottom-0 h-px w-12 bg-primary-500;
+  }
+
+  /* Premium divider */
+  .divider-premium {
+    @apply flex items-center gap-4;
+  }
+
+  .divider-premium::before,
+  .divider-premium::after {
+    content: '';
+    @apply flex-1 h-px bg-charcoal-200;
+  }
+
+  /* Scroll indicator */
+  .scroll-indicator {
+    @apply flex flex-col items-center gap-2;
+  }
+
+  .scroll-indicator-line {
+    @apply w-px h-16 bg-gradient-to-b from-charcoal-950 to-transparent;
+    animation: scrollPulse 2s ease-in-out infinite;
+  }
+
+  @keyframes scrollPulse {
+    0%, 100% {
+      opacity: 1;
+      transform: scaleY(1);
+    }
+    50% {
+      opacity: 0.5;
+      transform: scaleY(0.8);
+    }
+  }
+
+  /* Parallax wrapper */
+  .parallax-wrapper {
+    @apply relative overflow-hidden;
+  }
+
+  /* Image overlay gradients */
+  .overlay-gradient {
+    @apply absolute inset-0 bg-gradient-to-t from-charcoal-950/60 via-transparent to-transparent;
+  }
+
+  .overlay-gradient-full {
+    @apply absolute inset-0 bg-charcoal-950/40;
+  }
+
+  /* Premium navigation link */
+  .nav-link {
+    @apply relative font-sans text-sm tracking-wide text-charcoal-700
+           transition-colors duration-300 hover:text-charcoal-950;
+  }
+
+  .nav-link::after {
+    content: '';
+    @apply absolute left-0 bottom-0 h-px w-0 bg-primary-500
+           transition-all duration-300;
+  }
+
+  .nav-link:hover::after {
+    @apply w-full;
+  }
+
+  /* Cursor follower styles */
+  .cursor-follower {
+    @apply fixed pointer-events-none z-50 mix-blend-difference;
+    transition: transform 0.15s ease-out, width 0.3s ease, height 0.3s ease;
+  }
+
+  /* Magnetic button effect */
+  .magnetic-btn {
+    @apply relative;
+    transition: transform 0.3s ease;
+  }
+
+  /* Stagger animation delays */
+  .stagger-1 { animation-delay: 0.1s; }
+  .stagger-2 { animation-delay: 0.2s; }
+  .stagger-3 { animation-delay: 0.3s; }
+  .stagger-4 { animation-delay: 0.4s; }
+  .stagger-5 { animation-delay: 0.5s; }
+}
+
+@layer utilities {
+  /* Text gradient */
+  .text-gradient-premium {
+    @apply bg-gradient-to-r from-primary-600 via-gold-600 to-primary-600
+           bg-clip-text text-transparent;
+  }
+
+  /* Aspect ratios */
+  .aspect-product {
+    aspect-ratio: 3/4;
+  }
+
+  .aspect-hero {
+    aspect-ratio: 16/9;
+  }
+
+  /* Custom scrollbar */
+  .scrollbar-premium {
+    scrollbar-width: thin;
+    scrollbar-color: theme('colors.primary.300') transparent;
+  }
+
+  .scrollbar-premium::-webkit-scrollbar {
+    @apply w-1.5;
+  }
+
+  .scrollbar-premium::-webkit-scrollbar-track {
+    @apply bg-transparent;
+  }
+
+  .scrollbar-premium::-webkit-scrollbar-thumb {
+    @apply bg-primary-300 rounded-full;
+  }
+
+  /* Glass effect */
+  .glass {
+    @apply bg-white/70 backdrop-blur-md;
+  }
+
+  .glass-dark {
+    @apply bg-charcoal-950/70 backdrop-blur-md;
+  }
+
+  /* Animation utilities */
+  .animate-delay-100 { animation-delay: 100ms; }
+  .animate-delay-200 { animation-delay: 200ms; }
+  .animate-delay-300 { animation-delay: 300ms; }
+  .animate-delay-400 { animation-delay: 400ms; }
+  .animate-delay-500 { animation-delay: 500ms; }
+
+  /* Hide scrollbar but allow scroll */
+  .hide-scrollbar {
+    -ms-overflow-style: none;
+    scrollbar-width: none;
+  }
+
+  .hide-scrollbar::-webkit-scrollbar {
+    display: none;
+  }
+
+  /* Text balance for headings */
+  .text-balance {
+    text-wrap: balance;
+  }
+
+  /* Premium underline animation */
+  .underline-premium {
+    @apply relative;
+    background-image: linear-gradient(currentColor, currentColor);
+    background-size: 0% 1px;
+    background-position: left bottom;
+    background-repeat: no-repeat;
+    transition: background-size 0.4s ease;
+  }
+
+  .underline-premium:hover {
+    background-size: 100% 1px;
+  }
+}
+
+/* Page transition animations */
+.page-enter {
+  opacity: 0;
+  transform: translateY(20px);
+}
+
+.page-enter-active {
+  opacity: 1;
+  transform: translateY(0);
+  transition: opacity 0.5s ease, transform 0.5s ease;
+}
+
+.page-exit {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+.page-exit-active {
+  opacity: 0;
+  transform: translateY(-20px);
+  transition: opacity 0.3s ease, transform 0.3s ease;
+}
+
+/* Loader animation */
+.loader-premium {
+  @apply relative flex items-center justify-center;
+}
+
+.loader-premium::after {
+  content: '';
+  @apply w-8 h-8 border-2 border-primary-200 border-t-primary-600 rounded-full;
+  animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+/* Smooth image loading */
+img {
+  opacity: 0;
+  transition: opacity 0.5s ease;
+}
+
+img.loaded,
+img[src] {
+  opacity: 1;
+}
