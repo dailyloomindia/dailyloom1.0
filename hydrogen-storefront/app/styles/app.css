@@ -654,3 +654,471 @@
 @keyframes spin {
   to { transform: rotate(360deg); }
 }
+
+/* ========================================
+   FIXED HEADER STYLES
+   ======================================== */
+.header-fixed {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  z-index: 1000;
+  background: var(--color-cream);
+  height: 70px;
+  padding: 0 40px;
+  border-bottom: 1px solid var(--color-border);
+  box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+@media (max-width: 768px) {
+  .header-fixed {
+    height: 60px;
+    padding: 0 20px;
+  }
+}
+
+/* Header Left */
+.header-left {
+  display: flex;
+  align-items: center;
+}
+
+.header-logo-link {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  text-decoration: none;
+}
+
+.header-logo-box {
+  width: 40px;
+  height: 40px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+}
+
+.header-logo-img {
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+}
+
+.header-logo-fallback {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 32px;
+  height: 32px;
+  background: var(--color-primary);
+  border-radius: 4px;
+  color: white;
+  font-size: 12px;
+  font-weight: bold;
+}
+
+.header-brand-info {
+  display: flex;
+  flex-direction: column;
+}
+
+.header-brand-name {
+  font-family: 'Playfair Display', 'Didot', Georgia, serif;
+  font-size: 16px;
+  font-weight: 600;
+  color: var(--color-text);
+  margin: 0;
+  letter-spacing: 0.5px;
+  line-height: 1.2;
+}
+
+.header-brand-tagline {
+  font-size: 11px;
+  color: var(--color-text-secondary);
+  margin: 2px 0 0;
+  line-height: 1.2;
+}
+
+@media (max-width: 768px) {
+  .header-logo-box {
+    width: 36px;
+    height: 36px;
+  }
+  .header-brand-name {
+    font-size: 14px;
+  }
+  .header-brand-tagline {
+    font-size: 10px;
+  }
+}
+
+/* Header Right */
+.header-right {
+  display: flex;
+  align-items: center;
+  gap: 20px;
+}
+
+@media (max-width: 480px) {
+  .header-right {
+    gap: 12px;
+  }
+}
+
+.header-icon {
+  background: none;
+  border: none;
+  cursor: pointer;
+  color: var(--color-primary);
+  padding: 8px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: opacity 0.2s;
+}
+
+.header-icon:hover {
+  opacity: 0.7;
+}
+
+.header-cart {
+  position: relative;
+}
+
+.header-cart-badge {
+  position: absolute;
+  top: 0;
+  right: 0;
+  background: var(--color-primary);
+  color: white;
+  font-size: 10px;
+  font-weight: 600;
+  width: 16px;
+  height: 16px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.hamburger-btn svg {
+  width: 24px;
+  height: 24px;
+}
+
+/* ========================================
+   MENU OVERLAY
+   ======================================== */
+.menu-overlay {
+  display: none;
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(0,0,0,0.4);
+  z-index: 998;
+}
+
+.menu-overlay.active {
+  display: block;
+}
+
+/* ========================================
+   MOBILE/HAMBURGER MENU
+   ======================================== */
+.mobile-menu {
+  position: fixed;
+  top: 0;
+  right: 0;
+  width: 100%;
+  max-width: 300px;
+  height: 100vh;
+  background: var(--color-cream);
+  box-shadow: -5px 0 15px rgba(0,0,0,0.1);
+  z-index: 999;
+  transform: translateX(100%);
+  transition: transform 300ms ease-out;
+  padding-top: 80px;
+  overflow-y: auto;
+}
+
+.mobile-menu.active {
+  transform: translateX(0);
+}
+
+@media (max-width: 768px) {
+  .mobile-menu {
+    max-width: 100%;
+  }
+}
+
+.menu-close-btn {
+  position: absolute;
+  top: 20px;
+  right: 20px;
+  background: none;
+  border: none;
+  font-size: 28px;
+  color: var(--color-text-secondary);
+  cursor: pointer;
+  padding: 8px;
+  line-height: 1;
+  transition: color 0.2s;
+}
+
+.menu-close-btn:hover {
+  color: var(--color-text);
+}
+
+.menu-item {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 16px 24px;
+  border-bottom: 1px solid var(--color-border);
+  font-size: 14px;
+  font-family: 'Inter', sans-serif;
+  color: var(--color-text);
+  text-decoration: none;
+  transition: all 0.2s;
+  cursor: pointer;
+}
+
+.menu-item:hover {
+  background: #f5f5f5;
+  color: var(--color-primary);
+}
+
+.submenu-toggle {
+  user-select: none;
+}
+
+.submenu-arrow {
+  font-size: 18px;
+  transition: transform 0.3s;
+}
+
+.submenu-toggle.open .submenu-arrow {
+  transform: rotate(90deg);
+}
+
+.submenu {
+  display: none;
+  background: #f9f6f2;
+}
+
+.submenu.open {
+  display: block;
+}
+
+.submenu-item {
+  padding-left: 40px;
+  font-size: 13px;
+}
+
+/* ========================================
+   BULK ORDER POPUP
+   ======================================== */
+.popup-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(0,0,0,0.4);
+  z-index: 2000;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 20px;
+}
+
+.popup-box {
+  position: relative;
+  background: var(--color-cream);
+  border-radius: 12px;
+  max-width: 500px;
+  width: 100%;
+  padding: 40px;
+  box-shadow: 0 20px 60px rgba(0,0,0,0.2);
+  max-height: 90vh;
+  overflow-y: auto;
+  animation: popupSlideUp 400ms cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+@keyframes popupSlideUp {
+  from {
+    opacity: 0;
+    transform: translateY(30px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@media (max-width: 480px) {
+  .popup-box {
+    padding: 30px 24px;
+  }
+}
+
+.popup-close-btn {
+  position: absolute;
+  top: 20px;
+  right: 20px;
+  background: none;
+  border: none;
+  font-size: 24px;
+  color: var(--color-text-secondary);
+  cursor: pointer;
+  padding: 4px;
+  line-height: 1;
+  transition: color 0.2s;
+}
+
+.popup-close-btn:hover {
+  color: var(--color-text);
+}
+
+.popup-heading {
+  font-family: 'Playfair Display', 'Didot', Georgia, serif;
+  font-size: 28px;
+  font-weight: 300;
+  color: var(--color-text);
+  margin: 0 0 8px;
+  letter-spacing: -0.01em;
+  line-height: 1.3;
+}
+
+@media (max-width: 480px) {
+  .popup-heading {
+    font-size: 24px;
+  }
+}
+
+.popup-subtitle {
+  font-size: 14px;
+  color: var(--color-text-secondary);
+  margin: 0 0 32px;
+}
+
+/* Form styles */
+.popup-form .form-group {
+  margin-bottom: 20px;
+}
+
+.popup-form label {
+  display: block;
+  font-size: 13px;
+  font-weight: 500;
+  color: var(--color-text);
+  margin-bottom: 8px;
+}
+
+.popup-form .required {
+  color: var(--color-error);
+}
+
+.popup-form input,
+.popup-form select,
+.popup-form textarea {
+  width: 100%;
+  padding: 12px;
+  border: 1px solid var(--color-border);
+  border-radius: 6px;
+  font-size: 14px;
+  font-family: 'Inter', sans-serif;
+  color: var(--color-text);
+  background: white;
+  transition: border-color 200ms, box-shadow 200ms;
+}
+
+.popup-form input:focus,
+.popup-form select:focus,
+.popup-form textarea:focus {
+  outline: none;
+  border-color: var(--color-primary);
+  box-shadow: 0 0 0 3px rgba(107,142,114,0.1);
+}
+
+.popup-form input::placeholder,
+.popup-form textarea::placeholder {
+  color: #999;
+}
+
+.popup-form textarea {
+  resize: vertical;
+  min-height: 100px;
+}
+
+.popup-form select {
+  cursor: pointer;
+  appearance: none;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 12 12'%3E%3Cpath fill='%23666' d='M6 8L1 3h10z'/%3E%3C/svg%3E");
+  background-repeat: no-repeat;
+  background-position: right 12px center;
+  padding-right: 36px;
+}
+
+.form-error {
+  display: block;
+  color: var(--color-error);
+  font-size: 12px;
+  margin-top: 4px;
+}
+
+.popup-submit-btn {
+  width: 100%;
+  padding: 14px;
+  background: var(--color-primary);
+  color: var(--color-cream);
+  border: none;
+  border-radius: 6px;
+  font-size: 14px;
+  font-weight: 500;
+  font-family: 'Inter', sans-serif;
+  cursor: pointer;
+  transition: all 200ms;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  margin-bottom: 12px;
+}
+
+.popup-submit-btn:hover {
+  background: var(--color-primary-dark);
+  box-shadow: 0 8px 16px rgba(107,142,114,0.2);
+}
+
+.popup-submit-btn svg {
+  width: 18px;
+  height: 18px;
+}
+
+.popup-help-text {
+  font-size: 12px;
+  color: var(--color-text-secondary);
+  text-align: center;
+  margin: 0;
+}
+
+/* ========================================
+   MAIN CONTENT SPACING (for fixed header)
+   ======================================== */
+main {
+  padding-top: 70px;
+}
+
+@media (max-width: 768px) {
+  main {
+    padding-top: 60px;
+  }
+}

@@ -6,6 +6,7 @@ import {ProductBedsheets} from '~/components/landing/ProductBedsheets';
 import {ProductDuvets, ProductTowels} from '~/components/landing/ProductDuvetsTowels';
 import {Testimonials} from '~/components/landing/Testimonials';
 import {CTASection} from '~/components/landing/CTASection';
+import {BulkOrderPopup} from '~/components/BulkOrderPopup';
 
 export const meta: MetaFunction = () => {
   return [
@@ -38,30 +39,38 @@ export const meta: MetaFunction = () => {
 
 export default function Homepage() {
   return (
-    <main>
-      {/* Section 1: Hero with Video/Image Background */}
-      <HeroSection />
+    <>
+      <main>
+        {/* Section 1: Hero with Video/Image Background */}
+        <HeroSection />
 
-      {/* Section 2: The Deception Reveal */}
-      <DeceptionReveal />
+        {/* Section 2: The Deception Reveal */}
+        <DeceptionReveal />
 
-      {/* Section 3: Our Authenticity Story */}
-      <AuthenticityStory />
+        {/* Section 3: Our Authenticity Story */}
+        <AuthenticityStory />
 
-      {/* Section 4: Product Storytelling - Bedsheets */}
-      <ProductBedsheets />
+        {/* Section 4: Product Storytelling - Bedsheets */}
+        <ProductBedsheets />
 
-      {/* Section 5: Product Storytelling - Duvets */}
-      <ProductDuvets />
+        {/* Section 5: Product Storytelling - Duvets */}
+        <ProductDuvets />
 
-      {/* Section 6: Product Storytelling - Towels */}
-      <ProductTowels />
+        {/* Section 6: Product Storytelling - Towels */}
+        <ProductTowels />
 
-      {/* Section 7: Social Proof / Testimonials */}
-      <Testimonials />
+        {/* Section 7: Social Proof / Testimonials */}
+        <Testimonials />
 
-      {/* Section 8: Final CTA + Email Signup */}
-      <CTASection />
-    </main>
+        {/* Section 8: Final CTA + Email Signup */}
+        <CTASection />
+      </main>
+
+      {/* Bulk Order Popup - appears after 2 minutes */}
+      <BulkOrderPopup
+        delayMs={120000}
+        whatsappNumber="919876543210"
+      />
+    </>
   );
 }

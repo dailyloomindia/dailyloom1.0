@@ -1,7 +1,5 @@
 import {Link, useLocation} from '@remix-run/react';
-import {motion, AnimatePresence} from 'framer-motion';
 import {useState, useEffect} from 'react';
-import clsx from 'clsx';
 
 interface HeaderProps {
   shop: {
@@ -27,6 +25,7 @@ interface HeaderProps {
 export function Header({shop, cart, menu}: HeaderProps) {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [isScrolled, setIsScrolled] = useState(false);
+  const [shopSubmenuOpen, setShopSubmenuOpen] = useState(false);
   const location = useLocation();
 
   useEffect(() => {
@@ -40,282 +39,137 @@ export function Header({shop, cart, menu}: HeaderProps) {
   // Close menu on route change
   useEffect(() => {
     setIsMenuOpen(false);
+    setShopSubmenuOpen(false);
   }, [location]);
+
+  // Prevent body scroll when menu is open
+  useEffect(() => {
+    if (isMenuOpen) {
+      document.body.style.overflow = 'hidden';
+    } else {
+      document.body.style.overflow = 'auto';
+    }
+    return () => {
+      document.body.style.overflow = 'auto';
+    };
+  }, [isMenuOpen]);
 
   const cartCount = cart?.totalQuantity || 0;
 
-  // Check if we're on the homepage for transparent header
-  const isHomepage = location.pathname === '/';
+  const closeMenu = () => {
+    setIsMenuOpen(false);
+    setShopSubmenuOpen(false);
+  };
 
   return (
     <>
-      <header
-        className={clsx(
-          'fixed top-0 left-0 right-0 z-50 transition-all duration-500',
-          isScrolled
-            ? 'bg-cream-100/95 backdrop-blur-md shadow-subtle'
-            : isHomepage
-              ? 'bg-transparent'
-              : 'bg-cream-100',
-        )}
-      >
-        <div className="container-luxury">
-          <nav className="flex items-center justify-between h-20 md:h-24">
-            {/* Logo */}
-            <Link
-              to="/"
-              className="relative z-10 flex items-center"
-            >
-              <motion.div
-                whileHover={{scale: 1.02}}
-                className="flex items-center"
-              >
-                <span
-                  className={clsx(
-                    'font-display text-xl md:text-2xl tracking-widest transition-colors duration-300',
-                    isScrolled || !isHomepage
-                      ? 'text-charcoal-950'
-                      : 'text-cream-100',
-                  )}
-                >
-                  DAILY LOOM
-                </span>
-              </motion.div>
-            </Link>
-
-            {/* Desktop Navigation */}
-            <div className="hidden lg:flex items-center gap-10">
-              {menu.map((item) => (
-                <NavLink
-                  key={item.id}
-                  to={new URL(item.url).pathname}
-                  isScrolled={isScrolled}
-                  isHomepage={isHomepage}
-                >
-                  {item.title}
-                </NavLink>
-              ))}
+      {/* Fixed Header */}
+      <header className="header-fixed">
+        <div className="header-left">
+          <Link to="/" className="header-logo-link">
+            <div className="header-logo-box">
+              <img
+                src="/logo.png"
+                alt="Daily Loom Logo"
+                className="header-logo-img"
+                onError={(e) => {
+                  e.currentTarget.style.display = 'none';
+                  const parent = e.currentTarget.parentElement;
+                  if (parent) {
+                    parent.innerHTML = '<span class="header-logo-fallback">DL</span>';
+                  }
+                }}
+              />
             </div>
-
-            {/* Right side actions */}
-            <div className="flex items-center gap-4">
-              {/* Search */}
-              <button
-                className={clsx(
-                  'p-2 rounded-full transition-colors',
-                  isScrolled || !isHomepage
-                    ? 'hover:bg-charcoal-100 text-charcoal-900'
-                    : 'hover:bg-white/10 text-cream-100',
-                )}
-                aria-label="Search"
-              >
-                <SearchIcon />
-              </button>
-
-              {/* Cart */}
-              <Link
-                to="/cart"
-                className={clsx(
-                  'relative p-2 rounded-full transition-colors',
-                  isScrolled || !isHomepage
-                    ? 'hover:bg-charcoal-100 text-charcoal-900'
-                    : 'hover:bg-white/10 text-cream-100',
-                )}
-              >
-                <CartIcon />
-                {cartCount > 0 && (
-                  <motion.span
-                    initial={{scale: 0}}
-                    animate={{scale: 1}}
-                    className="absolute -top-1 -right-1 w-5 h-5 bg-primary-500 text-cream-100 text-xs flex items-center justify-center rounded-full"
-                  >
-                    {cartCount}
-                  </motion.span>
-                )}
-              </Link>
-
-              {/* Mobile menu toggle */}
-              <button
-                onClick={() => setIsMenuOpen(!isMenuOpen)}
-                className={clsx(
-                  'lg:hidden relative z-10 p-2',
-                  isScrolled || !isHomepage
-                    ? 'text-charcoal-900'
-                    : 'text-cream-100',
-                )}
-                aria-label="Toggle menu"
-              >
-                <motion.div className="w-6 h-5 flex flex-col justify-between">
-                  <motion.span
-                    animate={isMenuOpen ? {rotate: 45, y: 8} : {rotate: 0, y: 0}}
-                    className={clsx(
-                      'w-full h-0.5 origin-left',
-                      isMenuOpen
-                        ? 'bg-charcoal-950'
-                        : isScrolled || !isHomepage
-                          ? 'bg-charcoal-950'
-                          : 'bg-cream-100',
-                    )}
-                  />
-                  <motion.span
-                    animate={isMenuOpen ? {opacity: 0} : {opacity: 1}}
-                    className={clsx(
-                      'w-full h-0.5',
-                      isMenuOpen
-                        ? 'bg-charcoal-950'
-                        : isScrolled || !isHomepage
-                          ? 'bg-charcoal-950'
-                          : 'bg-cream-100',
-                    )}
-                  />
-                  <motion.span
-                    animate={isMenuOpen ? {rotate: -45, y: -8} : {rotate: 0, y: 0}}
-                    className={clsx(
-                      'w-full h-0.5 origin-left',
-                      isMenuOpen
-                        ? 'bg-charcoal-950'
-                        : isScrolled || !isHomepage
-                          ? 'bg-charcoal-950'
-                          : 'bg-cream-100',
-                    )}
-                  />
-                </motion.div>
-              </button>
+            <div className="header-brand-info">
+              <h1 className="header-brand-name">DAILY LOOM</h1>
+              <p className="header-brand-tagline">Handcrafted Luxury Textiles</p>
             </div>
-          </nav>
+          </Link>
+        </div>
+
+        <div className="header-right">
+          {/* Search Icon */}
+          <button className="header-icon" aria-label="Search">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+              <circle cx="11" cy="11" r="8"></circle>
+              <path d="m21 21-4.35-4.35"></path>
+            </svg>
+          </button>
+
+          {/* Cart Icon */}
+          <Link to="/cart" className="header-icon header-cart">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+              <path d="M6 2 3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4Z"></path>
+              <path d="M3 6h18"></path>
+              <path d="M16 10a4 4 0 0 1-8 0"></path>
+            </svg>
+            <span className="header-cart-badge">{cartCount}</span>
+          </Link>
+
+          {/* Hamburger Menu Button */}
+          <button
+            className="header-icon hamburger-btn"
+            aria-label="Menu"
+            onClick={() => setIsMenuOpen(true)}
+          >
+            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+              <line x1="3" y1="6" x2="21" y2="6"></line>
+              <line x1="3" y1="12" x2="21" y2="12"></line>
+              <line x1="3" y1="18" x2="21" y2="18"></line>
+            </svg>
+          </button>
         </div>
       </header>
 
-      {/* Mobile Menu Overlay */}
-      <AnimatePresence>
-        {isMenuOpen && (
-          <motion.div
-            initial={{opacity: 0}}
-            animate={{opacity: 1}}
-            exit={{opacity: 0}}
-            transition={{duration: 0.3}}
-            className="fixed inset-0 bg-cream-100 z-40 lg:hidden"
-          >
-            <motion.nav
-              initial={{opacity: 0, y: 20}}
-              animate={{opacity: 1, y: 0}}
-              exit={{opacity: 0, y: 20}}
-              transition={{delay: 0.1, duration: 0.4}}
-              className="flex flex-col items-center justify-center h-full gap-8"
-            >
-              {menu.map((item, index) => (
-                <motion.div
-                  key={item.id}
-                  initial={{opacity: 0, y: 20}}
-                  animate={{opacity: 1, y: 0}}
-                  transition={{delay: 0.2 + index * 0.1}}
-                >
-                  <Link
-                    to={new URL(item.url).pathname}
-                    className="font-display text-3xl text-charcoal-950 hover:text-primary-600 transition-colors tracking-wide"
-                  >
-                    {item.title}
-                  </Link>
-                </motion.div>
-              ))}
+      {/* Menu Overlay */}
+      <div
+        className={`menu-overlay ${isMenuOpen ? 'active' : ''}`}
+        onClick={closeMenu}
+      />
 
-              {/* Mobile secondary links */}
-              <motion.div
-                initial={{opacity: 0}}
-                animate={{opacity: 1}}
-                transition={{delay: 0.5}}
-                className="flex gap-8 mt-8 pt-8 border-t border-charcoal-200"
-              >
-                <Link to="/account" className="text-sm text-charcoal-600 hover:text-charcoal-950">
-                  Account
-                </Link>
-                <Link to="/pages/contact" className="text-sm text-charcoal-600 hover:text-charcoal-950">
-                  Contact
-                </Link>
-              </motion.div>
-            </motion.nav>
-          </motion.div>
-        )}
-      </AnimatePresence>
+      {/* Mobile/Hamburger Menu */}
+      <nav className={`mobile-menu ${isMenuOpen ? 'active' : ''}`}>
+        <button className="menu-close-btn" onClick={closeMenu} aria-label="Close menu">
+          ×
+        </button>
+
+        {/* Shop with Submenu */}
+        <div
+          className={`menu-item submenu-toggle ${shopSubmenuOpen ? 'open' : ''}`}
+          onClick={() => setShopSubmenuOpen(!shopSubmenuOpen)}
+        >
+          <span>Shop</span>
+          <span className="submenu-arrow">›</span>
+        </div>
+        <div className={`submenu ${shopSubmenuOpen ? 'open' : ''}`}>
+          <Link to="/collections/bedsheets" className="menu-item submenu-item" onClick={closeMenu}>
+            Bedsheets
+          </Link>
+          <Link to="/collections/duvets" className="menu-item submenu-item" onClick={closeMenu}>
+            Duvets
+          </Link>
+          <Link to="/collections/towels" className="menu-item submenu-item" onClick={closeMenu}>
+            Towels
+          </Link>
+          <Link to="/collections/all" className="menu-item submenu-item" onClick={closeMenu}>
+            All Collections
+          </Link>
+        </div>
+
+        <Link to="/pages/about" className="menu-item" onClick={closeMenu}>
+          Our Story
+        </Link>
+        <Link to="/pages/care-guide" className="menu-item" onClick={closeMenu}>
+          Care Guides
+        </Link>
+        <Link to="/pages/contact" className="menu-item" onClick={closeMenu}>
+          Contact
+        </Link>
+        <Link to="/account" className="menu-item" onClick={closeMenu}>
+          Account
+        </Link>
+      </nav>
     </>
-  );
-}
-
-function NavLink({
-  to,
-  children,
-  isScrolled,
-  isHomepage,
-}: {
-  to: string;
-  children: React.ReactNode;
-  isScrolled: boolean;
-  isHomepage: boolean;
-}) {
-  const location = useLocation();
-  const isActive = location.pathname === to;
-
-  return (
-    <Link
-      to={to}
-      className={clsx(
-        'text-sm tracking-wide uppercase transition-colors relative py-2',
-        isScrolled || !isHomepage
-          ? isActive
-            ? 'text-primary-600'
-            : 'text-charcoal-700 hover:text-charcoal-950'
-          : isActive
-            ? 'text-cream-100'
-            : 'text-cream-200 hover:text-cream-100',
-      )}
-    >
-      {children}
-      {isActive && (
-        <motion.span
-          layoutId="underline"
-          className={clsx(
-            'absolute bottom-0 left-0 right-0 h-0.5',
-            isScrolled || !isHomepage ? 'bg-primary-500' : 'bg-cream-100',
-          )}
-        />
-      )}
-    </Link>
-  );
-}
-
-function SearchIcon() {
-  return (
-    <svg
-      width="20"
-      height="20"
-      viewBox="0 0 24 24"
-      fill="none"
-      stroke="currentColor"
-      strokeWidth="1.5"
-      strokeLinecap="round"
-      strokeLinejoin="round"
-    >
-      <circle cx="11" cy="11" r="8" />
-      <path d="m21 21-4.3-4.3" />
-    </svg>
-  );
-}
-
-function CartIcon() {
-  return (
-    <svg
-      width="20"
-      height="20"
-      viewBox="0 0 24 24"
-      fill="none"
-      stroke="currentColor"
-      strokeWidth="1.5"
-      strokeLinecap="round"
-      strokeLinejoin="round"
-    >
-      <path d="M6 2 3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4Z" />
-      <path d="M3 6h18" />
-      <path d="M16 10a4 4 0 0 1-8 0" />
-    </svg>
   );
 }
