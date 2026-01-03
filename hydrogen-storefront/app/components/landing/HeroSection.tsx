@@ -1,4 +1,5 @@
 import {useOutletContext} from '@remix-run/react';
+import {useEffect, useState} from 'react';
 
 interface BrandAssets {
   video?: {
@@ -16,13 +17,33 @@ export function HeroSection() {
   const video = context?.brandAssets?.video;
   const posterImage = context?.brandAssets?.videoPreviewImage;
 
+  const [scrollY, setScrollY] = useState(0);
+  const [hideScrollIndicator, setHideScrollIndicator] = useState(false);
+
+  useEffect(() => {
+    const handleScroll = () => {
+      const currentScroll = window.scrollY;
+      setScrollY(currentScroll);
+      setHideScrollIndicator(currentScroll > 80);
+    };
+
+    window.addEventListener('scroll', handleScroll, {passive: true});
+    return () => window.removeEventListener('scroll', handleScroll);
+  }, []);
+
+  // Parallax: background moves at 0.5x scroll speed
+  const parallaxOffset = scrollY * 0.5;
+
   return (
-    <section className="hero-section">
-      {/* Background Video/Image - CSS-based parallax */}
-      <div className="hero-background">
+    <section className="hero-redesign">
+      {/* Background Video/Image with Parallax */}
+      <div
+        className="hero-bg-container"
+        style={{transform: `translateY(${parallaxOffset}px)`}}
+      >
         {video?.url ? (
           <video
-            className="hero-video"
+            className="hero-bg-media"
             autoPlay
             muted
             loop
@@ -35,54 +56,49 @@ export function HeroSection() {
           <img
             src={posterImage.url}
             alt={posterImage.altText || 'Daily Loom - Pure Cotton Textiles'}
-            className="hero-image"
+            className="hero-bg-media"
           />
         ) : (
-          <div className="hero-placeholder">
-            <span className="hero-placeholder-text">
-              Video Placeholder
-            </span>
-            <span className="hero-placeholder-subtext">
-              Macro photography of pristine cotton threads
-            </span>
+          <div className="hero-bg-placeholder">
+            <span>Premium Cotton Textiles</span>
           </div>
         )}
       </div>
 
-      {/* Dark gradient overlay */}
-      <div className="hero-overlay" />
+      {/* Gradient Overlay */}
+      <div className="hero-gradient-overlay" />
 
-      {/* Content */}
-      <div className="hero-content">
-        {/* Main content - positioned top-right */}
-        <div className="hero-text-container">
-          <div className="hero-text">
-            <h1 className="hero-title fade-in-up">
-              DAILY LOOM
-            </h1>
-            <p className="hero-tagline fade-in-up delay-200">
-              Experience Natural Luxury
-            </p>
-          </div>
-        </div>
+      {/* Centered Content */}
+      <div className="hero-center-content">
+        <h1 className="hero-brand-title">
+          DAILY LOOM
+        </h1>
+        <p className="hero-brand-tagline">
+          Handcrafted Luxury Textiles
+        </p>
+        <p className="hero-brand-subtext">
+          Experience Natural Luxury
+        </p>
+      </div>
 
-        {/* Scroll indicator - bottom center */}
-        <div className="hero-scroll-indicator fade-in delay-600">
-          <span className="hero-scroll-text">
-            Scroll to Discover
-          </span>
-          <div className="hero-scroll-arrow">
-            <svg
-              width="24"
-              height="24"
-              viewBox="0 0 24 24"
-              fill="none"
-              stroke="currentColor"
-              strokeWidth="1.5"
-            >
-              <path d="M12 5v14M5 12l7 7 7-7" />
-            </svg>
-          </div>
+      {/* Bottom Center Scroll Indicator */}
+      <div
+        className={`hero-scroll-cta ${hideScrollIndicator ? 'hidden' : ''}`}
+        onClick={() => window.scrollTo({top: window.innerHeight, behavior: 'smooth'})}
+      >
+        <span className="hero-scroll-label">SCROLL TO DISCOVER</span>
+        <div className="hero-scroll-arrow-container">
+          <svg
+            className="hero-scroll-arrow-icon"
+            width="20"
+            height="20"
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke="currentColor"
+            strokeWidth="1.5"
+          >
+            <path d="M12 5v14M5 12l7 7 7-7" />
+          </svg>
         </div>
       </div>
     </section>
