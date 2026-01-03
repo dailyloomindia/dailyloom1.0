@@ -1,27 +1,12 @@
-import {motion} from 'framer-motion';
-import {useInView} from 'framer-motion';
-import {useRef} from 'react';
-
 export function DeceptionReveal() {
-  const sectionRef = useRef<HTMLElement>(null);
-  const isInView = useInView(sectionRef, {once: true, margin: '-100px'});
-
   return (
-    <section
-      ref={sectionRef}
-      className="section-padding bg-cream-100"
-    >
+    <section className="section-padding bg-cream-100">
       <div className="container-luxury">
         <div className="grid-two-col items-start">
           {/* Left Column - The Deception */}
-          <motion.div
-            initial={{opacity: 0, x: -40}}
-            animate={isInView ? {opacity: 1, x: 0} : {}}
-            transition={{duration: 0.6, delay: 0.1}}
-            className="space-y-8"
-          >
+          <div className="reveal-left">
             {/* Image Placeholder */}
-            <div className="relative aspect-[3/2] overflow-hidden">
+            <div className="relative aspect-[3/2] overflow-hidden mb-8">
               <div className="image-placeholder h-full" style={{filter: 'blur(1px)'}}>
                 <span>Tangled, chaotic polyester-cotton threads<br />Muted colors, blurred effect</span>
               </div>
@@ -58,17 +43,12 @@ export function DeceptionReveal() {
                 </p>
               </div>
             </div>
-          </motion.div>
+          </div>
 
           {/* Right Column - The Truth */}
-          <motion.div
-            initial={{opacity: 0, x: 40}}
-            animate={isInView ? {opacity: 1, x: 0} : {}}
-            transition={{duration: 0.6, delay: 0.2}}
-            className="space-y-8"
-          >
+          <div className="reveal-right">
             {/* Image Placeholder */}
-            <div className="relative aspect-[3/2] overflow-hidden">
+            <div className="relative aspect-[3/2] overflow-hidden mb-8">
               <div className="image-placeholder h-full">
                 <span>Pristine, aligned pure cotton threads<br />Warm cream tones, sharp focus</span>
               </div>
@@ -108,7 +88,7 @@ export function DeceptionReveal() {
                 </p>
               </div>
             </div>
-          </motion.div>
+          </div>
         </div>
       </div>
     </section>

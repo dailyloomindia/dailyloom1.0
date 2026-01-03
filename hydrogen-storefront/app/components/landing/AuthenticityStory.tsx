@@ -1,7 +1,3 @@
-import {motion} from 'framer-motion';
-import {useInView} from 'framer-motion';
-import {useRef} from 'react';
-
 const cards = [
   {
     title: '100% Pure Cotton, Zero Compromise',
@@ -43,36 +39,22 @@ Every batch is tested for fiber quality, dye consistency, and purity before reac
 ];
 
 export function AuthenticityStory() {
-  const sectionRef = useRef<HTMLElement>(null);
-  const isInView = useInView(sectionRef, {once: true, margin: '-100px'});
-
   return (
-    <section
-      ref={sectionRef}
-      className="section-padding bg-white"
-    >
+    <section className="section-padding bg-white">
       <div className="container-luxury">
         {/* Section Header */}
-        <motion.div
-          initial={{opacity: 0, y: 30}}
-          animate={isInView ? {opacity: 1, y: 0} : {}}
-          transition={{duration: 0.6}}
-          className="text-center mb-16"
-        >
+        <div className="text-center mb-16">
           <h2 className="text-display-lg font-display text-charcoal-950 font-light mb-4">
             Our Promise of Authenticity
           </h2>
           <div className="divider mx-auto" />
-        </motion.div>
+        </div>
 
         {/* Three-Card Grid */}
         <div className="grid-three-col">
-          {cards.map((card, index) => (
-            <motion.div
+          {cards.map((card) => (
+            <div
               key={card.title}
-              initial={{opacity: 0, y: 40}}
-              animate={isInView ? {opacity: 1, y: 0} : {}}
-              transition={{duration: 0.6, delay: 0.1 * (index + 1)}}
               className="card-luxury p-8"
             >
               <h4 className="font-display text-xl text-charcoal-950 mb-6">
@@ -99,7 +81,7 @@ export function AuthenticityStory() {
                   ))}
                 </div>
               )}
-            </motion.div>
+            </div>
           ))}
         </div>
       </div>

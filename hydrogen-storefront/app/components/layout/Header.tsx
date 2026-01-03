@@ -20,21 +20,18 @@ interface HeaderProps {
     url: string;
     items?: Array<{id: string; title: string; url: string}>;
   }>;
+  logo?: {
+    url: string;
+    altText?: string;
+    width?: number;
+    height?: number;
+  } | null;
 }
 
-export function Header({shop, cart, menu}: HeaderProps) {
+export function Header({shop, cart, menu, logo}: HeaderProps) {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
-  const [isScrolled, setIsScrolled] = useState(false);
   const [shopSubmenuOpen, setShopSubmenuOpen] = useState(false);
   const location = useLocation();
-
-  useEffect(() => {
-    const handleScroll = () => {
-      setIsScrolled(window.scrollY > 50);
-    };
-    window.addEventListener('scroll', handleScroll);
-    return () => window.removeEventListener('scroll', handleScroll);
-  }, []);
 
   // Close menu on route change
   useEffect(() => {
@@ -47,10 +44,10 @@ export function Header({shop, cart, menu}: HeaderProps) {
     if (isMenuOpen) {
       document.body.style.overflow = 'hidden';
     } else {
-      document.body.style.overflow = 'auto';
+      document.body.style.overflow = '';
     }
     return () => {
-      document.body.style.overflow = 'auto';
+      document.body.style.overflow = '';
     };
   }, [isMenuOpen]);
 
@@ -61,6 +58,10 @@ export function Header({shop, cart, menu}: HeaderProps) {
     setShopSubmenuOpen(false);
   };
 
+  // Get logo URL from metafield or fallback
+  const logoUrl = logo?.url || '/logo.png';
+  const logoAlt = logo?.altText || 'Daily Loom Logo';
+
   return (
     <>
       {/* Fixed Header */}
@@ -69,9 +70,12 @@ export function Header({shop, cart, menu}: HeaderProps) {
           <Link to="/" className="header-logo-link">
             <div className="header-logo-box">
               <img
-                src="/logo.png"
-                alt="Daily Loom Logo"
+                src={logoUrl}
+                alt={logoAlt}
                 className="header-logo-img"
+                width={40}
+                height={40}
+                loading="eager"
                 onError={(e) => {
                   e.currentTarget.style.display = 'none';
                   const parent = e.currentTarget.parentElement;

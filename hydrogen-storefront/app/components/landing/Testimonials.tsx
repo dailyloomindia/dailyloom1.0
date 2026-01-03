@@ -1,6 +1,4 @@
-import {motion, AnimatePresence} from 'framer-motion';
-import {useInView} from 'framer-motion';
-import {useRef, useState, useEffect} from 'react';
+import {useState, useEffect} from 'react';
 
 const testimonials = [
   {
@@ -50,8 +48,6 @@ const timelineQuotes = [
 ];
 
 export function Testimonials() {
-  const sectionRef = useRef<HTMLElement>(null);
-  const isInView = useInView(sectionRef, {once: true, margin: '-100px'});
   const [currentIndex, setCurrentIndex] = useState(0);
   const [autoPlay, setAutoPlay] = useState(true);
 
@@ -64,70 +60,51 @@ export function Testimonials() {
   }, [autoPlay]);
 
   return (
-    <section ref={sectionRef} className="section-padding bg-cream-100">
+    <section className="section-padding bg-cream-100">
       <div className="container-luxury">
         {/* Section Header */}
-        <motion.div
-          initial={{opacity: 0, y: 30}}
-          animate={isInView ? {opacity: 1, y: 0} : {}}
-          transition={{duration: 0.6}}
-          className="text-center mb-16"
-        >
+        <div className="text-center mb-16">
           <h2 className="text-display-lg font-display text-charcoal-950 font-light mb-4">
             What Our Customers Say
           </h2>
           <div className="divider mx-auto" />
-        </motion.div>
+        </div>
 
         {/* Testimonial Carousel */}
-        <motion.div
-          initial={{opacity: 0}}
-          animate={isInView ? {opacity: 1} : {}}
-          transition={{duration: 0.6, delay: 0.2}}
-          className="max-w-3xl mx-auto"
-        >
+        <div className="max-w-3xl mx-auto">
           <div
             className="relative min-h-[350px]"
             onMouseEnter={() => setAutoPlay(false)}
             onMouseLeave={() => setAutoPlay(true)}
           >
-            <AnimatePresence mode="wait">
-              <motion.div
-                key={currentIndex}
-                initial={{opacity: 0, y: 20}}
-                animate={{opacity: 1, y: 0}}
-                exit={{opacity: 0, y: -20}}
-                transition={{duration: 0.5}}
-                className="testimonial-card"
-              >
-                {/* Quote Icon */}
-                <div className="text-primary-300 mb-6">
-                  <svg width="40" height="40" viewBox="0 0 24 24" fill="currentColor">
-                    <path d="M11.192 15.757c0-.88-.23-1.618-.69-2.217-.326-.412-.768-.683-1.327-.812-.55-.128-1.07-.137-1.54-.028-.16-.95.1-1.956.76-3.022.66-1.065 1.515-1.867 2.558-2.403L9.373 5c-.8.396-1.56.898-2.26 1.505-.71.607-1.34 1.305-1.9 2.094s-.98 1.68-1.25 2.69-.346 2.04-.217 3.1c.168 1.4.62 2.52 1.356 3.35.735.84 1.652 1.26 2.748 1.26.965 0 1.766-.29 2.4-.878.628-.576.94-1.365.94-2.368l.002.004zm9.124 0c0-.88-.23-1.618-.69-2.217-.326-.42-.77-.692-1.327-.817-.56-.124-1.074-.13-1.54-.022-.16-.94.09-1.95.75-3.02.66-1.06 1.514-1.86 2.557-2.4L18.49 5c-.8.396-1.555.898-2.26 1.505-.708.607-1.34 1.305-1.894 2.094-.556.79-.97 1.68-1.24 2.69-.273 1-.345 2.04-.217 3.1.168 1.4.62 2.52 1.356 3.35.735.84 1.652 1.26 2.748 1.26.965 0 1.766-.29 2.4-.878.628-.576.94-1.365.94-2.368l.002.004z" />
-                  </svg>
-                </div>
+            <div className="testimonial-card">
+              {/* Quote Icon */}
+              <div className="text-primary-300 mb-6">
+                <svg width="40" height="40" viewBox="0 0 24 24" fill="currentColor">
+                  <path d="M11.192 15.757c0-.88-.23-1.618-.69-2.217-.326-.412-.768-.683-1.327-.812-.55-.128-1.07-.137-1.54-.028-.16-.95.1-1.956.76-3.022.66-1.065 1.515-1.867 2.558-2.403L9.373 5c-.8.396-1.56.898-2.26 1.505-.71.607-1.34 1.305-1.9 2.094s-.98 1.68-1.25 2.69-.346 2.04-.217 3.1c.168 1.4.62 2.52 1.356 3.35.735.84 1.652 1.26 2.748 1.26.965 0 1.766-.29 2.4-.878.628-.576.94-1.365.94-2.368l.002.004zm9.124 0c0-.88-.23-1.618-.69-2.217-.326-.42-.77-.692-1.327-.817-.56-.124-1.074-.13-1.54-.022-.16-.94.09-1.95.75-3.02.66-1.06 1.514-1.86 2.557-2.4L18.49 5c-.8.396-1.555.898-2.26 1.505-.708.607-1.34 1.305-1.894 2.094-.556.79-.97 1.68-1.24 2.69-.273 1-.345 2.04-.217 3.1.168 1.4.62 2.52 1.356 3.35.735.84 1.652 1.26 2.748 1.26.965 0 1.766-.29 2.4-.878.628-.576.94-1.365.94-2.368l.002.004z" />
+                </svg>
+              </div>
 
-                {/* Quote Text */}
-                <blockquote className="text-charcoal-900 leading-relaxed whitespace-pre-line mb-8">
-                  {testimonials[currentIndex].quote}
-                </blockquote>
+              {/* Quote Text */}
+              <blockquote className="text-charcoal-900 leading-relaxed whitespace-pre-line mb-8">
+                {testimonials[currentIndex].quote}
+              </blockquote>
 
-                {/* Author */}
-                <div className="flex items-center justify-between border-t border-border-light pt-6">
-                  <div>
-                    <p className="font-medium text-charcoal-950">
-                      {testimonials[currentIndex].author}
-                    </p>
-                    <p className="text-sm text-charcoal-500">
-                      {testimonials[currentIndex].location}
-                    </p>
-                  </div>
-                  <span className="text-primary-600 text-sm font-medium">
-                    {testimonials[currentIndex].timeframe}
-                  </span>
+              {/* Author */}
+              <div className="flex items-center justify-between border-t border-border-light pt-6">
+                <div>
+                  <p className="font-medium text-charcoal-950">
+                    {testimonials[currentIndex].author}
+                  </p>
+                  <p className="text-sm text-charcoal-500">
+                    {testimonials[currentIndex].location}
+                  </p>
                 </div>
-              </motion.div>
-            </AnimatePresence>
+                <span className="text-primary-600 text-sm font-medium">
+                  {testimonials[currentIndex].timeframe}
+                </span>
+              </div>
+            </div>
           </div>
 
           {/* Navigation Dots */}
@@ -136,26 +113,17 @@ export function Testimonials() {
               <button
                 key={index}
                 onClick={() => setCurrentIndex(index)}
-                className={`w-2 h-2 rounded-full transition-all duration-300 ${
-                  index === currentIndex
-                    ? 'w-8 bg-primary-500'
-                    : 'bg-charcoal-300 hover:bg-charcoal-400'
-                }`}
+                className={`testimonial-dot ${index === currentIndex ? 'active' : ''}`}
                 aria-label={`Go to testimonial ${index + 1}`}
               />
             ))}
           </div>
-        </motion.div>
+        </div>
 
         {/* Timeline Quotes */}
-        <motion.div
-          initial={{opacity: 0, y: 30}}
-          animate={isInView ? {opacity: 1, y: 0} : {}}
-          transition={{duration: 0.6, delay: 0.4}}
-          className="mt-20 pt-16 border-t border-border-light"
-        >
+        <div className="mt-20 pt-16 border-t border-border-light">
           <div className="grid grid-cols-2 md:grid-cols-4 gap-8">
-            {timelineQuotes.map((item, index) => (
+            {timelineQuotes.map((item) => (
               <div key={item.year} className="text-center">
                 <span className="text-primary-600 text-xs uppercase tracking-wider font-medium">
                   {item.year}
@@ -166,15 +134,10 @@ export function Testimonials() {
               </div>
             ))}
           </div>
-        </motion.div>
+        </div>
 
         {/* Guarantee */}
-        <motion.div
-          initial={{opacity: 0, y: 30}}
-          animate={isInView ? {opacity: 1, y: 0} : {}}
-          transition={{duration: 0.6, delay: 0.5}}
-          className="mt-20 text-center max-w-2xl mx-auto"
-        >
+        <div className="mt-20 text-center max-w-2xl mx-auto">
           <div className="bg-white p-10 rounded-medium shadow-subtle">
             <h4 className="font-display text-2xl text-charcoal-950 mb-4">
               We're Confident in What We Make.
@@ -193,7 +156,7 @@ export function Testimonials() {
               (We've never had to issue a single refund.)
             </p>
           </div>
-        </motion.div>
+        </div>
       </div>
     </section>
   );

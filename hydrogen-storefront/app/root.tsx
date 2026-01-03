@@ -8,10 +8,8 @@ import {
   useNavigation,
 } from '@remix-run/react';
 import type {LoaderFunctionArgs} from '@shopify/remix-oxygen';
-import {AnimatePresence, motion} from 'framer-motion';
 import {Header} from '~/components/layout/Header';
 import {Footer} from '~/components/layout/Footer';
-import {PageTransition} from '~/components/animations/PageTransition';
 import appStyles from '~/styles/app.css?url';
 
 export function links() {
@@ -34,7 +32,7 @@ export async function loader({context}: LoaderFunctionArgs) {
   // Get cart data
   const cartPromise = cart.get();
 
-  // Get shop info
+  // Get shop info with metafields for logo and video
   const {shop} = await storefront.query(SHOP_QUERY);
 
   // Get header menu
@@ -42,15 +40,24 @@ export async function loader({context}: LoaderFunctionArgs) {
     variables: {handle: 'main-menu'},
   });
 
+  // Extract metafields
+  const logoMetafield = shop?.metafield_logo;
+  const videoMetafield = shop?.metafield_video;
+
   return {
     shop,
     cart: await cartPromise,
     menu: menu?.items || [],
+    brandAssets: {
+      logo: logoMetafield?.reference?.image || null,
+      video: videoMetafield?.reference?.sources?.[0] || null,
+      videoPreviewImage: videoMetafield?.reference?.previewImage || null,
+    },
   };
 }
 
 export default function App() {
-  const {shop, cart, menu} = useLoaderData<typeof loader>();
+  const {shop, cart, menu, brandAssets} = useLoaderData<typeof loader>();
   const navigation = useNavigation();
   const isLoading = navigation.state === 'loading';
 
@@ -64,25 +71,15 @@ export default function App() {
         <Links />
       </head>
       <body className="min-h-screen flex flex-col">
-        {/* Loading indicator */}
-        <AnimatePresence>
-          {isLoading && (
-            <motion.div
-              initial={{scaleX: 0}}
-              animate={{scaleX: 1}}
-              exit={{scaleX: 0, opacity: 0}}
-              className="fixed top-0 left-0 right-0 h-0.5 bg-primary-500 z-[100] origin-left"
-              transition={{duration: 0.5}}
-            />
-          )}
-        </AnimatePresence>
+        {/* Simple loading indicator - CSS only */}
+        {isLoading && (
+          <div className="loading-bar" />
+        )}
 
-        <Header shop={shop} cart={cart} menu={menu} />
+        <Header shop={shop} cart={cart} menu={menu} logo={brandAssets.logo} />
 
         <main className="flex-1">
-          <PageTransition>
-            <Outlet />
-          </PageTransition>
+          <Outlet context={{brandAssets}} />
         </main>
 
         <Footer shop={shop} />
@@ -105,7 +102,7 @@ export function ErrorBoundary() {
         <Links />
       </head>
       <body className="min-h-screen flex flex-col items-center justify-center bg-cream-50">
-        <div className="container-premium text-center">
+        <div className="container-luxury text-center">
           <h1 className="text-display-lg mb-4">Something went wrong</h1>
           <p className="text-charcoal-600 mb-8">
             We apologize for the inconvenience. Please try again later.
@@ -133,6 +130,34 @@ const SHOP_QUERY = `#graphql
           }
         }
         slogan
+      }
+      metafield_logo: metafield(namespace: "custom", key: "daily_loom_logo") {
+        reference {
+          ... on MediaImage {
+            image {
+              url
+              altText
+              width
+              height
+            }
+          }
+        }
+      }
+      metafield_video: metafield(namespace: "custom", key: "landing_page_video") {
+        reference {
+          ... on Video {
+            sources {
+              url
+              mimeType
+              width
+              height
+            }
+            previewImage {
+              url
+              altText
+            }
+          }
+        }
       }
     }
   }
