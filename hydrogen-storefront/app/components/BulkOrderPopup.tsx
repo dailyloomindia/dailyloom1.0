@@ -21,12 +21,12 @@ export function BulkOrderPopup({
   // Show popup after delay
   useEffect(() => {
     // Check if popup was already shown in this session
-    const popupShown = sessionStorage.getItem('bulkPopupShown');
-    if (popupShown) return;
+    const popupShown = sessionStorage.getItem('dailyloom_bulk_popup');
+    if (popupShown === 'true') return;
 
     const timeout = setTimeout(() => {
       setIsOpen(true);
-      sessionStorage.setItem('bulkPopupShown', 'true');
+      sessionStorage.setItem('dailyloom_bulk_popup', 'true');
     }, delayMs);
 
     return () => clearTimeout(timeout);
@@ -37,10 +37,10 @@ export function BulkOrderPopup({
     if (isOpen) {
       document.body.style.overflow = 'hidden';
     } else {
-      document.body.style.overflow = 'auto';
+      document.body.style.overflow = '';
     }
     return () => {
-      document.body.style.overflow = 'auto';
+      document.body.style.overflow = '';
     };
   }, [isOpen]);
 
@@ -116,7 +116,9 @@ Looking forward to hearing from you!`;
     <div className="popup-overlay" onClick={handleOverlayClick}>
       <div className="popup-box">
         <button className="popup-close-btn" onClick={closePopup} aria-label="Close">
-          ×
+          <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+            <path d="M18 6L6 18M6 6l12 12" />
+          </svg>
         </button>
 
         <h2 className="popup-heading">
@@ -206,7 +208,7 @@ Looking forward to hearing from you!`;
           </button>
 
           <p className="popup-help-text">
-            💬 We'll open WhatsApp with your information. You can review and send.
+            We'll open WhatsApp with your information. You can review and send.
           </p>
         </form>
       </div>

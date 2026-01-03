@@ -31,65 +31,41 @@ interface HeaderProps {
 export function Header({shop, cart, menu, logo}: HeaderProps) {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [shopSubmenuOpen, setShopSubmenuOpen] = useState(false);
-  const [headerVisible, setHeaderVisible] = useState(false);
+  const [scrollY, setScrollY] = useState(0);
   const [isHoveringTop, setIsHoveringTop] = useState(false);
-  const [hasScrolledPastHero, setHasScrolledPastHero] = useState(false);
   const location = useLocation();
 
   // Check if we're on the homepage (hero is only on homepage)
   const isHomepage = location.pathname === '/';
 
-  // Handle scroll to show/hide header
+  // Handle scroll
   useEffect(() => {
     const handleScroll = () => {
-      const scrollY = window.scrollY;
-      const viewportHeight = window.innerHeight;
-
-      // Show header after scrolling 100px
-      if (scrollY > 100) {
-        setHeaderVisible(true);
-      } else if (!isHoveringTop) {
-        setHeaderVisible(false);
-      }
-
-      // Track if user has scrolled past hero section
-      setHasScrolledPastHero(scrollY > viewportHeight);
+      setScrollY(window.scrollY);
     };
 
     window.addEventListener('scroll', handleScroll, {passive: true});
     handleScroll(); // Check initial state
 
     return () => window.removeEventListener('scroll', handleScroll);
-  }, [isHoveringTop]);
+  }, []);
 
-  // Handle mouse hover on top 20% of viewport
+  // Handle mouse hover on top 20% of viewport (only on hero)
   const handleMouseMove = useCallback((e: MouseEvent) => {
-    if (!isHomepage) return;
+    if (!isHomepage || scrollY > 100) return;
 
     const viewportHeight = window.innerHeight;
     const topThreshold = viewportHeight * 0.2;
-    const scrollY = window.scrollY;
 
-    // Only apply hover logic when in hero section (not scrolled past it)
-    if (scrollY < 100) {
-      if (e.clientY < topThreshold) {
-        setIsHoveringTop(true);
-        setHeaderVisible(true);
-      } else {
-        setIsHoveringTop(false);
-        if (scrollY <= 100) {
-          setHeaderVisible(false);
-        }
-      }
-    }
-  }, [isHomepage]);
+    setIsHoveringTop(e.clientY < topThreshold);
+  }, [isHomepage, scrollY]);
 
   useEffect(() => {
-    if (isHomepage) {
+    if (isHomepage && scrollY < 100) {
       window.addEventListener('mousemove', handleMouseMove, {passive: true});
       return () => window.removeEventListener('mousemove', handleMouseMove);
     }
-  }, [isHomepage, handleMouseMove]);
+  }, [isHomepage, scrollY, handleMouseMove]);
 
   // Close menu on route change
   useEffect(() => {
@@ -109,13 +85,6 @@ export function Header({shop, cart, menu, logo}: HeaderProps) {
     };
   }, [isMenuOpen]);
 
-  // On non-homepage, always show header
-  useEffect(() => {
-    if (!isHomepage) {
-      setHeaderVisible(true);
-    }
-  }, [isHomepage]);
-
   const cartCount = cart?.totalQuantity || 0;
 
   const closeMenu = () => {
@@ -127,12 +96,18 @@ export function Header({shop, cart, menu, logo}: HeaderProps) {
   const logoUrl = logo?.url || '/logo.png';
   const logoAlt = logo?.altText || 'Daily Loom Logo';
 
+  // Determine visibility
+  // On homepage: hidden at top (unless hovering), visible after 100px scroll
+  // On other pages: always visible
+  const isInHeroZone = isHomepage && scrollY < 100;
+  const headerVisible = !isHomepage || scrollY > 100 || isHoveringTop;
+  const hasScrolledPastHero = scrollY > window.innerHeight * 0.8;
+
   // Determine header state classes
   const headerClasses = [
     'header-smart',
     headerVisible ? 'visible' : '',
-    hasScrolledPastHero ? 'solid-bg' : '',
-    isHomepage && !hasScrolledPastHero ? 'on-hero' : '',
+    !isInHeroZone ? 'solid-bg' : '',
   ].filter(Boolean).join(' ');
 
   return (

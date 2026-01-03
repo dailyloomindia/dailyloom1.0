@@ -1,5 +1,5 @@
 import {useOutletContext} from '@remix-run/react';
-import {useEffect, useState} from 'react';
+import {useEffect, useState, useRef} from 'react';
 
 interface BrandAssets {
   video?: {
@@ -16,9 +16,31 @@ export function HeroSection() {
   const context = useOutletContext<{brandAssets?: BrandAssets}>();
   const video = context?.brandAssets?.video;
   const posterImage = context?.brandAssets?.videoPreviewImage;
+  const videoRef = useRef<HTMLVideoElement>(null);
 
   const [scrollY, setScrollY] = useState(0);
   const [hideScrollIndicator, setHideScrollIndicator] = useState(false);
+
+  // Ensure video plays on load
+  useEffect(() => {
+    const videoEl = videoRef.current;
+    if (videoEl) {
+      // Attempt to play video
+      const playPromise = videoEl.play();
+      if (playPromise !== undefined) {
+        playPromise.catch(() => {
+          // Autoplay was prevented, try playing on user interaction
+          const handleInteraction = () => {
+            videoEl.play();
+            document.removeEventListener('click', handleInteraction);
+            document.removeEventListener('touchstart', handleInteraction);
+          };
+          document.addEventListener('click', handleInteraction);
+          document.addEventListener('touchstart', handleInteraction);
+        });
+      }
+    }
+  }, [video?.url]);
 
   useEffect(() => {
     const handleScroll = () => {
@@ -43,11 +65,13 @@ export function HeroSection() {
       >
         {video?.url ? (
           <video
+            ref={videoRef}
             className="hero-bg-media"
             autoPlay
             muted
             loop
             playsInline
+            preload="auto"
             poster={posterImage?.url}
           >
             <source src={video.url} type={video.mimeType || 'video/mp4'} />
