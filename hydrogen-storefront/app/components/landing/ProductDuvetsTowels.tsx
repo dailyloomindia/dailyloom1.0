@@ -1,22 +1,10 @@
-import {motion} from 'framer-motion';
-import {useInView} from 'framer-motion';
-import {useRef} from 'react';
-
 export function ProductDuvets() {
-  const sectionRef = useRef<HTMLElement>(null);
-  const isInView = useInView(sectionRef, {once: true, margin: '-100px'});
-
   return (
-    <section ref={sectionRef} className="section-padding bg-cream-100">
+    <section className="section-padding bg-cream-100">
       <div className="container-luxury">
         <div className="grid-two-col items-center">
           {/* Left - Problem */}
-          <motion.div
-            initial={{opacity: 0, x: -40}}
-            animate={isInView ? {opacity: 1, x: 0} : {}}
-            transition={{duration: 0.6}}
-            className="space-y-6"
-          >
+          <div className="space-y-6 fade-in-up">
             <span className="text-charcoal-500 text-xs uppercase tracking-wider">
               Duvets
             </span>
@@ -44,15 +32,10 @@ export function ProductDuvets() {
             <p className="text-charcoal-600 text-sm italic mt-4">
               The result: You're sleeping under a weighted blanket that overheats you.
             </p>
-          </motion.div>
+          </div>
 
           {/* Right - Solution */}
-          <motion.div
-            initial={{opacity: 0, x: 40}}
-            animate={isInView ? {opacity: 1, x: 0} : {}}
-            transition={{duration: 0.6, delay: 0.1}}
-            className="bg-white p-8 md:p-10 rounded-medium shadow-subtle"
-          >
+          <div className="bg-white p-8 md:p-10 rounded-medium shadow-subtle fade-in-up delay-200">
             <span className="text-primary-600 text-xs uppercase tracking-wider">
               Our Solution
             </span>
@@ -91,7 +74,7 @@ export function ProductDuvets() {
                 You sleep through the night. You don't overheat. You wake up rested.
               </p>
             </div>
-          </motion.div>
+          </div>
         </div>
       </div>
     </section>
@@ -99,32 +82,19 @@ export function ProductDuvets() {
 }
 
 export function ProductTowels() {
-  const sectionRef = useRef<HTMLElement>(null);
-  const isInView = useInView(sectionRef, {once: true, margin: '-100px'});
-
   return (
-    <section ref={sectionRef} className="section-padding bg-white">
+    <section className="section-padding bg-white">
       <div className="container-luxury">
         <div className="grid-two-col items-center">
           {/* Left - Image Placeholder */}
-          <motion.div
-            initial={{opacity: 0, x: -40}}
-            animate={isInView ? {opacity: 1, x: 0} : {}}
-            transition={{duration: 0.6}}
-            className="aspect-square"
-          >
+          <div className="aspect-square fade-in-up">
             <div className="image-placeholder h-full rounded-medium">
               <span>Pristine white cotton towels<br />Soft, luxurious texture</span>
             </div>
-          </motion.div>
+          </div>
 
           {/* Right - Content */}
-          <motion.div
-            initial={{opacity: 0, x: 40}}
-            animate={isInView ? {opacity: 1, x: 0} : {}}
-            transition={{duration: 0.6, delay: 0.1}}
-            className="space-y-8"
-          >
+          <div className="space-y-8 fade-in-up delay-200">
             <div>
               <span className="text-charcoal-500 text-xs uppercase tracking-wider">
                 Towels
@@ -177,7 +147,7 @@ export function ProductTowels() {
                 Wrap yourself in something pure. Feel the difference.
               </p>
             </div>
-          </motion.div>
+          </div>
         </div>
       </div>
     </section>

@@ -1,26 +1,14 @@
-import {motion} from 'framer-motion';
-import {useInView} from 'framer-motion';
-import {useRef} from 'react';
-
 export function ProductBedsheets() {
-  const sectionRef = useRef<HTMLElement>(null);
-  const isInView = useInView(sectionRef, {once: true, margin: '-100px'});
-
   return (
-    <section ref={sectionRef} className="bg-cream-100">
+    <section className="bg-cream-100">
       {/* Hero Quote */}
       <div className="section-padding bg-charcoal-950">
         <div className="container-luxury">
-          <motion.blockquote
-            initial={{opacity: 0, y: 30}}
-            animate={isInView ? {opacity: 1, y: 0} : {}}
-            transition={{duration: 0.6}}
-            className="quote-luxury text-cream-100 text-center max-w-3xl mx-auto"
-          >
+          <blockquote className="quote-luxury text-cream-100 text-center max-w-3xl mx-auto fade-in-up">
             "Sleep isn't rest. It's where your body rebuilds itself.
             <br />
             Your bedsheet is part of that ritual."
-          </motion.blockquote>
+          </blockquote>
         </div>
       </div>
 
@@ -29,12 +17,7 @@ export function ProductBedsheets() {
         <div className="container-luxury">
           <div className="grid-two-col items-start">
             {/* Left - Problem */}
-            <motion.div
-              initial={{opacity: 0, x: -40}}
-              animate={isInView ? {opacity: 1, x: 0} : {}}
-              transition={{duration: 0.6, delay: 0.1}}
-              className="space-y-6"
-            >
+            <div className="space-y-6 fade-in-up">
               <span className="text-charcoal-500 text-xs uppercase tracking-wider">
                 The Problem
               </span>
@@ -86,15 +69,10 @@ export function ProductBedsheets() {
                   </div>
                 </div>
               </div>
-            </motion.div>
+            </div>
 
             {/* Right - Solution */}
-            <motion.div
-              initial={{opacity: 0, x: 40}}
-              animate={isInView ? {opacity: 1, x: 0} : {}}
-              transition={{duration: 0.6, delay: 0.2}}
-              className="space-y-6"
-            >
+            <div className="space-y-6 fade-in-up delay-200">
               <span className="text-primary-600 text-xs uppercase tracking-wider">
                 Our Solution
               </span>
@@ -149,7 +127,7 @@ export function ProductBedsheets() {
                   <li>Lifetime care support</li>
                 </ul>
               </div>
-            </motion.div>
+            </div>
           </div>
         </div>
       </div>
@@ -158,12 +136,7 @@ export function ProductBedsheets() {
       <div className="section-padding bg-white">
         <div className="container-luxury">
           <div className="max-w-3xl mx-auto text-center">
-            <motion.div
-              initial={{opacity: 0, y: 30}}
-              animate={isInView ? {opacity: 1, y: 0} : {}}
-              transition={{duration: 0.6, delay: 0.3}}
-              className="space-y-6"
-            >
+            <div className="space-y-6 fade-in-up">
               <h3 className="text-display-md font-display text-charcoal-950 font-light">
                 Pure Cotton Asks for a Little Care
               </h3>
@@ -189,7 +162,7 @@ export function ProductBedsheets() {
                 A 90-second ritual every time you wash.
                 A small investment that pays dividends every night you sleep.
               </p>
-            </motion.div>
+            </div>
           </div>
         </div>
       </div>
