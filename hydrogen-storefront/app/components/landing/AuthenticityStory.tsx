@@ -1,40 +1,56 @@
 const cards = [
   {
-    title: '100% Pure Cotton, Zero Compromise',
-    content: `Every thread in our bedsheets is pure cotton. No polyester. No blending. No compromise.
+    title: "100% Pure Cotton, Zero Compromise",
+    content: `Every thread of our bedsheets is authentically pure cotton — no polyester, no blends, no shortcuts.
 
-We source directly from certified sustainable cotton farms that grow exclusively natural cotton—never recycled, never blended.
+    We source only premium cotton fabrics from certified, sustainable mills — never recycled, never mixed.
 
-The difference? In your hands, in your sleep, in how the fabric ages. Real cotton breathes, adapts to your body, improves with every wash.`,
+    The difference is tangible: in the softness you feel, in the breathable comfort through every night,and in how the fabric becomes more beautiful with every wash.
+    
+    Real cotton doesn’t just cover you — it adapts, comforts, and endures.`,
   },
   {
-    title: 'How to Spot Pure Cotton',
+    title: "How to Spot Pure Cotton",
     items: [
       {
-        label: 'LUSTRE',
-        description: 'Pure cotton has a warm, natural sheen. Poly-blends look dull and plastic-like.',
+        label: "LUSTRE",
+        description:
+          "Pure cotton has a warm, subtle sheen that feels soft to the eye, unlike synthetic fabrics that can appear shiny or artificial.",
       },
       {
-        label: 'TOUCH',
-        description: 'Pure cotton feels soft immediately. Poly-blends feel crisp and harsh initially.',
+        label: "TOUCH",
+        description:
+          "From the first touch, cotton feels smooth, gentle, and inviting — truly comforting against your skin. Poly-blends may feel crisp, stiff, or synthetic.",
       },
       {
-        label: 'PILLING',
-        description: 'Pure cotton resists pilling for years. Poly-blends pill within weeks.',
+        label: "PILLING",
+        description:
+          "High-quality cotton resists pilling, retains its softness, and becomes more beautiful with every wash. Blends with synthetic fibers often show small pills sooner, especially with frequent use.",
       },
       {
-        label: 'AGING',
-        description: 'Pure cotton becomes softer and more beautiful. Poly-blends become stiff and lose color.',
+        label: "AGING",
+        description:
+          "Pure cotton improves with every wash — softer, richer, more inviting. Blended fabrics can feel stiff or flat as they age.",
       },
+      // {
+      //   label: "Breathability & Comfort",
+      //   description:
+      //     "Cotton naturally regulates temperature, letting your skin breathe and keeping you comfortable all night.",
+      // },
+      // {
+      //   label: "Moisture Absorption",
+      //   description:
+      //     "Absorbs sweat and moisture, leaving you dry, fresh, and cozy — unlike polyester blends that can feel clammy.",
+      // }
     ],
   },
   {
-    title: 'Sourcing & Transparency',
+    title: "Sourcing & Transparency",
     content: `We believe you deserve to know where your cotton comes from.
 
-Our cotton is sourced from certified sustainable farms in India, where cotton is grown using traditional water-efficient methods. We work with the same farmers year after year.
+Our premium cotton fabrics are sourced from certified sustainable mills in India, crafted using traditional, water-efficient methods. We partner with the same trusted mills year after year, ensuring consistency, quality, and sustainability.
 
-Every batch is tested for fiber quality, dye consistency, and purity before reaching our facilities.`,
+Every batch of fabric is rigorously tested for fiber authenticity, weave integrity, and color consistency before it reaches our facilities, so you can experience the true luxury of 100% cotton in every thread of your bedsheet.`,
   },
 ];
 
@@ -53,10 +69,7 @@ export function AuthenticityStory() {
         {/* Three-Card Grid */}
         <div className="grid-three-col">
           {cards.map((card) => (
-            <div
-              key={card.title}
-              className="card-luxury p-8"
-            >
+            <div key={card.title} className="card-luxury p-8">
               <h4 className="font-display text-xl text-charcoal-950 mb-6">
                 {card.title}
               </h4>

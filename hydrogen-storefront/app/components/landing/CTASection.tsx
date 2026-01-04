@@ -1,8 +1,8 @@
-import {useState} from 'react';
-import {Link} from '@remix-run/react';
+import { useState } from "react";
+import { Link } from "@remix-run/react";
 
 export function CTASection() {
-  const [email, setEmail] = useState('');
+  const [email, setEmail] = useState("");
   const [error, setError] = useState<string | null>(null);
   const [success, setSuccess] = useState(false);
   const [isSubmitting, setIsSubmitting] = useState(false);
@@ -11,8 +11,8 @@ export function CTASection() {
     e.preventDefault();
     setError(null);
 
-    if (!email || !email.includes('@')) {
-      setError('Please enter a valid email address.');
+    if (!email || !email.includes("@")) {
+      setError("Please enter a valid email address.");
       return;
     }
 
@@ -23,7 +23,7 @@ export function CTASection() {
 
     setSuccess(true);
     setIsSubmitting(false);
-    setEmail('');
+    setEmail("");
   };
 
   return (
@@ -33,18 +33,21 @@ export function CTASection() {
         <div className="container-luxury">
           <div className="text-center max-w-3xl mx-auto">
             <h2 className="text-display-lg font-display text-cream-100 font-light mb-8">
-              By Choosing Daily Loom, You're Choosing:
+              Choosing Daily Loom Means Choosing
             </h2>
 
             <ul className="space-y-4 text-cream-100 text-lg">
               {[
-                '100% pure cotton (zero mixing, zero compromise)',
-                'Premium durability (5-7 years of use)',
-                'Fabric that improves with time',
-                'Support for sustainable farming practices',
-                'A ritual, not a commodity',
+                "Pure cotton, used without blending or shortcuts",
+                "Materials designed to endure, season after season",
+                "Textiles that soften and mature with time",
+                "A commitment to responsible, sustainable sourcing",
+                "Objects made for daily ritual, not disposability",
               ].map((item) => (
-                <li key={item} className="flex items-center justify-center gap-3">
+                <li
+                  key={item}
+                  className="flex items-center justify-center gap-3"
+                >
                   <span className="text-primary-400">✓</span>
                   {item}
                 </li>
@@ -56,7 +59,7 @@ export function CTASection() {
                 to="/collections/all"
                 className="btn-luxury bg-primary-500 text-cream-100 hover:bg-primary-600"
               >
-                Shop Now
+                Explore the Collection
               </Link>
             </div>
           </div>
@@ -68,30 +71,33 @@ export function CTASection() {
         <div className="container-luxury">
           <div className="max-w-xl mx-auto text-center">
             <h3 className="font-display text-2xl text-cream-100 mb-3">
-              New to Natural Fabrics?
+              Beginning with Better Materials
             </h3>
-            <p className="text-cream-200 mb-8">
-              Let's guide your journey.
-            </p>
+
+            <p className="text-cream-200 mb-8">A considered way to start.</p>
+
             <p className="text-cream-300 text-sm mb-6">
-              Sign up for our guide: "How to Transition to Pure Cotton
-              and Never Look Back" + 15% off your first order.
+              Receive our guide on transitioning to pure cotton, along with
+              insights on care, comfort, and longevity.
             </p>
 
             {success ? (
               <div className="bg-primary-500/20 text-primary-300 p-4 rounded-medium">
-                <p className="font-medium">Welcome to Daily Loom!</p>
+                <p className="font-medium">Welcome to Daily Loom.</p>
                 <p className="text-sm mt-1 opacity-80">
-                  Check your inbox for your guide and discount code.
+                  Your guide and welcome note will arrive shortly.
                 </p>
               </div>
             ) : (
-              <form onSubmit={handleSubmit} className="flex flex-col sm:flex-row gap-3">
+              <form
+                onSubmit={handleSubmit}
+                className="flex flex-col sm:flex-row gap-3"
+              >
                 <input
                   type="email"
                   value={email}
                   onChange={(e) => setEmail(e.target.value)}
-                  placeholder="Your email address"
+                  placeholder="Email address"
                   className="flex-1 px-5 py-4 bg-charcoal-900 border border-charcoal-700 text-cream-100 placeholder:text-charcoal-500 focus:outline-none focus:border-primary-500 transition-colors"
                 />
                 <button
@@ -99,17 +105,15 @@ export function CTASection() {
                   disabled={isSubmitting}
                   className="btn-luxury bg-primary-500 text-cream-100 hover:bg-primary-600 disabled:opacity-50 disabled:cursor-not-allowed"
                 >
-                  {isSubmitting ? 'Sending...' : 'Subscribe'}
+                  {isSubmitting ? "Sending…" : "Join Us"}
                 </button>
               </form>
             )}
 
-            {error && (
-              <p className="text-red-400 text-sm mt-3">{error}</p>
-            )}
+            {error && <p className="text-red-400 text-sm mt-3">{error}</p>}
 
             <p className="text-charcoal-500 text-xs mt-4">
-              We respect your privacy. Unsubscribe anytime.
+              We value your privacy. Leave anytime.
             </p>
           </div>
         </div>
