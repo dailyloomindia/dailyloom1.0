@@ -1,56 +1,31 @@
-import type {EntryContext, AppLoadContext} from '@shopify/remix-oxygen';
-import {RemixServer} from '@remix-run/react';
-import {isbot} from 'isbot';
-import {renderToReadableStream} from 'react-dom/server';
-import {createContentSecurityPolicy} from '@shopify/hydrogen';
+import type { EntryContext, AppLoadContext } from "@shopify/remix-oxygen";
+import { RemixServer } from "@remix-run/react";
+import { isbot } from "isbot";
+import { renderToReadableStream } from "react-dom/server";
 
 export default async function handleRequest(
   request: Request,
   responseStatusCode: number,
   responseHeaders: Headers,
   remixContext: EntryContext,
-  context: AppLoadContext,
+  context: AppLoadContext
 ) {
-  const {nonce, header, NonceProvider} = createContentSecurityPolicy({
-    shop: {
-      checkoutDomain: context.env.PUBLIC_STORE_DOMAIN,
-      storeDomain: context.env.PUBLIC_STORE_DOMAIN,
-    },
-    // Allow Three.js and fonts
-    scriptSrc: [
-      "'self'",
-      'https://cdn.shopify.com',
-      'https://fonts.googleapis.com',
-      'https://fonts.gstatic.com',
-    ],
-    connectSrc: [
-      "'self'",
-      'https://cdn.shopify.com',
-      'https://monorail-edge.shopifysvc.com',
-    ],
-  });
-
   const body = await renderToReadableStream(
-    <NonceProvider>
-      <RemixServer context={remixContext} url={request.url} />
-    </NonceProvider>,
+    <RemixServer context={remixContext} url={request.url} />,
     {
-      nonce,
       signal: request.signal,
       onError(error) {
-        // eslint-disable-next-line no-console
         console.error(error);
         responseStatusCode = 500;
       },
-    },
+    }
   );
 
-  if (isbot(request.headers.get('user-agent'))) {
+  if (isbot(request.headers.get("user-agent"))) {
     await body.allReady;
   }
 
-  responseHeaders.set('Content-Type', 'text/html');
-  responseHeaders.set('Content-Security-Policy', header);
+  responseHeaders.set("Content-Type", "text/html");
 
   return new Response(body, {
     headers: responseHeaders,
