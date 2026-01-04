@@ -7,8 +7,15 @@ export function DeceptionReveal() {
           <div className="reveal-left">
             {/* Image Placeholder */}
             <div className="relative aspect-[3/2] overflow-hidden mb-8">
-              <div className="image-placeholder h-full" style={{filter: 'blur(1px)'}}>
-                <span>Tangled, chaotic polyester-cotton threads<br />Muted colors, blurred effect</span>
+              <div
+                className="image-placeholder h-full"
+                style={{ filter: "blur(1px)" }}
+              >
+                <span>
+                  Tangled, chaotic polyester-cotton threads
+                  <br />
+                  Muted colors, blurred effect
+                </span>
               </div>
             </div>
 
@@ -19,27 +26,29 @@ export function DeceptionReveal() {
               </h3>
 
               <div className="space-y-4 text-charcoal-900 leading-relaxed">
+                <p>Cotton isn’t always what it claims to be.</p>
                 <p>
-                  Most brands mix 40-60% polyester with cotton.
-                </p>
-                <p>
-                  The law allows them to label it "100% cotton."
+                  In much of the unbranded market, “cotton” has become an
+                  assumption — not a guarantee. Fabrics are judged by feel, not
+                  facts. Labels are missing. Clarity is rare.
                 </p>
                 <p>
                   Why? Because mixing threads reduces production costs by 60%,
-                  allowing brands to sell at "attractive prices" with higher margins.
+                  Allowing them to sell at "attractive prices" with higher
+                  margins.
                 </p>
                 <p>
-                  They create three product tiers—labeled as "Basic Cotton," "Premium Cotton,"
-                  and "Luxury Cotton"—using the <em>same blend</em> of threads. Only the price changes.
+                  Price tiers are frequently created through naming and
+                  presentation, While fabric composition remains unclear to the
+                  buyer.
                 </p>
                 <p>
-                  The mixing stays consistent across all tiers. You're buying the same
-                  low-grade blend at three different price points.
+                  For those who choose honesty, this comes at a cost. Higher
+                  standards. Higher effort. Less recognition.
                 </p>
                 <p className="text-charcoal-500 text-sm mt-6 pt-4 border-t border-border-light">
-                  You can legally label 40% cotton as "100% cotton bedsheet."
-                  It's not a bug in the system. It's the system working as intended.
+                  When fiber composition isn’t clearly stated, The word “cotton”
+                  often becomes a description — not a guarantee.
                 </p>
               </div>
             </div>
@@ -50,7 +59,11 @@ export function DeceptionReveal() {
             {/* Image Placeholder */}
             <div className="relative aspect-[3/2] overflow-hidden mb-8">
               <div className="image-placeholder h-full">
-                <span>Pristine, aligned pure cotton threads<br />Warm cream tones, sharp focus</span>
+                <span>
+                  Pristine, aligned pure cotton threads
+                  <br />
+                  Warm cream tones, sharp focus
+                </span>
               </div>
             </div>
 
@@ -62,25 +75,31 @@ export function DeceptionReveal() {
 
               <div className="space-y-4 text-charcoal-900 leading-relaxed">
                 <p>
-                  We use 100% pure cotton. No polyester. No blending. No compromise.
+                  We use 100% pure cotton. No polyester. No blending. No
+                  compromise.
                 </p>
                 <p>
-                  Every thread in our bedsheets is verified pure cotton from start to finish.
+                  Every thread in our bedsheets is verified pure cotton from
+                  start to finish. So you can feel the difference from the first
+                  touch.
                 </p>
 
-                <p className="font-medium text-charcoal-950 mt-6">What this means for you:</p>
+                <p className="font-medium text-charcoal-950 mt-6">
+                  What this means for you:
+                </p>
 
                 <ul className="feature-list text-charcoal-900">
                   <li>Natural breathability (temperature-regulating)</li>
                   <li>Softness that improves with every wash</li>
-                  <li>Durability: 500+ washes without pilling or fading</li>
+                  <li>Durability: 300+ washes without pilling or fading</li>
                   <li>No harsh synthetic feel against your skin</li>
                   <li>Fabric that becomes more beautiful over time</li>
                 </ul>
 
                 <p className="mt-6">
-                  We don't create "tiers" to charge different prices for the same product.
-                  We create one product: pure cotton. You decide the set (single, double, queen, king).
+                  We don’t create “tiers” to charge more for the same fabric.
+                  You get one premium product, available in the size you choose
+                  — single, double, queen, or king.
                 </p>
 
                 <p className="text-primary-600 font-medium mt-6 pt-4 border-t border-primary-200">

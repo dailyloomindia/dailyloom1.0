@@ -6,38 +6,37 @@ import {
   ScrollRestoration,
   useLoaderData,
   useNavigation,
-} from '@remix-run/react';
-import type {LoaderFunctionArgs} from '@shopify/remix-oxygen';
-import {Header} from '~/components/layout/Header';
-import {Footer} from '~/components/layout/Footer';
-import appStyles from '~/styles/app.css?url';
+} from "@remix-run/react";
+import type { LoaderFunctionArgs } from "@shopify/remix-oxygen";
+import { Header } from "~/components/layout/Header";
+import { Footer } from "~/components/layout/Footer";
+import appStyles from "~/styles/app.css?url";
 
 export function links() {
   return [
-    {rel: 'stylesheet', href: appStyles},
-    {rel: 'preconnect', href: 'https://fonts.googleapis.com'},
-    {rel: 'preconnect', href: 'https://fonts.gstatic.com', crossOrigin: 'anonymous'},
-    {rel: 'preconnect', href: 'https://cdn.shopify.com'},
+    { rel: "stylesheet", href: appStyles },
+    { rel: "preconnect", href: "https://fonts.googleapis.com" },
     {
-      rel: 'icon',
-      type: 'image/png',
-      href: '/favicon.png',
+      rel: "preconnect",
+      href: "https://fonts.gstatic.com",
+      crossOrigin: "anonymous",
     },
+    { rel: "preconnect", href: "https://cdn.shopify.com" },
   ];
 }
 
-export async function loader({context}: LoaderFunctionArgs) {
-  const {storefront, cart} = context;
+export async function loader({ context }: LoaderFunctionArgs) {
+  const { storefront, cart } = context;
 
   // Get cart data
   const cartPromise = cart.get();
 
   // Get shop info with metafields for logo and video
-  const {shop} = await storefront.query(SHOP_QUERY);
+  const { shop } = await storefront.query(SHOP_QUERY);
 
   // Get header menu
-  const {menu} = await storefront.query(MENU_QUERY, {
-    variables: {handle: 'main-menu'},
+  const { menu } = await storefront.query(MENU_QUERY, {
+    variables: { handle: "main-menu" },
   });
 
   // Extract metafields
@@ -57,9 +56,9 @@ export async function loader({context}: LoaderFunctionArgs) {
 }
 
 export default function App() {
-  const {shop, cart, menu, brandAssets} = useLoaderData<typeof loader>();
+  const { shop, cart, menu, brandAssets } = useLoaderData<typeof loader>();
   const navigation = useNavigation();
-  const isLoading = navigation.state === 'loading';
+  const isLoading = navigation.state === "loading";
 
   return (
     <html lang="en">
@@ -69,17 +68,19 @@ export default function App() {
         <meta name="theme-color" content="#faf5ec" />
         <Meta />
         <Links />
+        {/* Dynamic Favicon using Daily Loom Logo */}
+        {brandAssets.logo?.url && (
+          <link rel="icon" type="image/png" href={brandAssets.logo.url} />
+        )}
       </head>
       <body className="min-h-screen flex flex-col">
         {/* Simple loading indicator - CSS only */}
-        {isLoading && (
-          <div className="loading-bar" />
-        )}
+        {isLoading && <div className="loading-bar" />}
 
         <Header shop={shop} cart={cart} menu={menu} logo={brandAssets.logo} />
 
         <main className="flex-1">
-          <Outlet context={{brandAssets}} />
+          <Outlet context={{ brandAssets }} />
         </main>
 
         <Footer shop={shop} />

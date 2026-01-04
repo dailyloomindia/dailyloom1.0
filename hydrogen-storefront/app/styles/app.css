@@ -54,10 +54,16 @@
   }
 
   html {
-    scroll-behavior: smooth;
     -webkit-font-smoothing: antialiased;
     -moz-osx-font-smoothing: grayscale;
     text-rendering: optimizeLegibility;
+    /* Hide scrollbar but keep scrolling */
+    scrollbar-width: none; /* Firefox */
+    -ms-overflow-style: none; /* IE and Edge */
+  }
+
+  html::-webkit-scrollbar {
+    display: none; /* Chrome, Safari, Opera */
   }
 
   body {
@@ -66,6 +72,7 @@
     color: var(--color-text);
     line-height: 1.6;
     font-size: 16px;
+    overflow-x: hidden;
   }
 
   /* Premium text selection */
@@ -672,6 +679,7 @@
   display: flex;
   justify-content: space-between;
   align-items: center;
+  transition: opacity 400ms cubic-bezier(0.16, 1, 0.3, 1), transform 400ms cubic-bezier(0.16, 1, 0.3, 1), background-color 300ms ease, box-shadow 300ms ease;
 }
 
 @media (max-width: 768px) {
@@ -971,20 +979,29 @@
 
 .popup-close-btn {
   position: absolute;
-  top: 20px;
-  right: 20px;
+  top: 16px;
+  right: 16px;
   background: none;
   border: none;
-  font-size: 24px;
   color: var(--color-text-secondary);
   cursor: pointer;
-  padding: 4px;
+  padding: 8px;
   line-height: 1;
-  transition: color 0.2s;
+  transition: color 0.2s, background-color 0.2s;
+  border-radius: 8px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
 }
 
 .popup-close-btn:hover {
   color: var(--color-text);
+  background-color: rgba(0, 0, 0, 0.05);
+}
+
+.popup-close-btn svg {
+  width: 24px;
+  height: 24px;
 }
 
 .popup-heading {
@@ -1113,13 +1130,14 @@
 /* ========================================
    MAIN CONTENT SPACING (for fixed header)
    ======================================== */
-/* main {
-  padding-top: 70px;
-} */
+
+main {
+  padding-top: 0 !important;
+}
 
 @media (max-width: 768px) {
   main {
-    padding-top: 60px;
+    padding-top: 0px;
   }
 }
 
@@ -1135,9 +1153,6 @@
 }
 
 /* Smoother scrolling */
-html {
-  scroll-behavior: smooth;
-}
 
 /* Loading bar - CSS only animation */
 .loading-bar {
@@ -1623,43 +1638,6 @@ html {
   }
 }
 
-/* ========================================
-   SMART HEADER - HIDE ON HERO, SHOW ON SCROLL
-   ======================================== */
-
-.header-smart {
-  position: fixed;
-  top: 0;
-  left: 0;
-  right: 0;
-  z-index: 1000;
-  opacity: 0;
-  pointer-events: none;
-  transform: translateY(-10px);
-  transition:
-    opacity 300ms ease-out,
-    transform 300ms ease-out,
-    background-color 300ms ease-out,
-    box-shadow 300ms ease-out;
-  background-color: transparent;
-}
-
-.header-smart.visible {
-  opacity: 1;
-  pointer-events: auto;
-  transform: translateY(0);
-}
-
-.header-smart.on-hero.visible {
-  background-color: rgba(255, 249, 243, 0.95);
-  backdrop-filter: blur(8px);
-  -webkit-backdrop-filter: blur(8px);
-}
-
-.header-smart.solid-bg {
-  background-color: #FFF9F3;
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
-}
 
 .header-inner {
   display: flex;
@@ -1783,11 +1761,6 @@ html {
     height: 36px;
   }
 
-  /* On mobile, header only shows after scrolling past hero */
-  .header-smart.on-hero {
-    opacity: 0 !important;
-    pointer-events: none !important;
-  }
 }
 
 /* ========================================
@@ -1929,4 +1902,20 @@ html {
   .hero-bg-container {
     transform: none !important;
   }
+}
+
+.header-fixed {
+  opacity: 0;
+  transform: translateY(-20px);
+  pointer-events: none;
+  transition: opacity 400ms cubic-bezier(0.16, 1, 0.3, 1),
+              transform 400ms cubic-bezier(0.16, 1, 0.3, 1),
+              background-color 300ms ease,
+              box-shadow 300ms ease;
+}
+
+.header-fixed.visible {
+  opacity: 1;
+  transform: translateY(0);
+  pointer-events: auto;
 }

@@ -1,4 +1,4 @@
-import {useState, useEffect} from 'react';
+import { useState, useEffect } from "react";
 
 const testimonials = [
   {
@@ -8,9 +8,9 @@ const testimonials = [
 I was worried they'd feel stiff at first. But they didn't. They were soft immediately. And now, a month in? Even better.
 
 I recommend these to everyone. Not because I'm paid to. But because they're actually good.`,
-    author: 'Priya S.',
-    location: 'Mumbai',
-    timeframe: 'After 1 month',
+    author: "Priya S.",
+    location: "Mumbai",
+    timeframe: "After 1 month",
   },
   {
     id: 2,
@@ -21,9 +21,9 @@ Then I got Daily Loom. I was nervous about the price. But I did the math. I was 
 Six months in, I'm convinced. These will last years. And they're actually getting softer, not harsher.
 
 It's not an expensive purchase. It's a smart purchase.`,
-    author: 'Rahul M.',
-    location: 'Delhi',
-    timeframe: 'After 6 months',
+    author: "Rahul M.",
+    location: "Delhi",
+    timeframe: "After 6 months",
   },
   {
     id: 3,
@@ -34,17 +34,17 @@ They're softer than they were when I bought them. The color hasn't faded. There'
 My friends ask me about them all the time because they notice how good my bed looks and feels.
 
 Best purchase I've made. Period.`,
-    author: 'Ananya K.',
-    location: 'Bangalore',
-    timeframe: 'After 3 years',
+    author: "Ananya K.",
+    location: "Bangalore",
+    timeframe: "After 3 years",
   },
 ];
 
 const timelineQuotes = [
-  {year: 'Year 0', quote: 'Looks premium, feels premium.'},
-  {year: 'Year 1', quote: 'They feel better every time I wash them!'},
-  {year: 'Year 3', quote: 'My favorite sheets in the entire house.'},
-  {year: 'Year 5', quote: 'Why would I replace something this good?'},
+  { year: "Year 0", quote: "Looks premium, feels premium." },
+  { year: "Year 1", quote: "They feel better every time I wash them!" },
+  { year: "Year 3", quote: "My favorite sheets in the entire house." },
+  { year: "Year 5", quote: "Why would I replace something this good?" },
 ];
 
 export function Testimonials() {
@@ -80,7 +80,12 @@ export function Testimonials() {
             <div className="testimonial-card">
               {/* Quote Icon */}
               <div className="text-primary-300 mb-6">
-                <svg width="40" height="40" viewBox="0 0 24 24" fill="currentColor">
+                <svg
+                  width="40"
+                  height="40"
+                  viewBox="0 0 24 24"
+                  fill="currentColor"
+                >
                   <path d="M11.192 15.757c0-.88-.23-1.618-.69-2.217-.326-.412-.768-.683-1.327-.812-.55-.128-1.07-.137-1.54-.028-.16-.95.1-1.956.76-3.022.66-1.065 1.515-1.867 2.558-2.403L9.373 5c-.8.396-1.56.898-2.26 1.505-.71.607-1.34 1.305-1.9 2.094s-.98 1.68-1.25 2.69-.346 2.04-.217 3.1c.168 1.4.62 2.52 1.356 3.35.735.84 1.652 1.26 2.748 1.26.965 0 1.766-.29 2.4-.878.628-.576.94-1.365.94-2.368l.002.004zm9.124 0c0-.88-.23-1.618-.69-2.217-.326-.42-.77-.692-1.327-.817-.56-.124-1.074-.13-1.54-.022-.16-.94.09-1.95.75-3.02.66-1.06 1.514-1.86 2.557-2.4L18.49 5c-.8.396-1.555.898-2.26 1.505-.708.607-1.34 1.305-1.894 2.094-.556.79-.97 1.68-1.24 2.69-.273 1-.345 2.04-.217 3.1.168 1.4.62 2.52 1.356 3.35.735.84 1.652 1.26 2.748 1.26.965 0 1.766-.29 2.4-.878.628-.576.94-1.365.94-2.368l.002.004z" />
                 </svg>
               </div>
@@ -113,7 +118,7 @@ export function Testimonials() {
               <button
                 key={index}
                 onClick={() => setCurrentIndex(index)}
-                className={`testimonial-dot ${index === currentIndex ? 'active' : ''}`}
+                className={`testimonial-dot ${index === currentIndex ? "active" : ""}`}
                 aria-label={`Go to testimonial ${index + 1}`}
               />
             ))}
@@ -140,20 +145,21 @@ export function Testimonials() {
         <div className="mt-20 text-center max-w-2xl mx-auto">
           <div className="bg-white p-10 rounded-medium shadow-subtle">
             <h4 className="font-display text-2xl text-charcoal-950 mb-4">
-              We're Confident in What We Make.
+              Confidence, Built In
             </h4>
             <p className="text-charcoal-900 leading-relaxed mb-6">
-              If your Daily Loom sheets don't feel like the most
-              luxurious fabric you own within 30 days,
-              we'll refund you completely.
+              Live with your Daily Loom pieces for 15 days.
+              <br />
+              If they don’t feel right in your home, we’ll make it right with a
+              full refund.
             </p>
             <p className="text-charcoal-600 text-sm">
-              No questions. No asterisks. No catch.
+              No questions. No conditions. No fine print.
               <br />
-              We'll trust your experience over our pitch.
+              We trust the experience
             </p>
             <p className="text-primary-600 text-sm mt-6 font-medium italic">
-              (We've never had to issue a single refund.)
+              (So far, it’s never let us down.)
             </p>
           </div>
         </div>
