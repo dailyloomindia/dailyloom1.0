@@ -168,10 +168,10 @@ export function Header({ shop, cart, logo }: HeaderProps) {
             <LogoMark />
 
             {/* Links */}
-            <NavLink href="/collections/all">Store</NavLink>
-            <NavLink href="/collections/bedsheets">Bedsheets</NavLink>
-            <NavLink href="/collections/duvets">Duvets</NavLink>
-            <NavLink href="/collections/towels">Towels</NavLink>
+            <NavLink href="/store">Store</NavLink>
+            <NavLink href="/store?type=Bedsheets">Bedsheets</NavLink>
+            <NavLink href="/store?type=Duvets">Duvets</NavLink>
+            <NavLink href="/store?type=Towels">Towels</NavLink>
 
             {/* Bag - Reduced to 17px to match 12px nav text scale */}
             <a
@@ -201,11 +201,11 @@ export function Header({ shop, cart, logo }: HeaderProps) {
             </button>
             <div className="mt-10 flex flex-col gap-6">
               {[
-                { title: 'Store', href: '/collections/all' },
+                { title: 'Store', href: '/store' },
                 { title: 'Home', href: '/' },
-                { title: 'Bedsheets', href: '/collections/bedsheets' },
-                { title: 'Duvets', href: '/collections/duvets' },
-                { title: 'Towels', href: '/collections/towels' }
+                { title: 'Bedsheets', href: '/store?type=Bedsheets' },
+                { title: 'Duvets', href: '/store?type=Duvets' },
+                { title: 'Towels', href: '/store?type=Towels' }
               ].map((link) => (
                 <a key={link.href} href={link.href} className="text-[15px] font-normal tracking-[0.03em] text-[#2B2B2B] no-underline border-b border-[rgba(0,0,0,0.03)] pb-3" onClick={() => setIsMenuOpen(false)}>
                   {link.title}

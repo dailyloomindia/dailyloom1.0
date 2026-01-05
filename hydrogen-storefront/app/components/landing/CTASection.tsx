@@ -56,7 +56,7 @@ export function CTASection() {
 
             <div className="mt-12">
               <Link
-                to="/collections/all"
+                to="/store"
                 className="btn-luxury bg-primary-500 text-cream-100 hover:bg-primary-600"
               >
                 Explore the Collection

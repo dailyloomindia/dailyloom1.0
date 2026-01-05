@@ -12,10 +12,10 @@ export function Footer({shop}: FooterProps) {
 
   const footerLinks = {
     shop: [
-      {title: 'Bedsheets', url: '/collections/bedsheets'},
-      {title: 'Duvets', url: '/collections/duvets'},
-      {title: 'Towels', url: '/collections/towels'},
-      {title: 'All Products', url: '/collections/all'},
+      {title: 'Bedsheets', url: '/store?type=Bedsheets'},
+      {title: 'Duvets', url: '/store?type=Duvets'},
+      {title: 'Towels', url: '/store?type=Towels'},
+      {title: 'All Products', url: '/store'},
     ],
     careSupport: [
       {title: 'Care Guide', url: '/pages/care-guide'},

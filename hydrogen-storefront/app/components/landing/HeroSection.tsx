@@ -1,5 +1,5 @@
 import { useOutletContext } from "@remix-run/react";
-import { useEffect, useState, useRef } from "react";
+import { useEffect, useState, useRef, useCallback } from "react";
 
 interface BrandAssets {
   video?: {
@@ -17,9 +17,8 @@ export function HeroSection() {
   const video = context?.brandAssets?.video;
   const posterImage = context?.brandAssets?.videoPreviewImage;
   const videoRef = useRef<HTMLVideoElement>(null);
-
-  const [scrollY, setScrollY] = useState(0);
-  const [hideScrollIndicator, setHideScrollIndicator] = useState(false);
+  const bgRef = useRef<HTMLDivElement>(null);
+  const scrollIndicatorRef = useRef<HTMLDivElement>(null);
 
   // Start true (muted) to guarantee autoplay works on browser load.
   const [isMuted, setIsMuted] = useState(true);
@@ -30,7 +29,6 @@ export function HeroSection() {
     if (!videoEl || !video?.url) return;
 
     const ensurePlay = async () => {
-      // Always start muted to comply with browser autoplay policies
       videoEl.muted = true;
       try {
         await videoEl.play();
@@ -45,50 +43,55 @@ export function HeroSection() {
   useEffect(() => {
     const videoEl = videoRef.current;
     if (!videoEl) return;
-
-    // Sync property
     videoEl.muted = isMuted;
-
-    // Safety check: If unmuting caused a pause (browser policy), force play
     if (!isMuted && videoEl.paused) {
-      videoEl
-        .play()
-        .catch((e) => console.warn("Playback after unmute failed:", e));
+      videoEl.play().catch((e) => console.warn("Playback after unmute failed:", e));
     }
   }, [isMuted]);
 
+  // Optimized scroll handler using RAF and direct DOM manipulation
   useEffect(() => {
+    let ticking = false;
+
     const handleScroll = () => {
-      const currentScroll = window.scrollY;
-      setScrollY(currentScroll);
-      setHideScrollIndicator(currentScroll > 80);
+      if (!ticking) {
+        requestAnimationFrame(() => {
+          const scrollY = window.scrollY;
+
+          // Direct DOM manipulation for parallax - no React re-render
+          if (bgRef.current) {
+            bgRef.current.style.transform = `translate3d(0, ${scrollY * 0.3}px, 0)`;
+          }
+
+          // Direct DOM manipulation for scroll indicator
+          if (scrollIndicatorRef.current) {
+            scrollIndicatorRef.current.style.opacity = scrollY > 80 ? '0' : '1';
+            scrollIndicatorRef.current.style.pointerEvents = scrollY > 80 ? 'none' : 'auto';
+          }
+
+          ticking = false;
+        });
+        ticking = true;
+      }
     };
 
     window.addEventListener("scroll", handleScroll, { passive: true });
     return () => window.removeEventListener("scroll", handleScroll);
   }, []);
 
-  const toggleMute = (e: React.MouseEvent) => {
-    // Stop all propagation to ensure the button receives the click
+  const toggleMute = useCallback((e: React.MouseEvent) => {
     e.stopPropagation();
-    e.nativeEvent.stopImmediatePropagation();
     e.preventDefault();
-
-    // Toggle state
     setIsMuted((prev) => !prev);
-  };
-
-  // Parallax: background moves at 0.5x scroll speed
-  const parallaxOffset = scrollY * 0.5;
+  }, []);
 
   return (
     <section className="hero-redesign relative w-full h-screen overflow-hidden">
-      {/* LAYER 1: Background Video/Image (z-0)
-         pointer-events-none ensures it never captures clicks
-      */}
+      {/* LAYER 1: Background Video/Image - GPU accelerated */}
       <div
-        className="absolute inset-0 z-0 pointer-events-none"
-        style={{ transform: `translateY(${parallaxOffset}px)` }}
+        ref={bgRef}
+        className="absolute inset-0 z-0 pointer-events-none will-change-transform"
+        style={{ transform: 'translate3d(0, 0, 0)' }}
       >
         {video?.url ? (
           <video
@@ -180,11 +183,11 @@ export function HeroSection() {
 
       {/* Scroll Indicator (z-50) */}
       <div
-        className={`hero-scroll-cta absolute bottom-8 left-1/2 -translate-x-1/2 z-50 pointer-events-auto cursor-pointer ${hideScrollIndicator ? "opacity-0 pointer-events-none" : "opacity-100"}`}
+        ref={scrollIndicatorRef}
+        className="hero-scroll-cta absolute bottom-8 left-1/2 -translate-x-1/2 z-50 pointer-events-auto cursor-pointer transition-opacity duration-300"
         onClick={() =>
           window.scrollTo({ top: window.innerHeight, behavior: "smooth" })
         }
-        // Ensure this is also clickable
         style={{ zIndex: 100 }}
       >
         <span className="hero-scroll-label block text-center mb-2 text-white/80 text-xs tracking-widest">
