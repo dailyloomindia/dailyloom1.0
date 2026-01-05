@@ -13,9 +13,8 @@ export function Footer({shop}: FooterProps) {
   const footerLinks = {
     shop: [
       {title: 'Bedsheets', url: '/collections/bedsheets'},
-      {title: 'Duvet Covers', url: '/collections/duvet-covers'},
+      {title: 'Duvets', url: '/collections/duvets'},
       {title: 'Towels', url: '/collections/towels'},
-      {title: 'Pillows', url: '/collections/pillows'},
       {title: 'All Products', url: '/collections/all'},
     ],
     careSupport: [

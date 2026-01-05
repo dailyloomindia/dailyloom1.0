@@ -1,16 +1,13 @@
 import type {LoaderFunctionArgs, MetaFunction} from '@shopify/remix-oxygen';
-import {useLoaderData, useSearchParams} from '@remix-run/react';
-import {Image, getPaginationVariables, Pagination} from '@shopify/hydrogen';
-import {motion} from 'framer-motion';
+import {useLoaderData, useSearchParams, Link} from '@remix-run/react';
+import {Image, getPaginationVariables, Pagination, Money} from '@shopify/hydrogen';
 import {useState} from 'react';
-import {fadeInUp, staggerContainer} from '~/components/animations/PageTransition';
-import {ProductCard} from '~/components/product/ProductCard';
 
 export const meta: MetaFunction<typeof loader> = ({data}) => {
   const collection = data?.collection;
   return [
     {title: `${collection?.title || 'Collection'} | Daily Loom`},
-    {name: 'description', content: collection?.description || ''},
+    {name: 'description', content: collection?.description || 'Premium handloom textiles crafted with 100% pure cotton.'},
   ];
 };
 
@@ -48,7 +45,7 @@ export async function loader({params, context, request}: LoaderFunctionArgs) {
 export default function CollectionPage() {
   const {collection} = useLoaderData<typeof loader>();
   const [searchParams, setSearchParams] = useSearchParams();
-  const [isFilterOpen, setIsFilterOpen] = useState(false);
+  const [sortOpen, setSortOpen] = useState(false);
 
   const sortOptions = [
     {label: 'Featured', value: 'COLLECTION_DEFAULT', reverse: false},
@@ -69,14 +66,15 @@ export default function CollectionPage() {
     params.set('sort', option.value);
     params.set('reverse', String(option.reverse));
     setSearchParams(params);
+    setSortOpen(false);
   };
 
   return (
-    <div className="pt-24">
+    <div className="pt-[44px]">
       {/* Collection Hero */}
-      <section className="relative py-16 md:py-24 bg-cream-100 overflow-hidden">
+      <section className="relative py-16 md:py-24 bg-[#FFF9F3] overflow-hidden">
         {collection.image && (
-          <div className="absolute inset-0 opacity-20">
+          <div className="absolute inset-0 opacity-10">
             <Image
               data={collection.image}
               className="w-full h-full object-cover"
@@ -84,139 +82,167 @@ export default function CollectionPage() {
             />
           </div>
         )}
-        <div className="container-premium relative z-10">
-          <motion.div
-            variants={staggerContainer}
-            initial="initial"
-            animate="animate"
-            className="max-w-2xl"
-          >
-            <motion.span
-              variants={fadeInUp}
-              className="inline-block text-2xs uppercase tracking-extra-wide text-primary-600 mb-4"
-            >
+        <div className="max-w-[1100px] mx-auto px-4 md:px-6 relative z-10">
+          <div className="max-w-2xl fade-in-up">
+            <span className="inline-block text-[10px] uppercase tracking-[0.15em] text-[#6B8E72] mb-4 font-medium">
               Collection
-            </motion.span>
-            <motion.h1
-              variants={fadeInUp}
-              className="font-display text-display-lg text-charcoal-950 mb-4"
-            >
+            </span>
+            <h1 className="font-['Playfair_Display'] text-[clamp(32px,5vw,48px)] text-[#1A1A1A] mb-4 font-light leading-tight">
               {collection.title}
-            </motion.h1>
+            </h1>
             {collection.description && (
-              <motion.p
-                variants={fadeInUp}
-                className="text-charcoal-600 leading-relaxed"
-              >
+              <p className="text-[#666666] leading-relaxed text-[15px]">
                 {collection.description}
-              </motion.p>
+              </p>
             )}
-          </motion.div>
+          </div>
         </div>
       </section>
 
       {/* Toolbar */}
-      <section className="border-b border-charcoal-100 sticky top-20 md:top-24 bg-cream-50/95 backdrop-blur-md z-30">
-        <div className="container-premium py-4">
+      <section className="border-b border-[rgba(0,0,0,0.06)] sticky top-[44px] bg-[rgba(255,249,243,0.97)] backdrop-blur-[12px] z-30">
+        <div className="max-w-[1100px] mx-auto px-4 md:px-6 py-4">
           <div className="flex items-center justify-between">
-            <div className="flex items-center gap-4">
-              <button
-                onClick={() => setIsFilterOpen(!isFilterOpen)}
-                className="flex items-center gap-2 text-sm text-charcoal-700 hover:text-charcoal-950 transition-colors lg:hidden"
-              >
-                <FilterIcon />
-                Filters
-              </button>
-              <span className="text-sm text-charcoal-500">
-                {collection.products?.nodes?.length || 0} Products
-              </span>
-            </div>
+            <span className="text-[13px] text-[#666666]">
+              {collection.products?.nodes?.length || 0} Products
+            </span>
 
             {/* Sort Dropdown */}
-            <div className="relative group">
-              <button className="flex items-center gap-2 text-sm text-charcoal-700 hover:text-charcoal-950 transition-colors">
+            <div className="relative">
+              <button
+                onClick={() => setSortOpen(!sortOpen)}
+                className="flex items-center gap-2 text-[13px] text-[#2B2B2B] hover:text-[#6B8E72] transition-colors"
+              >
                 Sort: {currentSort?.label || 'Featured'}
-                <ChevronIcon />
+                <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                  <polyline points="6 9 12 15 18 9" />
+                </svg>
               </button>
-              <div className="absolute right-0 top-full mt-2 w-48 bg-cream-50 border border-charcoal-100 shadow-lg opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-200 z-40">
-                {sortOptions.map((option) => (
-                  <button
-                    key={`${option.value}-${option.reverse}`}
-                    onClick={() => handleSort(option)}
-                    className={`block w-full text-left px-4 py-2 text-sm hover:bg-charcoal-50 transition-colors ${
-                      currentSort?.label === option.label
-                        ? 'text-primary-600'
-                        : 'text-charcoal-700'
-                    }`}
-                  >
-                    {option.label}
-                  </button>
-                ))}
-              </div>
+              {sortOpen && (
+                <>
+                  <div className="fixed inset-0 z-40" onClick={() => setSortOpen(false)} />
+                  <div className="absolute right-0 top-full mt-2 w-48 bg-[#FFF9F3] border border-[rgba(0,0,0,0.08)] shadow-lg z-50 rounded-md overflow-hidden">
+                    {sortOptions.map((option) => (
+                      <button
+                        key={`${option.value}-${option.reverse}`}
+                        onClick={() => handleSort(option)}
+                        className={`block w-full text-left px-4 py-3 text-[13px] hover:bg-[rgba(0,0,0,0.03)] transition-colors ${
+                          currentSort?.label === option.label
+                            ? 'text-[#6B8E72] font-medium'
+                            : 'text-[#2B2B2B]'
+                        }`}
+                      >
+                        {option.label}
+                      </button>
+                    ))}
+                  </div>
+                </>
+              )}
             </div>
           </div>
         </div>
       </section>
 
       {/* Products Grid */}
-      <section className="section-padding">
-        <div className="container-premium">
+      <section className="py-12 md:py-20">
+        <div className="max-w-[1100px] mx-auto px-4 md:px-6">
           <Pagination connection={collection.products}>
-            {({nodes, isLoading, NextLink, PreviousLink}) => (
+            {({nodes, isLoading, NextLink}) => (
               <>
-                <div className="flex justify-center mb-8">
-                  <PreviousLink className="px-6 py-2 border border-charcoal-300 text-sm hover:bg-charcoal-50 transition-colors">
-                    {isLoading ? 'Loading...' : 'Load Previous'}
-                  </PreviousLink>
-                </div>
-
-                <motion.div
-                  variants={staggerContainer}
-                  initial="initial"
-                  whileInView="animate"
-                  viewport={{once: true}}
-                  className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6 md:gap-8"
-                >
+                <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4 md:gap-6">
                   {nodes.map((product: any, index: number) => (
                     <ProductCard key={product.id} product={product} index={index} />
                   ))}
-                </motion.div>
-
-                <div className="flex justify-center mt-12">
-                  <NextLink className="btn-secondary">
-                    {isLoading ? 'Loading...' : 'Load More'}
-                  </NextLink>
                 </div>
+
+                {nodes.length > 0 && (
+                  <div className="flex justify-center mt-12">
+                    <NextLink className="px-8 py-3 bg-[#1A1A1A] text-[#FFF9F3] text-[13px] font-medium tracking-wide hover:bg-[#2B2B2B] transition-colors">
+                      {isLoading ? 'Loading...' : 'Load More'}
+                    </NextLink>
+                  </div>
+                )}
               </>
             )}
           </Pagination>
+
+          {collection.products?.nodes?.length === 0 && (
+            <div className="text-center py-16">
+              <p className="text-[#666666] mb-6">No products found in this collection.</p>
+              <Link to="/collections/all" className="text-[#6B8E72] underline hover:no-underline">
+                View all products
+              </Link>
+            </div>
+          )}
         </div>
       </section>
     </div>
   );
 }
 
-function FilterIcon() {
-  return (
-    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-      <line x1="4" y1="21" x2="4" y2="14" />
-      <line x1="4" y1="10" x2="4" y2="3" />
-      <line x1="12" y1="21" x2="12" y2="12" />
-      <line x1="12" y1="8" x2="12" y2="3" />
-      <line x1="20" y1="21" x2="20" y2="16" />
-      <line x1="20" y1="12" x2="20" y2="3" />
-      <line x1="1" y1="14" x2="7" y2="14" />
-      <line x1="9" y1="8" x2="15" y2="8" />
-      <line x1="17" y1="16" x2="23" y2="16" />
-    </svg>
-  );
-}
+function ProductCard({product, index}: {product: any; index: number}) {
+  const {title, handle, priceRange, compareAtPriceRange, featuredImage, availableForSale = true} = product;
 
-function ChevronIcon() {
+  const isOnSale =
+    compareAtPriceRange?.minVariantPrice?.amount &&
+    parseFloat(compareAtPriceRange.minVariantPrice.amount) >
+      parseFloat(priceRange.minVariantPrice.amount);
+
   return (
-    <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-      <polyline points="6 9 12 15 18 9" />
-    </svg>
+    <article
+      className="group fade-in-up"
+      style={{animationDelay: `${index * 50}ms`}}
+    >
+      <Link to={`/products/${handle}`} className="block">
+        {/* Image Container */}
+        <div className="relative aspect-[3/4] bg-[#f5f0eb] overflow-hidden mb-3">
+          {featuredImage ? (
+            <Image
+              data={featuredImage}
+              className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-[1.03]"
+              sizes="(min-width: 1024px) 25vw, (min-width: 768px) 33vw, 50vw"
+            />
+          ) : (
+            <div className="w-full h-full flex items-center justify-center text-[#999]">
+              <span className="text-[13px]">No image</span>
+            </div>
+          )}
+
+          {/* Sale Badge */}
+          {isOnSale && (
+            <span className="absolute top-3 left-3 px-2 py-1 bg-[#6B8E72] text-white text-[10px] uppercase tracking-wide">
+              Sale
+            </span>
+          )}
+
+          {/* Sold Out Badge */}
+          {!availableForSale && (
+            <span className="absolute top-3 left-3 px-2 py-1 bg-[#999] text-white text-[10px] uppercase tracking-wide">
+              Sold Out
+            </span>
+          )}
+        </div>
+
+        {/* Product Info */}
+        <div className="space-y-1">
+          <h3 className="font-['Playfair_Display'] text-[15px] text-[#1A1A1A] group-hover:text-[#6B8E72] transition-colors line-clamp-2 leading-snug">
+            {title}
+          </h3>
+          <div className="flex items-center gap-2">
+            <Money
+              data={priceRange.minVariantPrice}
+              className="text-[14px] text-[#1A1A1A] font-medium"
+            />
+            {isOnSale && compareAtPriceRange && (
+              <Money
+                data={compareAtPriceRange.minVariantPrice}
+                className="text-[13px] text-[#999] line-through"
+              />
+            )}
+          </div>
+        </div>
+      </Link>
+    </article>
   );
 }
 
@@ -269,13 +295,6 @@ const COLLECTION_QUERY = `#graphql
             width
             height
           }
-          images(first: 2) {
-            nodes {
-              url
-              altText
-            }
-          }
-          tags
           availableForSale
         }
         pageInfo {
