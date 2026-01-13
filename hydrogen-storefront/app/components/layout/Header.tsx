@@ -18,13 +18,13 @@ const NavLink = ({ href, children }: { href: string; children: React.ReactNode }
  * Apple-style Bag Icon SVG
  */
 const BagIcon = ({ className, size = 20 }: { className?: string; size?: number }) => (
-  <svg 
-    viewBox="0 0 24 24" 
-    fill="none" 
-    stroke="currentColor" 
-    strokeWidth="1.2" 
-    strokeLinecap="round" 
-    strokeLinejoin="round" 
+  <svg
+    viewBox="0 0 24 24"
+    fill="none"
+    stroke="currentColor"
+    strokeWidth="1.2"
+    strokeLinecap="round"
+    strokeLinejoin="round"
     className={className}
     width={size}
     height={size}
@@ -36,15 +36,35 @@ const BagIcon = ({ className, size = 20 }: { className?: string; size?: number }
 );
 
 /**
+ * Account/User Icon SVG
+ */
+const AccountIcon = ({ className, size = 20 }: { className?: string; size?: number }) => (
+  <svg
+    viewBox="0 0 24 24"
+    fill="none"
+    stroke="currentColor"
+    strokeWidth="1.2"
+    strokeLinecap="round"
+    strokeLinejoin="round"
+    className={className}
+    width={size}
+    height={size}
+  >
+    <circle cx="12" cy="8" r="4" />
+    <path d="M20 21a8 8 0 0 0-16 0" />
+  </svg>
+);
+
+/**
  * Apple-style 2-line Hamburg Icon SVG
  */
 const MenuIcon = ({ className, size = 22 }: { className?: string; size?: number }) => (
-  <svg 
-    viewBox="0 0 24 24" 
-    fill="none" 
-    stroke="currentColor" 
-    strokeWidth="1.2" 
-    strokeLinecap="round" 
+  <svg
+    viewBox="0 0 24 24"
+    fill="none"
+    stroke="currentColor"
+    strokeWidth="1.2"
+    strokeLinecap="round"
     className={className}
     width={size}
     height={size}
@@ -138,7 +158,15 @@ export function Header({ shop, cart, logo }: HeaderProps) {
             <LogoMark />
 
             {/* Utility Cluster (Extreme Right) */}
-            <div className="flex items-center gap-4">
+            <div className="flex items-center gap-3">
+              {/* Account Icon */}
+              <a
+                href="/account"
+                className="text-[#2B2B2B]/80 hover:text-[#2B2B2B] no-underline flex items-center p-1"
+              >
+                <AccountIcon size={19} />
+              </a>
+
               {/* Bag Icon - Kept at 20px as per perfect mobile view */}
               <a
                 href="/cart"
@@ -173,6 +201,14 @@ export function Header({ shop, cart, logo }: HeaderProps) {
             <NavLink href="/store?type=Duvets">Duvets</NavLink>
             <NavLink href="/store?type=Towels">Towels</NavLink>
 
+            {/* Account Icon */}
+            <a
+              href="/account"
+              className="text-[#2B2B2B]/80 hover:text-[#6B8E72] transition-all duration-[160ms] ease-out no-underline flex items-center p-1"
+            >
+              <AccountIcon size={16} />
+            </a>
+
             {/* Bag - Reduced to 17px to match 12px nav text scale */}
             <a
               href="/cart"
@@ -205,7 +241,9 @@ export function Header({ shop, cart, logo }: HeaderProps) {
                 { title: 'Home', href: '/' },
                 { title: 'Bedsheets', href: '/store?type=Bedsheets' },
                 { title: 'Duvets', href: '/store?type=Duvets' },
-                { title: 'Towels', href: '/store?type=Towels' }
+                { title: 'Towels', href: '/store?type=Towels' },
+                { title: 'My Account', href: '/account' },
+                { title: 'Track Order', href: '/account/orders' }
               ].map((link) => (
                 <a key={link.href} href={link.href} className="text-[15px] font-normal tracking-[0.03em] text-[#2B2B2B] no-underline border-b border-[rgba(0,0,0,0.03)] pb-3" onClick={() => setIsMenuOpen(false)}>
                   {link.title}
