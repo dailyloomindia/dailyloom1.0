@@ -91,17 +91,17 @@ function menuItemHref(url: string): string {
 
 /**
  * Real Shopify collection handles (confirmed against the live catalog):
- * bedding = Bed Sheet Set, bulk-custom-orders = Duvets (covers + comforters),
- * pillows = Pillows (empty today, will hold the latex pillow range),
- * bath = Towels. Used only when Shopify Admin has no "main-menu" navigation
- * configured yet — once one exists, the real menu above takes over and this
- * never renders.
+ * bed-sheet-set = Bed Sheet Set, duvets = Duvet Covers + Comforter,
+ * pillows = Pillows (Latex Pillow today, more designs planned), towels =
+ * Bath Towels + Hand Towels. Used only when Shopify Admin has no
+ * "main-menu" navigation configured yet — once one exists, the real menu
+ * above takes over and this never renders.
  */
 const FALLBACK_NAV: {title: string; href: string}[] = [
-  {title: 'Bedsheets', href: '/collections/bedding'},
-  {title: 'Duvets', href: '/collections/bulk-custom-orders'},
+  {title: 'Bedsheets', href: '/collections/bed-sheet-set'},
+  {title: 'Duvets', href: '/collections/duvets'},
   {title: 'Pillows', href: '/collections/pillows'},
-  {title: 'Towels', href: '/collections/bath'},
+  {title: 'Towels', href: '/collections/towels'},
 ];
 
 export function Header({ shop, cart, menu, logo }: HeaderProps) {
