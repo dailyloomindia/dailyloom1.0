@@ -230,6 +230,58 @@ const comforter: ProductStoryContent = {
   boxItems: ['1 comforter, King, White', '300 GSM microfiber fill', 'Compression-packed for shipping — fluffs up within a day'],
 };
 
+const latexPillow: ProductStoryContent = {
+  displayName: 'Latex Pillow',
+  heroKicker: '100% natural latex · zero-pressure support',
+  showWeave: false,
+  storyEyebrow: 'Why natural latex',
+  storyHeading: 'One piece of latex, not a bag of shredded foam',
+  storyParagraphs: [
+    'Most "orthopedic" pillows are shredded memory foam stuffed into a shell — soft at first, then lumpy within weeks as the fill migrates and compacts under your head every night.',
+    'This is moulded from natural latex as one continuous piece, so there is nothing inside it to shift, clump, or go flat unevenly. It presses back evenly under pressure and returns to shape the moment you lift your head off it — every night, not just the first one.',
+  ],
+  comparisonEyebrow: 'Against the market standard',
+  comparisonHeading: 'Same word on the label. Different thing in the box.',
+  comparisonMarketLabel: 'Market standard',
+  comparisonRows: [
+    {label: 'Fill', market: 'Shredded memory foam, migrates and clumps', loom: 'One moulded piece of natural latex'},
+    {label: 'After a hot night', market: 'Traps heat, foam softens further', loom: 'Open cell structure, breathes and cools'},
+    {label: 'After 6 months', market: 'Flattens unevenly, lumps form', loom: 'Holds its shape, lump-free by construction'},
+    {label: 'On the label', market: '"Memory foam" (blend undisclosed)', loom: '100% natural latex, stated in full'},
+  ],
+  materialsEyebrow: 'What it is made of',
+  materialsHeading: 'Two parts, both named',
+  materials: [
+    {number: '01', title: 'Natural latex core', text: 'Moulded as a single piece — nothing to shift, clump, or leak out over time the way shredded fill does.'},
+    {number: '02', title: 'Spun, knitted shell', text: 'A breathable knitted cover over the core, built to move heat and moisture away rather than trap them against your skin.'},
+  ],
+  benefitsEyebrow: 'What it does for you',
+  benefits: [
+    {title: 'Zero-pressure support', text: 'Latex presses back evenly instead of bottoming out under the weight of your head.'},
+    {title: 'Sleeps cool', text: 'Open-cell latex and a knitted shell move heat out instead of holding it in.'},
+    {title: 'Stays lump-free', text: 'A single moulded piece has nothing loose inside it to migrate or clump.'},
+    {title: 'Built for side support', text: 'A slim, 4-inch profile keeps stomach and back sleepers aligned without over-elevating the neck.'},
+  ],
+  specsHeading: 'Specification',
+  specRows: [
+    {label: 'Fill', value: '100% natural latex'},
+    {label: 'Profile', value: 'Slim, 4 in'},
+    {label: 'Dimensions', value: '26 × 16 × 4 in'},
+    {label: 'Shell', value: 'Premium spun, knitted cover'},
+    {label: 'Best for', value: 'Stomach and back sleepers'},
+  ],
+  careHeading: 'Care',
+  careItems: [
+    {number: '01', text: 'Spot clean the knitted shell with mild soap and cold water — the latex core itself should not be machine washed or soaked.'},
+    {number: '02', text: 'Air dry fully out of direct sunlight before use; prolonged UV exposure degrades natural latex over time.'},
+    {number: '03', text: 'Keep away from direct heat sources — natural latex softens and can be damaged by high heat.'},
+    {number: '04', text: 'Fluff and air the pillow periodically to keep the shell fresh between washes.'},
+  ],
+  boxEyebrow: 'What you get',
+  boxHeading: 'In the box',
+  boxItems: ['1 latex pillow, 26 × 16 × 4 in', 'Spun, knitted cover', 'Ready to ship'],
+};
+
 const bathTowels: ProductStoryContent = {
   displayName: 'Bath Towel',
   heroKicker: '650 GSM · ring-spun cotton',
@@ -342,7 +394,25 @@ export const productStoryContent: Record<string, ProductStoryContent> = {
   'Duvet / Comforter': comforter,
   'Bath Towels': bathTowels,
   'Hand Towels': handTowels,
+  // Exact productType unconfirmed for the new Latex Pillow SKU — registered
+  // under every plausible spelling; the keyword fallback below catches it
+  // even if the real value doesn't match any of these exactly.
+  'Latex Pillow': latexPillow,
+  Pillow: latexPillow,
+  Pillows: latexPillow,
 };
+
+/**
+ * Narrower than the exact map above, but catches a productType whose exact
+ * string we haven't confirmed yet (or that changes as the catalog is
+ * edited) without risking a wrong match — "pillow" only ever means one
+ * thing in this catalog today, unlike e.g. "duvet" which must stay an
+ * exact match (Duvet Covers vs. Duvet / Comforter are very different
+ * products).
+ */
+const KEYWORD_CONTENT: {test: RegExp; content: ProductStoryContent}[] = [
+  {test: /pillow/i, content: latexPillow},
+];
 
 /**
  * Best-effort short name for a product Shopify's real (long, SEO-stuffed)
@@ -365,6 +435,10 @@ export function getProductStoryContent(
 ): ProductStoryContent {
   if (productType && productStoryContent[productType]) {
     return productStoryContent[productType];
+  }
+  if (productType) {
+    const keywordMatch = KEYWORD_CONTENT.find((k) => k.test.test(productType));
+    if (keywordMatch) return keywordMatch.content;
   }
   return {...fallback, displayName: shortenTitle(productTitle)};
 }
