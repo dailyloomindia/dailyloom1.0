@@ -54,9 +54,17 @@ const MenuIcon = ({ className, size = 22 }: { className?: string; size?: number 
   </svg>
 );
 
+interface MenuItem {
+  id: string;
+  title: string;
+  url: string;
+  items?: MenuItem[];
+}
+
 interface HeaderProps {
   shop: { name: string };
   cart: { totalQuantity?: number } | null;
+  menu?: MenuItem[];
   logo?: {
     url: string;
     altText?: string;
@@ -65,7 +73,38 @@ interface HeaderProps {
   } | null;
 }
 
-export function Header({ shop, cart, logo }: HeaderProps) {
+/**
+ * Shopify's Menu API returns each item's `url` as a FULL url on the shop's
+ * domain (e.g. https://syhvib-tm.myshopify.com/collections/bedding), not a
+ * path Remix's <Link>/relative <a> can route on directly. Strip it down to
+ * a path so it works the same whether it points at the .myshopify.com
+ * domain or a connected custom domain.
+ */
+function menuItemHref(url: string): string {
+  try {
+    const u = new URL(url);
+    return u.pathname + u.search;
+  } catch {
+    return url;
+  }
+}
+
+/**
+ * Real Shopify collection handles (confirmed against the live catalog):
+ * bedding = Bed Sheet Set, bulk-custom-orders = Duvets (covers + comforters),
+ * pillows = Pillows (empty today, will hold the latex pillow range),
+ * bath = Towels. Used only when Shopify Admin has no "main-menu" navigation
+ * configured yet — once one exists, the real menu above takes over and this
+ * never renders.
+ */
+const FALLBACK_NAV: {title: string; href: string}[] = [
+  {title: 'Bedsheets', href: '/collections/bedding'},
+  {title: 'Duvets', href: '/collections/bulk-custom-orders'},
+  {title: 'Pillows', href: '/collections/pillows'},
+  {title: 'Towels', href: '/collections/bath'},
+];
+
+export function Header({ shop, cart, menu, logo }: HeaderProps) {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [isScrolled, setIsScrolled] = useState(false);
   const [currentPath, setCurrentPath] = useState<string | null>(null);
@@ -94,6 +133,11 @@ export function Header({ shop, cart, logo }: HeaderProps) {
   }, [isMenuOpen]);
 
   const cartCount = cart?.totalQuantity || 0;
+
+  const navItems: {title: string; href: string}[] =
+    menu && menu.length > 0
+      ? menu.map((item) => ({title: item.title, href: menuItemHref(item.url)}))
+      : FALLBACK_NAV;
   
   // Logic: 
   // - On Homepage: Only show when scrolled.
@@ -169,9 +213,11 @@ export function Header({ shop, cart, logo }: HeaderProps) {
 
             {/* Links */}
             <NavLink href="/store">Store</NavLink>
-            <NavLink href="/store?type=Bedsheets">Bedsheets</NavLink>
-            <NavLink href="/store?type=Duvets">Duvets</NavLink>
-            <NavLink href="/store?type=Towels">Towels</NavLink>
+            {navItems.map((item) => (
+              <NavLink key={item.href} href={item.href}>
+                {item.title}
+              </NavLink>
+            ))}
 
             {/* Bag - Reduced to 17px to match 12px nav text scale */}
             <a
@@ -201,11 +247,9 @@ export function Header({ shop, cart, logo }: HeaderProps) {
             </button>
             <div className="mt-10 flex flex-col gap-6">
               {[
-                { title: 'Store', href: '/store' },
                 { title: 'Home', href: '/' },
-                { title: 'Bedsheets', href: '/store?type=Bedsheets' },
-                { title: 'Duvets', href: '/store?type=Duvets' },
-                { title: 'Towels', href: '/store?type=Towels' }
+                { title: 'Store', href: '/store' },
+                ...navItems,
               ].map((link) => (
                 <a key={link.href} href={link.href} className="text-[15px] font-normal tracking-[0.03em] text-[#2B2B2B] no-underline border-b border-[rgba(0,0,0,0.03)] pb-3" onClick={() => setIsMenuOpen(false)}>
                   {link.title}
