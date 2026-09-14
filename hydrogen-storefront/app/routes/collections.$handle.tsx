@@ -1,4 +1,4 @@
-import type {LoaderFunctionArgs, MetaFunction} from '@shopify/remix-oxygen';
+import {redirect, type LoaderFunctionArgs, type MetaFunction} from '@shopify/remix-oxygen';
 import {useLoaderData, useSearchParams, Link} from '@remix-run/react';
 import {Image, getPaginationVariables, Pagination, Money} from '@shopify/hydrogen';
 import {useState} from 'react';
@@ -37,6 +37,21 @@ export async function loader({params, context, request}: LoaderFunctionArgs) {
 
   if (!collection) {
     throw new Response('Collection not found', {status: 404});
+  }
+
+  // A category with exactly one product (Bedding, Duvets today) has no
+  // real listing to browse — send visitors straight to that product instead
+  // of a one-item grid they'd have to click through anyway. This self-heals
+  // once a second product is added: pageInfo stops matching and the normal
+  // collection grid takes over automatically, no manual re-wiring needed.
+  const products = collection.products?.nodes || [];
+  const pageInfo = collection.products?.pageInfo;
+  if (
+    products.length === 1 &&
+    !pageInfo?.hasNextPage &&
+    !pageInfo?.hasPreviousPage
+  ) {
+    throw redirect(`/products/${products[0].handle}`);
   }
 
   return {collection};
