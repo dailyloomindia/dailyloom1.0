@@ -1,48 +1,10 @@
 import {useEffect, useMemo, useState} from 'react';
-import {useFetcher} from '@remix-run/react';
+import {Link} from '@remix-run/react';
 import {Money} from '@shopify/hydrogen';
-import type {CurrencyCode} from '@shopify/hydrogen/storefront-api-types';
 import {WeaveCanvas} from './WeaveCanvas';
+import {swatchColor} from './swatchColor';
+import {findVariant, type ImageNode, type StoryProduct} from './types';
 import type {ProductStoryContent} from '~/data/productStoryContent';
-
-interface MoneyAmount {
-  amount: string;
-  currencyCode: CurrencyCode;
-}
-
-interface ImageNode {
-  url: string;
-  altText?: string | null;
-  width?: number;
-  height?: number;
-}
-
-interface VariantNode {
-  id: string;
-  title: string;
-  availableForSale: boolean;
-  price: MoneyAmount;
-  selectedOptions: {name: string; value: string}[];
-}
-
-interface ProductOption {
-  name: string;
-  optionValues: {name: string}[];
-}
-
-interface StoryProduct {
-  id: string;
-  title: string;
-  handle: string;
-  description?: string | null;
-  productType?: string | null;
-  priceRange: {minVariantPrice: MoneyAmount};
-  compareAtPriceRange?: {minVariantPrice: MoneyAmount} | null;
-  images: {nodes: ImageNode[]};
-  variants: {nodes: VariantNode[]};
-  options?: ProductOption[];
-  availableForSale: boolean;
-}
 
 const FALLBACK_HERO = '/images/product-story/fallback-hero.webp';
 const FALLBACK_STORY = '/images/product-story/fallback-story.webp';
@@ -54,11 +16,13 @@ function pickImage(images: ImageNode[], index: number, fallback: string, alt: st
   return {src: fallback, alt, width: undefined, height: undefined};
 }
 
-function findVariant(variants: VariantNode[], selected: Record<string, string>) {
-  return (
-    variants.find((v) => v.selectedOptions.every((o) => selected[o.name] === o.value)) ||
-    variants[0]
-  );
+/** The story page is a marketing/read page — buying (size, colour,
+ * quantity, cart) happens on the dedicated Buy page, matching the
+ * original design's two-page structure. Every CTA here is a link, not an
+ * add-to-cart action; a chosen preview swatch just carries the variant id
+ * through so Buy opens with the same colour pre-selected. */
+function buyHref(handle: string, variantId?: string) {
+  return variantId ? `/products/${handle}/buy?variant=${encodeURIComponent(variantId)}` : `/products/${handle}/buy`;
 }
 
 export function ProductStory({
@@ -83,9 +47,6 @@ export function ProductStory({
   });
 
   const selectedVariant = useMemo(() => findVariant(variants, selected), [variants, selected]);
-  const fetcher = useFetcher();
-  const isAdding = fetcher.state === 'submitting';
-  const justAdded = fetcher.state === 'idle' && fetcher.data && (fetcher.data as {success?: boolean}).success;
 
   const [scrolledPastHero, setScrolledPastHero] = useState(false);
   useEffect(() => {
@@ -113,14 +74,10 @@ export function ProductStory({
     return () => io.disconnect();
   }, [product.id]);
 
-  const addToCart = () => {
-    if (!selectedVariant?.availableForSale) return;
-    fetcher.submit({variantId: selectedVariant.id, quantity: '1'}, {method: 'post'});
-  };
-
-  const hero = pickImage(images, 0, FALLBACK_HERO, product.title);
+  const hero = pickImage(images, 0, FALLBACK_HERO, content.displayName);
   const story = pickImage(images, 1, FALLBACK_STORY, content.storyHeading);
   const box = pickImage(images, 2, FALLBACK_BOX, content.boxHeading || 'In the box');
+  const buyLink = buyHref(product.handle, selectedVariant?.id);
 
   return (
     <div className="dl-story">
@@ -131,7 +88,7 @@ export function ProductStory({
         <div className="dl-hero__scrim" />
         <div className="dl-hero__content">
           <div className="dl-hero__kicker">{content.heroKicker}</div>
-          <h1>{product.title}</h1>
+          <h1>{content.displayName}</h1>
           {product.description && <p>{product.description.slice(0, 220)}</p>}
 
           {hasRealOptions &&
@@ -164,23 +121,12 @@ export function ProductStory({
             ))}
 
           <div className="dl-hero__ctas">
-            <button
-              type="button"
-              className="dl-btn dl-btn--light"
-              onClick={addToCart}
-              disabled={!selectedVariant?.availableForSale || isAdding}
-            >
-              {isAdding
-                ? 'Adding…'
-                : justAdded
-                  ? 'Added ✓'
-                  : selectedVariant?.availableForSale
-                    ? `Buy — `
-                    : 'Sold out'}
-              {!isAdding && !justAdded && selectedVariant?.availableForSale && (
-                <Money data={selectedVariant.price} />
+            <Link to={buyLink} className="dl-btn dl-btn--light">
+              {product.availableForSale ? 'Buy — ' : 'Sold out — '}
+              {product.availableForSale && (
+                <Money data={selectedVariant?.price || product.priceRange.minVariantPrice} />
               )}
-            </button>
+            </Link>
             {(content.comparisonRows || content.specRows) && (
               <a href="#detail" className="dl-btn dl-btn--outline">
                 Read the details
@@ -329,15 +275,9 @@ export function ProductStory({
                   <li key={item}>{item}</li>
                 ))}
               </ul>
-              <button
-                type="button"
-                className="dl-btn dl-btn--dark"
-                style={{marginTop: 32}}
-                onClick={addToCart}
-                disabled={!selectedVariant?.availableForSale || isAdding}
-              >
-                {selectedVariant?.availableForSale ? 'Buy now' : 'Sold out'}
-              </button>
+              <Link to={buyLink} className="dl-btn dl-btn--dark" style={{marginTop: 32}}>
+                {product.availableForSale ? 'Buy now' : 'Sold out'}
+              </Link>
             </div>
             <div className="dl-media-frame">
               <img src={box.src} alt={box.alt} width={box.width} height={box.height} loading="lazy" decoding="async" />
@@ -348,56 +288,15 @@ export function ProductStory({
 
       {scrolledPastHero && (
         <div className="dl-stickybar">
-          <button
-            type="button"
-            className="dl-stickybar__inner"
-            onClick={addToCart}
-            disabled={!selectedVariant?.availableForSale || isAdding}
-          >
-            <span className="dl-stickybar__name">{product.title}</span>
+          <Link to={buyLink} className="dl-stickybar__inner">
+            <span className="dl-stickybar__name">{content.displayName}</span>
             <span className="dl-stickybar__price">
-              {selectedVariant ? <Money data={selectedVariant.price} /> : <Money data={product.priceRange.minVariantPrice} />}
+              <Money data={selectedVariant?.price || product.priceRange.minVariantPrice} />
             </span>
-            <span className="dl-stickybar__cta">
-              {isAdding ? 'Adding…' : justAdded ? 'Added ✓' : selectedVariant?.availableForSale ? 'Buy now' : 'Sold out'}
-            </span>
-          </button>
+            <span className="dl-stickybar__cta">{product.availableForSale ? 'Buy now' : 'Sold out'}</span>
+          </Link>
         </div>
       )}
     </div>
   );
-}
-
-/** Best-effort colour swatch fill from a variant option value's name — this
- * is decorative only (the option button's title/label carries the real
- * value for screen readers and sighted users alike). Unrecognised names
- * fall back to a neutral chip rather than guessing wrong. */
-function swatchColor(name: string): string {
-  const n = name.toLowerCase();
-  const map: Record<string, string> = {
-    white: '#f7f3eb',
-    black: '#23241f',
-    gray: '#8b8a86',
-    grey: '#8b8a86',
-    'dark gray': '#5a5954',
-    'dark grey': '#5a5954',
-    charcoal: '#3a3a36',
-    brown: '#6b4a35',
-    'dark brown': '#4a3326',
-    beige: '#e4d9c4',
-    cream: '#f7f3eb',
-    navy: '#2b3345',
-    blue: '#3f5a78',
-    green: '#5c6e4f',
-    sage: '#8b9a7a',
-    gold: '#b8985a',
-    red: '#8a3b32',
-    pink: '#d9a9a0',
-  };
-  // Longest key first so "dark gray" matches before the shorter "gray".
-  const keys = Object.keys(map).sort((a, b) => b.length - a.length);
-  for (const key of keys) {
-    if (n.includes(key)) return map[key];
-  }
-  return '#b8985a';
 }

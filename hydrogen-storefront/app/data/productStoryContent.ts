@@ -45,6 +45,12 @@ export interface CareItem {
 }
 
 export interface ProductStoryContent {
+  /** Short hero headline. Shopify's real product titles are long, keyword-
+   * stuffed SEO strings (100+ chars, meant for search listings, not a
+   * display heading) — using them directly as an <h1> overflows a hero
+   * built for a short name. This is what actually renders there; the full
+   * SEO title still drives <title>/meta via the route's own meta(). */
+  displayName: string;
   heroKicker: string;
   showWeave: boolean;
   weaveLabel?: string;
@@ -73,6 +79,7 @@ export interface ProductStoryContent {
 }
 
 const bedSheets: ProductStoryContent = {
+  displayName: 'Percale Bed Sheet Set',
   heroKicker: '100% cotton percale · no polyester',
   showWeave: true,
   weaveLabel: 'Keep scrolling — the weave comes to you',
@@ -133,6 +140,7 @@ const bedSheets: ProductStoryContent = {
 };
 
 const duvetCovers: ProductStoryContent = {
+  displayName: 'Percale Duvet Cover',
   heroKicker: '100% cotton percale · removable & washable',
   showWeave: true,
   weaveLabel: 'Keep scrolling — the weave comes to you',
@@ -178,6 +186,7 @@ const duvetCovers: ProductStoryContent = {
 };
 
 const comforter: ProductStoryContent = {
+  displayName: 'Winter Comforter',
   heroKicker: '300 GSM microfiber · winter weight',
   showWeave: false,
   storyEyebrow: 'Why 300 GSM',
@@ -222,6 +231,7 @@ const comforter: ProductStoryContent = {
 };
 
 const bathTowels: ProductStoryContent = {
+  displayName: 'Bath Towel',
   heroKicker: '650 GSM · ring-spun cotton',
   showWeave: true,
   weaveLabel: 'Keep scrolling — the loop pile comes to you',
@@ -266,6 +276,7 @@ const bathTowels: ProductStoryContent = {
 };
 
 const handTowels: ProductStoryContent = {
+  displayName: 'Hand Towel Set',
   heroKicker: '150 GSM · pack of 2',
   showWeave: false,
   storyEyebrow: 'Built for daily use',
@@ -315,6 +326,7 @@ const handTowels: ProductStoryContent = {
  * (e.g. a first Latex Pillow SKU before its copy is written).
  */
 const fallback: ProductStoryContent = {
+  displayName: '', // always overwritten by getProductStoryContent's shortenTitle()
   heroKicker: 'Daily Loom',
   showWeave: false,
   storyEyebrow: 'About this piece',
@@ -332,9 +344,27 @@ export const productStoryContent: Record<string, ProductStoryContent> = {
   'Hand Towels': handTowels,
 };
 
-export function getProductStoryContent(productType: string | null | undefined): ProductStoryContent {
+/**
+ * Best-effort short name for a product Shopify's real (long, SEO-stuffed)
+ * title has no written displayName for yet. Real titles here follow
+ * "Daily Loom <Descriptor> - <Variant detail> | <Marketing bullet> | ...",
+ * so the first " - " or "|" segment, with the "Daily Loom " prefix
+ * stripped, is usually a reasonable short name. Hard-capped as a backstop
+ * for titles that don't follow the pattern.
+ */
+function shortenTitle(title: string): string {
+  const stripped = title.replace(/^daily loom\s+/i, '');
+  const firstSegment = stripped.split(/\s+\||\s+-\s+/)[0].trim();
+  const base = firstSegment || stripped;
+  return base.length > 48 ? base.slice(0, 45).trimEnd() + '…' : base;
+}
+
+export function getProductStoryContent(
+  productType: string | null | undefined,
+  productTitle: string,
+): ProductStoryContent {
   if (productType && productStoryContent[productType]) {
     return productStoryContent[productType];
   }
-  return fallback;
+  return {...fallback, displayName: shortenTitle(productTitle)};
 }

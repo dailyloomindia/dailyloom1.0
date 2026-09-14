@@ -1,4 +1,4 @@
-import type {LoaderFunctionArgs, MetaFunction, ActionFunctionArgs} from '@shopify/remix-oxygen';
+import type {LoaderFunctionArgs, MetaFunction} from '@shopify/remix-oxygen';
 import {useLoaderData, Link} from '@remix-run/react';
 import {Image, Money} from '@shopify/hydrogen';
 import {ProductStory} from '~/components/product/ProductStory';
@@ -45,23 +45,13 @@ export async function loader({params, context}: LoaderFunctionArgs) {
   return {product, relatedProducts};
 }
 
-export async function action({request, context}: ActionFunctionArgs) {
-  const formData = await request.formData();
-  const variantId = formData.get('variantId') as string;
-  const quantity = parseInt(formData.get('quantity') as string) || 1;
-
-  const {cart} = context;
-
-  const result = await cart.addLines([
-    {merchandiseId: variantId, quantity},
-  ]);
-
-  return {success: true, cart: result};
-}
+// Cart mutations happen on the dedicated Buy page (/products/[handle]/buy)
+// now — this route is the read-only story/overview page, so it has no
+// action of its own.
 
 export default function ProductPage() {
   const {product, relatedProducts} = useLoaderData<typeof loader>();
-  const content = getProductStoryContent(product.productType);
+  const content = getProductStoryContent(product.productType, product.title);
 
   return (
     <>
