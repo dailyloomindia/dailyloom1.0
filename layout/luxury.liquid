@@ -1,0 +1,68 @@
+<!doctype html>
+<html class="js" lang="{{ request.locale.iso_code }}">
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width,initial-scale=1">
+    <meta name="theme-color" content="#23241f">
+    <link rel="canonical" href="{{ canonical_url }}">
+
+    {%- if settings.favicon != blank -%}
+      <link rel="icon" type="image/png" href="{{ settings.favicon | image_url: width: 32, height: 32 }}">
+    {%- endif -%}
+
+    <title>
+      {{ page_title }}
+      {%- unless page_title contains shop.name %} &ndash; {{ shop.name }}{% endunless -%}
+    </title>
+
+    {%- if page_description -%}
+      <meta name="description" content="{{ page_description | escape }}">
+    {%- endif -%}
+
+    {% render 'meta-tags' %}
+
+    {{ content_for_header }}
+
+    <style>
+      html, body { margin: 0; padding: 0; background: #f7f3eb; }
+      *, *::before, *::after { box-sizing: border-box; }
+      .visually-hidden {
+        position: absolute !important;
+        overflow: hidden;
+        width: 1px; height: 1px;
+        margin: -1px; padding: 0; border: 0;
+        clip-path: inset(50%);
+      }
+      .skip-to-content-link:focus {
+        position: fixed;
+        top: 10px; left: 10px;
+        z-index: 999;
+        width: auto; height: auto;
+        margin: 0;
+        padding: 12px 18px;
+        clip-path: none;
+        background: #23241f;
+        color: #f7f3eb;
+        font: 500 13px/1 'Schibsted Grotesk', system-ui, sans-serif;
+        border-radius: 4px;
+      }
+    </style>
+
+    <script>
+      if (window.Shopify && Shopify.designMode) {
+        document.documentElement.classList.add('shopify-design-mode');
+      }
+    </script>
+  </head>
+
+  <body>
+    <a class="skip-to-content-link visually-hidden" href="#MainContent">
+      {{ 'accessibility.skip_to_text' | t }}
+    </a>
+
+    <main id="MainContent" role="main" tabindex="-1">
+      {{ content_for_layout }}
+    </main>
+  </body>
+</html>
