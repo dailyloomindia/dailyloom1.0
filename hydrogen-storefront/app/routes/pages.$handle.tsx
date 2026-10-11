@@ -32,7 +32,7 @@ export default function PageRoute() {
   const {page} = useLoaderData<typeof loader>();
 
   return (
-    <div className="pt-[44px]">
+    <div className="pt-[56px]">
       {/* Hero */}
       <section className="py-16 md:py-24 bg-[#FFF9F3]">
         <div className="max-w-[1100px] mx-auto px-4 md:px-6">

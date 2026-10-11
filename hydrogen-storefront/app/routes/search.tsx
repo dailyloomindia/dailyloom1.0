@@ -35,7 +35,7 @@ export default function SearchPage() {
   const [searchValue, setSearchValue] = useState(query || '');
 
   return (
-    <div className="pt-[44px] min-h-screen">
+    <div className="pt-[56px] min-h-screen">
       {/* Search Header */}
       <section className="py-12 md:py-16 bg-[#FFF9F3]">
         <div className="max-w-[1100px] mx-auto px-4 md:px-6">

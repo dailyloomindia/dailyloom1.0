@@ -85,7 +85,7 @@ export default function StorePage() {
   const productNodes = products?.nodes || [];
 
   return (
-    <div className="pt-[44px]">
+    <div className="pt-[56px]">
       {/* Store Hero */}
       <section className="py-16 md:py-24 bg-[#FFF9F3]">
         <div className="max-w-[1100px] mx-auto px-4 md:px-6">
@@ -104,7 +104,7 @@ export default function StorePage() {
       </section>
 
       {/* Toolbar */}
-      <section className="border-b border-[rgba(0,0,0,0.06)] sticky top-[44px] bg-[rgba(255,249,243,0.97)] backdrop-blur-[12px] z-30">
+      <section className="border-b border-[rgba(0,0,0,0.06)] sticky top-[56px] bg-[rgba(255,249,243,0.97)] backdrop-blur-[12px] z-30">
         <div className="max-w-[1100px] mx-auto px-4 md:px-6 py-4">
           <div className="flex items-center justify-between gap-4">
             <div className="flex items-center gap-4">
