@@ -1,6 +1,7 @@
 import {storefrontRedirect} from '@shopify/hydrogen';
 import {createRequestHandler, type AppLoadContext} from '@shopify/remix-oxygen';
 import {createHydrogenContext} from '@shopify/hydrogen';
+import {AppSession} from '~/lib/session.server';
 
 export default {
   async fetch(
@@ -9,9 +10,12 @@ export default {
     executionContext: ExecutionContext,
   ): Promise<Response> {
     try {
-      const {storefront, cart, session, customerAccount} = createHydrogenContext({
+      if (!env.SESSION_SECRET) console.warn('SESSION_SECRET is not set; sessions will not persist between requests.');
+      const session = await AppSession.init(request, [env.SESSION_SECRET || crypto.randomUUID()]);
+      const {storefront, cart, customerAccount} = createHydrogenContext({
         env,
         request,
+        session,
         executionContext,
         waitUntil: executionContext.waitUntil.bind(executionContext),
       });
@@ -30,6 +34,10 @@ export default {
       });
 
       const response = await handleRequest(request);
+
+      if (session.isPending) {
+        response.headers.append('Set-Cookie', await session.commit());
+      }
 
       if (response.status === 404) {
         // Skip redirect check for known browser requests
