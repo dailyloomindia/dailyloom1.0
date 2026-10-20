@@ -1,0 +1,83 @@
+{
+  "layout": "luxury",
+  "sections": {
+    "main": {
+      "type": "luxury-product-story",
+      "settings": {
+        "hero_kicker": "100% cotton percale · no polyester",
+        "headline": "Percale Bedsheet Set",
+        "subheadline": "300 thread count. One thread over, one under. Cotton only, and nothing blended in to cut cost.",
+        "price": "₹2,190",
+        "detail_anchor_id": "detail",
+        "nav_current": "bedsheets",
+        "show_weave": true,
+        "weave_label": "Keep scrolling — the weave comes to you",
+        "story_eyebrow": "Why percale",
+        "story_heading": "Nothing hidden in the weave",
+        "story_text_1": "<p>Percale is the plainest weave there is, which is exactly why it cannot lie. One thread over, one thread under, 300 of them to the inch. A blend hides behind a sheen; cotton has to earn its hand from the fibre up.</p>",
+        "story_text_2": "<p>Ours is long-staple cotton, combed and ring-spun, then woven tight enough to hold a crease and loose enough to breathe. It comes out of the dryer matte, not shiny. That matte is the tell.</p>",
+        "comparison_eyebrow": "Against the market standard",
+        "comparison_heading": "Same word on the label. Different thing in the box.",
+        "comparison_market_label": "Market standard",
+        "materials_eyebrow": "What it is made of",
+        "materials_heading": "Three materials, named",
+        "benefits_eyebrow": "What it does for you",
+        "steps_eyebrow": "How it is made",
+        "steps_heading": "Four steps, no shortcuts",
+        "specs_heading": "Specification",
+        "care_heading": "Care",
+        "box_eyebrow": "What you get",
+        "box_heading": "In the box",
+        "footer_tagline": "Sleep on truth. 100% cotton, natural latex, high-GSM towels.",
+        "show_stickybar": true
+      },
+      "blocks": {
+        "cmp-1": { "type": "comparison_row", "settings": { "label": "Fibre", "market": "Poly-cotton blend, 40–60% polyester", "loom": "100% long-staple cotton" } },
+        "cmp-2": { "type": "comparison_row", "settings": { "label": "Weave", "market": "Sateen sheen hiding thin yarn", "loom": "Percale, 1-over-1, 300 TC" } },
+        "cmp-3": { "type": "comparison_row", "settings": { "label": "After 30 washes", "market": "Pilling, static, trapped heat", "loom": "Softer, matte, no pills" } },
+        "cmp-4": { "type": "comparison_row", "settings": { "label": "On the label", "market": "“Cotton-rich”", "loom": "Fibre content printed in full" } },
+
+        "mat-1": { "type": "material", "settings": { "number": "01", "title": "Long-staple cotton", "text": "Longer fibres mean fewer ends sticking out of the yarn, which is why the sheet gets softer instead of fuzzier." } },
+        "mat-2": { "type": "material", "settings": { "number": "02", "title": "Combed, ring-spun yarn", "text": "Combing pulls the short fibres out before spinning. It wastes cotton and costs more. It is also the only way to stop pilling." } },
+        "mat-3": { "type": "material", "settings": { "number": "03", "title": "Reactive dye", "text": "Dye bonded to the fibre rather than sitting on it, so the colour goes down the drain slowly instead of all at once." } },
+
+        "ben-1": { "type": "benefit", "settings": { "title": "Sleeps cool", "text": "Plain weave leaves air gaps. Body heat leaves instead of pooling." } },
+        "ben-2": { "type": "benefit", "settings": { "title": "Gets better", "text": "Each wash relaxes the yarn. The best night is somewhere around wash twenty." } },
+        "ben-3": { "type": "benefit", "settings": { "title": "No pilling", "text": "Combed long-staple cotton has nothing short enough to ball up." } },
+        "ben-4": { "type": "benefit", "settings": { "title": "Honest hand", "text": "Matte, not shiny. Sheen is usually polyester doing the talking." } },
+
+        "step-1": { "type": "step", "settings": { "number": "Step 1", "title": "Fibre in", "text": "Long-staple cotton graded by staple length, not by price per bale." } },
+        "step-2": { "type": "step", "settings": { "number": "Step 2", "title": "Combed and spun", "text": "Short fibres removed, yarn ring-spun single-ply at 300 TC." } },
+        "step-3": { "type": "step", "settings": { "number": "Step 3", "title": "Woven", "text": "Plain weave on rapier looms in Erode, one over, one under." } },
+        "step-4": { "type": "step", "settings": { "number": "Step 4", "title": "Washed and cut", "text": "Pre-shrunk, reactive-dyed, cut and hemmed as a set." } },
+
+        "spec-1": { "type": "spec_row", "settings": { "label": "Composition", "value": "100% long-staple cotton" } },
+        "spec-2": { "type": "spec_row", "settings": { "label": "Weave", "value": "Percale, 1-over-1 plain weave" } },
+        "spec-3": { "type": "spec_row", "settings": { "label": "Thread count", "value": "300 TC, single-ply" } },
+        "spec-4": { "type": "spec_row", "settings": { "label": "Set contains", "value": "1 flat, 1 fitted, 2 pillowcases" } },
+        "spec-5": { "type": "spec_row", "settings": { "label": "Pocket depth", "value": "10 in / 25 cm, full elastic" } },
+        "spec-6": { "type": "spec_row", "settings": { "label": "Woven in", "value": "Erode, Tamil Nadu" } },
+
+        "care-1": { "type": "care_item", "settings": { "number": "01", "text": "Machine wash cold, 30°C, with like colours. Mild detergent, no bleach, no fabric softener — softener coats the fibre and kills the breathability you paid for." } },
+        "care-2": { "type": "care_item", "settings": { "number": "02", "text": "Tumble dry low, or line dry in shade. Pull the flat sheet taut while damp and you will not need an iron." } },
+        "care-3": { "type": "care_item", "settings": { "number": "03", "text": "Warm iron on the reverse if you want the hotel crease. Steam is enough." } },
+        "care-4": { "type": "care_item", "settings": { "number": "04", "text": "Rotate two sets. Cotton lasts longer when it gets to rest and fully dry between uses." } },
+
+        "box-1": { "type": "box_item", "settings": { "text": "1 flat sheet" } },
+        "box-2": { "type": "box_item", "settings": { "text": "1 fitted sheet, 10 in pocket" } },
+        "box-3": { "type": "box_item", "settings": { "text": "2 pillowcases, 50 × 75 cm" } },
+        "box-4": { "type": "box_item", "settings": { "text": "Cotton storage bag and care card" } }
+      },
+      "block_order": [
+        "cmp-1", "cmp-2", "cmp-3", "cmp-4",
+        "mat-1", "mat-2", "mat-3",
+        "ben-1", "ben-2", "ben-3", "ben-4",
+        "step-1", "step-2", "step-3", "step-4",
+        "spec-1", "spec-2", "spec-3", "spec-4", "spec-5", "spec-6",
+        "care-1", "care-2", "care-3", "care-4",
+        "box-1", "box-2", "box-3", "box-4"
+      ]
+    }
+  },
+  "order": ["main"]
+}

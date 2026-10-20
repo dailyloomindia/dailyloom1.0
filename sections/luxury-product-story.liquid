@@ -1,0 +1,525 @@
+{{ 'section-luxury-product-story.css' | asset_url | stylesheet_tag }}
+<script src="{{ 'luxury-product-story.js' | asset_url }}" defer="defer"></script>
+{%- style -%}
+  #shopify-section-{{ section.id }} .dl-story {
+    --dl-fabric-tile: url('{{ 'dl-fabric-weave-tile.webp' | asset_url }}');
+  }
+{%- endstyle -%}
+
+{%- liquid
+  assign comparison_rows = section.blocks | where: 'type', 'comparison_row'
+  assign materials = section.blocks | where: 'type', 'material'
+  assign benefits = section.blocks | where: 'type', 'benefit'
+  assign steps = section.blocks | where: 'type', 'step'
+  assign spec_rows = section.blocks | where: 'type', 'spec_row'
+  assign care_items = section.blocks | where: 'type', 'care_item'
+  assign box_items = section.blocks | where: 'type', 'box_item'
+-%}
+
+<div class="dl-story" data-dl-story>
+
+  <nav class="dl-nav" aria-label="Product">
+    <div class="dl-nav__links">
+      <a href="{{ section.settings.nav_bedsheets_link | default: '#' }}" {% if section.settings.nav_current == 'bedsheets' %}aria-current="page"{% endif %}>Bedsheets</a>
+      <a href="{{ section.settings.nav_pillow_link | default: '#' }}" {% if section.settings.nav_current == 'pillow' %}aria-current="page"{% endif %}>Latex Pillow</a>
+      <a href="{{ section.settings.nav_comforter_link | default: '#' }}" {% if section.settings.nav_current == 'comforter' %}aria-current="page"{% endif %}>Comforter</a>
+      <a href="{{ section.settings.nav_towels_link | default: '#' }}" {% if section.settings.nav_current == 'towels' %}aria-current="page"{% endif %}>Towels</a>
+    </div>
+    <a href="{{ section.settings.home_link | default: routes.root_url }}" class="dl-nav__logo">
+      {%- if section.settings.logo != blank -%}
+        {{ section.settings.logo | image_url: width: 72 | image_tag: width: 36, height: 36, alt: shop.name, loading: 'eager', fetchpriority: 'high' }}
+      {%- else -%}
+        <img src="{{ 'daily-loom-logo.webp' | asset_url }}" width="36" height="36" alt="{{ shop.name | default: 'Daily Loom' }}" loading="eager" fetchpriority="high">
+      {%- endif -%}
+    </a>
+    <div class="dl-nav__right">
+      <a href="{{ section.settings.home_link | default: routes.root_url }}">Home</a>
+      <a href="{{ section.settings.buy_link | default: '#' }}" class="dl-nav__buy">Buy</a>
+    </div>
+  </nav>
+
+  <main class="dl-main">
+
+    <section class="dl-hero" data-screen-label="01 Hero">
+      <div class="dl-hero__media">
+        {%- if section.settings.hero_image != blank -%}
+          {{ section.settings.hero_image | image_url: width: 1600 | image_tag:
+            widths: '640, 960, 1280, 1600, 1920',
+            sizes: '100vw',
+            alt: section.settings.hero_image.alt | default: section.settings.headline,
+            loading: 'eager',
+            fetchpriority: 'high'
+          }}
+        {%- else -%}
+          <img
+            src="{{ 'dl-bedsheets-hero.webp' | asset_url }}"
+            alt="{{ section.settings.headline | escape }}"
+            width="1600"
+            height="1050"
+            loading="eager"
+            fetchpriority="high"
+          >
+        {%- endif -%}
+      </div>
+      <div class="dl-hero__scrim"></div>
+      <div class="dl-hero__content">
+        {%- if section.settings.hero_kicker != blank -%}
+          <div class="dl-hero__kicker">{{ section.settings.hero_kicker }}</div>
+        {%- endif -%}
+        <h1>{{ section.settings.headline | default: 'Percale Bedsheet Set' }}</h1>
+        {%- if section.settings.subheadline != blank -%}
+          <p>{{ section.settings.subheadline }}</p>
+        {%- endif -%}
+        <div class="dl-hero__ctas">
+          <a href="{{ section.settings.buy_link | default: '#' }}" class="dl-btn dl-btn--light">
+            Buy{% if section.settings.price != blank %} — {{ section.settings.price }}{% endif %}
+          </a>
+          {%- if section.settings.detail_anchor_id != blank -%}
+            <a href="#{{ section.settings.detail_anchor_id }}" class="dl-btn dl-btn--outline">Read the details</a>
+          {%- endif -%}
+        </div>
+      </div>
+    </section>
+
+    {%- if section.settings.show_weave -%}
+      <section class="dl-weave" data-screen-label="02 Zoom into the weave" data-dl-weave>
+        <div class="dl-weave__stage">
+          <canvas class="dl-weave__canvas" aria-hidden="true"></canvas>
+          <img
+            class="dl-weave__still"
+            src="{{ 'dl-bedsheets-hero.webp' | asset_url }}"
+            alt=""
+            width="1600"
+            height="1050"
+            loading="lazy"
+            decoding="async"
+          >
+          <div class="dl-weave__label">{{ section.settings.weave_label | default: 'Keep scrolling — the weave comes to you' }}</div>
+          <div class="dl-weave__foot">
+            <h2 class="dl-weave__copy" data-weave-copy>Cotton, top to bottom</h2>
+            <div class="dl-weave__mag">
+              <div class="dl-weave__mag-n" data-weave-mag>1×</div>
+              <div class="dl-weave__mag-l">magnification</div>
+            </div>
+          </div>
+        </div>
+      </section>
+    {%- endif -%}
+
+    {%- if section.settings.story_heading != blank or section.settings.story_text_1 != blank -%}
+      <section class="dl-section dl-section--cream" data-screen-label="03 Story">
+        <div class="dl-wrap dl-story-grid">
+          <div class="dl-reveal">
+            {%- if section.settings.story_eyebrow != blank -%}
+              <div class="dl-eyebrow">{{ section.settings.story_eyebrow }}</div>
+            {%- endif -%}
+            <h2 class="dl-h2">{{ section.settings.story_heading }}</h2>
+            {%- if section.settings.story_text_1 != blank -%}<p>{{ section.settings.story_text_1 }}</p>{%- endif -%}
+            {%- if section.settings.story_text_2 != blank -%}<p>{{ section.settings.story_text_2 }}</p>{%- endif -%}
+          </div>
+          <div class="dl-media-frame">
+            {%- if section.settings.story_image != blank -%}
+              {{ section.settings.story_image | image_url: width: 1200 | image_tag:
+                widths: '480, 720, 960, 1200',
+                sizes: '(min-width: 700px) 50vw, 100vw',
+                alt: section.settings.story_image.alt | default: section.settings.story_heading,
+                loading: 'lazy',
+                decoding: 'async'
+              }}
+            {%- else -%}
+              <img
+                src="{{ 'dl-bedsheets-story.webp' | asset_url }}"
+                alt="{{ section.settings.story_heading | escape }}"
+                width="1100"
+                height="1100"
+                loading="lazy"
+                decoding="async"
+              >
+            {%- endif -%}
+          </div>
+        </div>
+      </section>
+    {%- endif -%}
+
+    {%- if comparison_rows.size > 0 -%}
+      <section
+        id="{{ section.settings.detail_anchor_id | default: 'detail' }}"
+        class="dl-section dl-section--cream dl-section--rule"
+        data-screen-label="03a Comparison"
+      >
+        <div class="dl-wrap">
+          {%- if section.settings.comparison_eyebrow != blank -%}
+            <div class="dl-eyebrow">{{ section.settings.comparison_eyebrow }}</div>
+          {%- endif -%}
+          <h2 class="dl-h2" style="margin-bottom:52px">{{ section.settings.comparison_heading }}</h2>
+          <div class="dl-compare">
+            <div class="dl-compare__head dl-compare__head--first"></div>
+            <div class="dl-compare__head">{{ section.settings.comparison_market_label | default: 'Market standard' }}</div>
+            <div class="dl-compare__head dl-compare__head--loom">{{ shop.name | default: 'Daily Loom' }}</div>
+            {%- for row in comparison_rows -%}
+              <div class="dl-compare__label">{{ row.settings.label }}</div>
+              <div class="dl-compare__cell">{{ row.settings.market }}</div>
+              <div class="dl-compare__cell dl-compare__cell--loom">{{ row.settings.loom }}</div>
+            {%- endfor -%}
+          </div>
+        </div>
+      </section>
+    {%- endif -%}
+
+    {%- if materials.size > 0 -%}
+      <section class="dl-section dl-section--clay dl-section--rule" data-screen-label="03b Made of">
+        <div class="dl-wrap">
+          {%- if section.settings.materials_eyebrow != blank -%}
+            <div class="dl-eyebrow">{{ section.settings.materials_eyebrow }}</div>
+          {%- endif -%}
+          <h2 class="dl-h2">{{ section.settings.materials_heading }}</h2>
+          <div class="dl-cards">
+            {%- for m in materials -%}
+              <div class="dl-card">
+                <div class="dl-card__n">{{ m.settings.number }}</div>
+                <div class="dl-card__t">{{ m.settings.title }}</div>
+                <div class="dl-card__d">{{ m.settings.text }}</div>
+              </div>
+            {%- endfor -%}
+          </div>
+        </div>
+      </section>
+    {%- endif -%}
+
+    {%- if benefits.size > 0 -%}
+      <section class="dl-section dl-section--cream" data-screen-label="03c Benefits">
+        <div class="dl-wrap">
+          {%- if section.settings.benefits_eyebrow != blank -%}
+            <div class="dl-eyebrow">{{ section.settings.benefits_eyebrow }}</div>
+          {%- endif -%}
+          <div class="dl-benefits">
+            {%- for b in benefits -%}
+              <div class="dl-benefit">
+                <div class="dl-benefit__t">{{ b.settings.title }}</div>
+                <div class="dl-benefit__d">{{ b.settings.text }}</div>
+              </div>
+            {%- endfor -%}
+          </div>
+        </div>
+      </section>
+    {%- endif -%}
+
+    {%- if steps.size > 0 -%}
+      <section class="dl-section dl-section--ink" data-screen-label="03d How it is made">
+        <div class="dl-wrap">
+          {%- if section.settings.steps_eyebrow != blank -%}
+            <div class="dl-eyebrow">{{ section.settings.steps_eyebrow }}</div>
+          {%- endif -%}
+          <h2 class="dl-h2" style="color:var(--dl-cream)">{{ section.settings.steps_heading }}</h2>
+          <div class="dl-steps">
+            {%- for s in steps -%}
+              <div class="dl-step">
+                <div class="dl-step__rule"></div>
+                <div class="dl-step__n">{{ s.settings.number }}</div>
+                <div class="dl-step__t">{{ s.settings.title }}</div>
+                <div class="dl-step__d">{{ s.settings.text }}</div>
+              </div>
+            {%- endfor -%}
+          </div>
+        </div>
+      </section>
+    {%- endif -%}
+
+    {%- if spec_rows.size > 0 or care_items.size > 0 -%}
+      <section class="dl-section dl-section--clay dl-section--rule" data-screen-label="04 Specs">
+        <div class="dl-wrap dl-specs-grid">
+          {%- if spec_rows.size > 0 -%}
+            <div>
+              <h2>{{ section.settings.specs_heading | default: 'Specification' }}</h2>
+              <div>
+                {%- for row in spec_rows -%}
+                  <div class="dl-spec-row">
+                    <span class="dl-spec-row__k">{{ row.settings.label }}</span>
+                    <span class="dl-spec-row__v">{{ row.settings.value }}</span>
+                  </div>
+                {%- endfor -%}
+              </div>
+            </div>
+          {%- endif -%}
+          {%- if care_items.size > 0 -%}
+            <div>
+              <h2>{{ section.settings.care_heading | default: 'Care' }}</h2>
+              <div class="dl-care">
+                {%- for c in care_items -%}
+                  <div class="dl-care-row">
+                    <span class="dl-care-row__n">{{ c.settings.number }}</span>
+                    <span class="dl-care-row__d">{{ c.settings.text }}</span>
+                  </div>
+                {%- endfor -%}
+              </div>
+            </div>
+          {%- endif -%}
+        </div>
+      </section>
+    {%- endif -%}
+
+    {%- if box_items.size > 0 -%}
+      <section class="dl-section dl-section--cream dl-section--rule" data-screen-label="05 What you get" style="padding-bottom:clamp(90px,12vw,150px)">
+        <div class="dl-wrap dl-getbox-grid">
+          <div>
+            {%- if section.settings.box_eyebrow != blank -%}
+              <div class="dl-eyebrow">{{ section.settings.box_eyebrow }}</div>
+            {%- endif -%}
+            <h2>{{ section.settings.box_heading | default: 'In the box' }}</h2>
+            <ul class="dl-list">
+              {%- for item in box_items -%}
+                <li>{{ item.settings.text }}</li>
+              {%- endfor -%}
+            </ul>
+            <a href="{{ section.settings.buy_link | default: '#' }}" class="dl-btn dl-btn--dark" style="margin-top:38px">Buy now</a>
+          </div>
+          <div class="dl-media-frame">
+            {%- if section.settings.box_image != blank -%}
+              {{ section.settings.box_image | image_url: width: 1200 | image_tag:
+                widths: '480, 720, 960, 1200',
+                sizes: '(min-width: 700px) 50vw, 100vw',
+                alt: section.settings.box_heading,
+                loading: 'lazy',
+                decoding: 'async'
+              }}
+            {%- else -%}
+              <img
+                src="{{ 'dl-bedsheets-box.webp' | asset_url }}"
+                alt="{{ section.settings.box_heading | default: 'In the box' | escape }}"
+                width="1280"
+                height="960"
+                loading="lazy"
+                decoding="async"
+              >
+            {%- endif -%}
+          </div>
+        </div>
+      </section>
+    {%- endif -%}
+
+  </main>
+
+  <footer class="dl-footer">
+    <div class="dl-footer__grid">
+      <div class="dl-footer__brand">
+        {%- if section.settings.logo != blank -%}
+          {{ section.settings.logo | image_url: width: 88 | image_tag: width: 44, height: 44, alt: shop.name, loading: 'lazy' }}
+        {%- else -%}
+          <img src="{{ 'daily-loom-logo.webp' | asset_url }}" width="44" height="44" alt="{{ shop.name | default: 'Daily Loom' }}" loading="lazy" decoding="async">
+        {%- endif -%}
+        <p>{{ section.settings.footer_tagline | default: 'Sleep on truth. 100% cotton, natural latex, high-GSM towels.' }}</p>
+      </div>
+      <div class="dl-footer__col">
+        <div class="dl-eyebrow">Shop</div>
+        <a href="{{ section.settings.nav_bedsheets_link | default: '#' }}">Bedsheets</a>
+        <a href="{{ section.settings.nav_pillow_link | default: '#' }}">Latex Pillow</a>
+        <a href="{{ section.settings.nav_comforter_link | default: '#' }}">Comforter</a>
+        <a href="{{ section.settings.nav_towels_link | default: '#' }}">Towels</a>
+      </div>
+      <div class="dl-footer__col">
+        <div class="dl-eyebrow">Help</div>
+        <a href="{{ section.settings.track_order_link | default: routes.account_url }}">Track order</a>
+        <a href="{{ section.settings.returns_link | default: routes.root_url }}">Returns</a>
+        <a href="{{ section.settings.care_link | default: routes.root_url }}">Care</a>
+      </div>
+      <div class="dl-footer__copy">© {{ 'now' | date: '%Y' }} {{ shop.name | default: 'Daily Loom' }}</div>
+    </div>
+  </footer>
+
+  {%- if section.settings.show_stickybar -%}
+    <div class="dl-stickybar">
+      <a href="{{ section.settings.buy_link | default: '#' }}" class="dl-stickybar__inner">
+        <span class="dl-stickybar__name">{{ section.settings.headline | default: 'Percale Bedsheet Set' }}</span>
+        <span class="dl-stickybar__price">{% if section.settings.price != blank %}From {{ section.settings.price }}{% endif %}</span>
+        <span class="dl-stickybar__cta">Buy now</span>
+      </a>
+    </div>
+  {%- endif -%}
+
+</div>
+
+{% schema %}
+{
+  "name": "Luxury product story",
+  "class": "dl-luxury-product-story-section",
+  "settings": [
+    { "type": "header", "content": "Brand" },
+    { "type": "image_picker", "id": "logo", "label": "Logo (defaults to the bundled Daily Loom mark)" },
+
+    { "type": "header", "content": "Hero" },
+    { "type": "image_picker", "id": "hero_image", "label": "Hero image (defaults to the generated fabric hero)" },
+    { "type": "text", "id": "hero_kicker", "label": "Hero kicker", "default": "100% cotton percale · no polyester" },
+    { "type": "text", "id": "headline", "label": "Headline", "default": "Percale Bedsheet Set" },
+    { "type": "textarea", "id": "subheadline", "label": "Subheadline", "default": "300 thread count. One thread over, one under. Cotton only, and nothing blended in to cut cost." },
+    { "type": "text", "id": "price", "label": "Price shown on hero & sticky bar", "default": "₹2,190" },
+    { "type": "text", "id": "detail_anchor_id", "label": "Details anchor id", "default": "detail" },
+    { "type": "url", "id": "buy_link", "label": "Buy page link" },
+    { "type": "url", "id": "home_link", "label": "Home link" },
+
+    { "type": "header", "content": "Navigation" },
+    {
+      "type": "select",
+      "id": "nav_current",
+      "label": "Highlight this page in the nav",
+      "options": [
+        { "value": "bedsheets", "label": "Bedsheets" },
+        { "value": "pillow", "label": "Latex Pillow" },
+        { "value": "comforter", "label": "Comforter" },
+        { "value": "towels", "label": "Towels" }
+      ],
+      "default": "bedsheets"
+    },
+    { "type": "url", "id": "nav_bedsheets_link", "label": "Bedsheets link" },
+    { "type": "url", "id": "nav_pillow_link", "label": "Latex Pillow link" },
+    { "type": "url", "id": "nav_comforter_link", "label": "Comforter link" },
+    { "type": "url", "id": "nav_towels_link", "label": "Towels link" },
+
+    { "type": "header", "content": "Weave zoom" },
+    { "type": "checkbox", "id": "show_weave", "label": "Show scroll-driven weave zoom", "default": true },
+    { "type": "text", "id": "weave_label", "label": "Weave section label", "default": "Keep scrolling — the weave comes to you" },
+
+    { "type": "header", "content": "Story" },
+    { "type": "text", "id": "story_eyebrow", "label": "Eyebrow", "default": "Why percale" },
+    { "type": "text", "id": "story_heading", "label": "Heading", "default": "Nothing hidden in the weave" },
+    { "type": "richtext", "id": "story_text_1", "label": "Paragraph 1", "default": "<p>Percale is the plainest weave there is, which is exactly why it cannot lie. One thread over, one thread under, 300 of them to the inch. A blend hides behind a sheen; cotton has to earn its hand from the fibre up.</p>" },
+    { "type": "richtext", "id": "story_text_2", "label": "Paragraph 2", "default": "<p>Ours is long-staple cotton, combed and ring-spun, then woven tight enough to hold a crease and loose enough to breathe. It comes out of the dryer matte, not shiny. That matte is the tell.</p>" },
+    { "type": "image_picker", "id": "story_image", "label": "Story image (defaults to the generated folded-sheet art)" },
+
+    { "type": "header", "content": "Comparison" },
+    { "type": "text", "id": "comparison_eyebrow", "label": "Eyebrow", "default": "Against the market standard" },
+    { "type": "text", "id": "comparison_heading", "label": "Heading", "default": "Same word on the label. Different thing in the box." },
+    { "type": "text", "id": "comparison_market_label", "label": "Comparison column label", "default": "Market standard" },
+
+    { "type": "header", "content": "Materials" },
+    { "type": "text", "id": "materials_eyebrow", "label": "Eyebrow", "default": "What it is made of" },
+    { "type": "text", "id": "materials_heading", "label": "Heading", "default": "Three materials, named" },
+
+    { "type": "header", "content": "Benefits" },
+    { "type": "text", "id": "benefits_eyebrow", "label": "Eyebrow", "default": "What it does for you" },
+
+    { "type": "header", "content": "How it's made" },
+    { "type": "text", "id": "steps_eyebrow", "label": "Eyebrow", "default": "How it is made" },
+    { "type": "text", "id": "steps_heading", "label": "Heading", "default": "Four steps, no shortcuts" },
+
+    { "type": "header", "content": "Specification & care" },
+    { "type": "text", "id": "specs_heading", "label": "Specification heading", "default": "Specification" },
+    { "type": "text", "id": "care_heading", "label": "Care heading", "default": "Care" },
+
+    { "type": "header", "content": "What you get" },
+    { "type": "text", "id": "box_eyebrow", "label": "Eyebrow", "default": "What you get" },
+    { "type": "text", "id": "box_heading", "label": "Heading", "default": "In the box" },
+    { "type": "image_picker", "id": "box_image", "label": "Box image (defaults to the generated flat-lay art)" },
+
+    { "type": "header", "content": "Footer" },
+    { "type": "textarea", "id": "footer_tagline", "label": "Footer tagline", "default": "Sleep on truth. 100% cotton, natural latex, high-GSM towels." },
+    { "type": "url", "id": "track_order_link", "label": "Track order link" },
+    { "type": "url", "id": "returns_link", "label": "Returns link" },
+    { "type": "url", "id": "care_link", "label": "Care link" },
+
+    { "type": "header", "content": "Sticky buy bar" },
+    { "type": "checkbox", "id": "show_stickybar", "label": "Show floating buy bar", "default": true }
+  ],
+  "blocks": [
+    {
+      "type": "comparison_row",
+      "name": "Comparison row",
+      "settings": [
+        { "type": "text", "id": "label", "label": "Row label" },
+        { "type": "text", "id": "market", "label": "Market standard value" },
+        { "type": "text", "id": "loom", "label": "Daily Loom value" }
+      ]
+    },
+    {
+      "type": "material",
+      "name": "Material",
+      "settings": [
+        { "type": "text", "id": "number", "label": "Number", "default": "01" },
+        { "type": "text", "id": "title", "label": "Title" },
+        { "type": "textarea", "id": "text", "label": "Text" }
+      ]
+    },
+    {
+      "type": "benefit",
+      "name": "Benefit",
+      "settings": [
+        { "type": "text", "id": "title", "label": "Title" },
+        { "type": "textarea", "id": "text", "label": "Text" }
+      ]
+    },
+    {
+      "type": "step",
+      "name": "Process step",
+      "settings": [
+        { "type": "text", "id": "number", "label": "Step label", "default": "Step 1" },
+        { "type": "text", "id": "title", "label": "Title" },
+        { "type": "textarea", "id": "text", "label": "Text" }
+      ]
+    },
+    {
+      "type": "spec_row",
+      "name": "Spec row",
+      "settings": [
+        { "type": "text", "id": "label", "label": "Label" },
+        { "type": "text", "id": "value", "label": "Value" }
+      ]
+    },
+    {
+      "type": "care_item",
+      "name": "Care item",
+      "settings": [
+        { "type": "text", "id": "number", "label": "Number", "default": "01" },
+        { "type": "textarea", "id": "text", "label": "Text" }
+      ]
+    },
+    {
+      "type": "box_item",
+      "name": "Box item",
+      "settings": [
+        { "type": "text", "id": "text", "label": "Text" }
+      ]
+    }
+  ],
+  "presets": [
+    {
+      "name": "Luxury product story",
+      "blocks": [
+        { "type": "comparison_row", "settings": { "label": "Fibre", "market": "Poly-cotton blend, 40–60% polyester", "loom": "100% long-staple cotton" } },
+        { "type": "comparison_row", "settings": { "label": "Weave", "market": "Sateen sheen hiding thin yarn", "loom": "Percale, 1-over-1, 300 TC" } },
+        { "type": "comparison_row", "settings": { "label": "After 30 washes", "market": "Pilling, static, trapped heat", "loom": "Softer, matte, no pills" } },
+        { "type": "comparison_row", "settings": { "label": "On the label", "market": "“Cotton-rich”", "loom": "Fibre content printed in full" } },
+
+        { "type": "material", "settings": { "number": "01", "title": "Long-staple cotton", "text": "Longer fibres mean fewer ends sticking out of the yarn, which is why the sheet gets softer instead of fuzzier." } },
+        { "type": "material", "settings": { "number": "02", "title": "Combed, ring-spun yarn", "text": "Combing pulls the short fibres out before spinning. It wastes cotton and costs more. It is also the only way to stop pilling." } },
+        { "type": "material", "settings": { "number": "03", "title": "Reactive dye", "text": "Dye bonded to the fibre rather than sitting on it, so the colour goes down the drain slowly instead of all at once." } },
+
+        { "type": "benefit", "settings": { "title": "Sleeps cool", "text": "Plain weave leaves air gaps. Body heat leaves instead of pooling." } },
+        { "type": "benefit", "settings": { "title": "Gets better", "text": "Each wash relaxes the yarn. The best night is somewhere around wash twenty." } },
+        { "type": "benefit", "settings": { "title": "No pilling", "text": "Combed long-staple cotton has nothing short enough to ball up." } },
+        { "type": "benefit", "settings": { "title": "Honest hand", "text": "Matte, not shiny. Sheen is usually polyester doing the talking." } },
+
+        { "type": "step", "settings": { "number": "Step 1", "title": "Fibre in", "text": "Long-staple cotton graded by staple length, not by price per bale." } },
+        { "type": "step", "settings": { "number": "Step 2", "title": "Combed and spun", "text": "Short fibres removed, yarn ring-spun single-ply at 300 TC." } },
+        { "type": "step", "settings": { "number": "Step 3", "title": "Woven", "text": "Plain weave on rapier looms in Erode, one over, one under." } },
+        { "type": "step", "settings": { "number": "Step 4", "title": "Washed and cut", "text": "Pre-shrunk, reactive-dyed, cut and hemmed as a set." } },
+
+        { "type": "spec_row", "settings": { "label": "Composition", "value": "100% long-staple cotton" } },
+        { "type": "spec_row", "settings": { "label": "Weave", "value": "Percale, 1-over-1 plain weave" } },
+        { "type": "spec_row", "settings": { "label": "Thread count", "value": "300 TC, single-ply" } },
+        { "type": "spec_row", "settings": { "label": "Set contains", "value": "1 flat, 1 fitted, 2 pillowcases" } },
+        { "type": "spec_row", "settings": { "label": "Pocket depth", "value": "10 in / 25 cm, full elastic" } },
+        { "type": "spec_row", "settings": { "label": "Woven in", "value": "Erode, Tamil Nadu" } },
+
+        { "type": "care_item", "settings": { "number": "01", "text": "Machine wash cold, 30°C, with like colours. Mild detergent, no bleach, no fabric softener — softener coats the fibre and kills the breathability you paid for." } },
+        { "type": "care_item", "settings": { "number": "02", "text": "Tumble dry low, or line dry in shade. Pull the flat sheet taut while damp and you will not need an iron." } },
+        { "type": "care_item", "settings": { "number": "03", "text": "Warm iron on the reverse if you want the hotel crease. Steam is enough." } },
+        { "type": "care_item", "settings": { "number": "04", "text": "Rotate two sets. Cotton lasts longer when it gets to rest and fully dry between uses." } },
+
+        { "type": "box_item", "settings": { "text": "1 flat sheet" } },
+        { "type": "box_item", "settings": { "text": "1 fitted sheet, 10 in pocket" } },
+        { "type": "box_item", "settings": { "text": "2 pillowcases, 50 × 75 cm" } },
+        { "type": "box_item", "settings": { "text": "Cotton storage bag and care card" } }
+      ]
+    }
+  ]
+}
+{% endschema %}

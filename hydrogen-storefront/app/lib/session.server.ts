@@ -1,37 +1,49 @@
-import {createCookieSessionStorage} from '@shopify/remix-oxygen';
+import type {HydrogenSession} from '@shopify/hydrogen';
+import {createCookieSessionStorage, type Session, type SessionStorage} from '@shopify/remix-oxygen';
 
-export type SessionData = {
-  customerAccessToken?: string;
-};
+/** Cookie session Hydrogen needs for cart and customer-account calls. */
+export class AppSession implements HydrogenSession {
+  public isPending = false;
+  #storage: SessionStorage;
+  #session: Session;
 
-export type SessionFlashData = {
-  error: string;
-};
+  constructor(storage: SessionStorage, session: Session) {
+    this.#storage = storage;
+    this.#session = session;
+  }
 
-export type AppSession = {
-  get: (key: keyof SessionData) => SessionData[keyof SessionData] | undefined;
-  set: (key: keyof SessionData, value: SessionData[keyof SessionData]) => void;
-  unset: (key: keyof SessionData) => void;
-  commit: () => Promise<string>;
-};
+  static async init(request: Request, secrets: string[]) {
+    const storage = createCookieSessionStorage({
+      cookie: {name: 'dailyloom_session', httpOnly: true, path: '/', sameSite: 'lax', secure: true, secrets},
+    });
+    const session = await storage.getSession(request.headers.get('Cookie')).catch(() => storage.getSession());
+    return new this(storage, session);
+  }
 
-export const sessionStorage = createCookieSessionStorage<SessionData, SessionFlashData>({
-  cookie: {
-    name: 'dailyloom_session',
-    httpOnly: true,
-    path: '/',
-    sameSite: 'lax',
-    secrets: [process.env.SESSION_SECRET || 'foobar'],
-  },
-});
+  get get() {
+    return this.#session.get;
+  }
 
-export async function getSession(request: Request): Promise<AppSession> {
-  const session = await sessionStorage.getSession(request.headers.get('Cookie'));
+  get has() {
+    return this.#session.has;
+  }
 
-  return {
-    get: (key) => session.get(key),
-    set: (key, value) => session.set(key, value),
-    unset: (key) => session.unset(key),
-    commit: () => sessionStorage.commitSession(session),
-  };
+  set(key: string, value: unknown) {
+    this.isPending = true;
+    this.#session.set(key, value);
+  }
+
+  unset(key: string) {
+    this.isPending = true;
+    this.#session.unset(key);
+  }
+
+  destroy() {
+    return this.#storage.destroySession(this.#session);
+  }
+
+  commit() {
+    this.isPending = false;
+    return this.#storage.commitSession(this.#session);
+  }
 }
