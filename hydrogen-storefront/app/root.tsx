@@ -1,16 +1,33 @@
-import {Links, Meta, Outlet, Scripts, isRouteErrorResponse, useRouteError} from '@remix-run/react';
+import {Links, Meta, Outlet, Scripts, isRouteErrorResponse, useRouteError, type ShouldRevalidateFunction} from '@remix-run/react';
+import type {LoaderFunctionArgs} from '@shopify/remix-oxygen';
 import type {ReactNode} from 'react';
 import pseudoStyles from '~/dl/pseudo.css?url';
 import {Shell} from '~/dl/Shell';
 import {NotFoundView} from '~/dl/NotFoundView';
+import {getLive} from '~/dl/shop/catalog.server';
+import {getBag} from '~/dl/shop/cart.server';
 
 export const meta = () => [{title: 'Daily Loom'}];
+
+/** Every page gets the store's prices, stock and photos, and the visitor's bag. */
+export async function loader({context}: LoaderFunctionArgs) {
+  const {storefront, cart} = context as any;
+  const [live, bag] = await Promise.all([getLive(storefront).catch(() => null), getBag(cart)]);
+  return {live, bag};
+}
+
+// Loaded once per visit; the bag then updates from the cart actions themselves.
+export const shouldRevalidate: ShouldRevalidateFunction = () => false;
 
 export function links() {
   return [
     {rel: 'preconnect', href: 'https://fonts.googleapis.com'},
+    {rel: 'preconnect', href: 'https://fonts.gstatic.com', crossOrigin: 'anonymous'},
+    {rel: 'preconnect', href: 'https://cdn.shopify.com'},
     {rel: 'stylesheet', href: 'https://fonts.googleapis.com/css2?family=Marcellus&family=Jost:wght@300;400;500;600&display=swap'},
     {rel: 'stylesheet', href: pseudoStyles},
+    // image-slot.js reads the photo framing from this file before it shows any photo.
+    {rel: 'preload', as: 'fetch', href: '/.image-slots.state.json', crossOrigin: 'anonymous'},
   ];
 }
 

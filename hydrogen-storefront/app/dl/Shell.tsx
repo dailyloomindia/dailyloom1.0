@@ -4,9 +4,12 @@
 // differences are that the current view, collection and product come from
 // the URL, and moving between views navigates to that view's route.
 import {Component, createContext, createRef, useContext, type ReactNode} from 'react';
-import {useLocation, useNavigate} from '@remix-run/react';
+import {useLocation, useNavigate, useRouteLoaderData} from '@remix-run/react';
 import {CATS, P, SHOP_MEDIA, IMG, fmt} from './data/catalog';
+import {availableOf, combos, mediaOf, priceOf, type Live} from './shop/live';
+import type {Bag, BagLine} from './shop/cart.server';
 import {parseRoute, urlFor, type Route, type View} from './routing';
+import {HOME_HERO, storyHero, warm} from './preload';
 import {ShellView} from './views/ShellView';
 
 /** The design's tweak values, as the v4 file was finalised. */
@@ -25,7 +28,7 @@ const RESET = {barHidden:false, menuOpen:false, gi:null, notified:false, qty:1, 
 /** The option preset a collection card opens a product with. */
 const presetFor = (pid: string) => (CATS.flatMap((c: any) => c.items).find((x: any) => x.pid === pid) || {}).sel;
 
-type ShellProps = {route: Route; locKey: string; navigate: (to: string) => void; children: ReactNode};
+type ShellProps = {route: Route; locKey: string; navigate: (to: string) => void; live: Live | null; bag: Bag | null; children: ReactNode};
 type Ctx = {sh: ShellLogic; base: any};
 const ShellContext = createContext<Ctx | null>(null);
 
@@ -40,16 +43,17 @@ export function Shell({view, children}: {view?: View; children: ReactNode}) {
   const location = useLocation();
   const navigate = useNavigate();
   const route = view ? {view} : parseRoute(location.pathname, location.search);
-  return <ShellLogic route={route} locKey={location.key} navigate={navigate}>{children}</ShellLogic>;
+  const data = useRouteLoaderData('root') as {live: Live | null; bag: Bag | null} | undefined;
+  return <ShellLogic route={route} locKey={location.key} navigate={navigate} live={data ? data.live : null} bag={data ? data.bag : null}>{children}</ShellLogic>;
 }
 
 export class ShellLogic extends Component<ShellProps, any> {
   [k: string]: any;
   constructor(p: ShellProps){
     super(p);
-    // Browser-kept state (bag, account, last category) is restored in componentDidMount,
+    // Browser-kept state (account, last category) is restored in componentDidMount,
     // so the server render and the first client render are identical.
-    this.state = {cat: p.route.cat || 'duvets', pid: p.route.pid || 'winter-duvet', sel:{}, selPid:null, qty:1, bag:[], bagOpen:false, tc:0, tMat:0, tType:2, tCol:0, cl:0, pin:'', pinMsg:'', added:false, acc:'Details', checkingOut:false, acct:{}, acForm:{}, acErr:'', retOpen:false};
+    this.state = {cat: p.route.cat || 'duvets', pid: p.route.pid || 'winter-duvet', sel:{}, selPid:null, qty:1, bag:bagItems(p.bag), checkoutUrl:(p.bag && p.bag.checkoutUrl) || '', bagOpen:false, tc:0, tMat:0, tType:2, tCol:0, cl:0, pin:'', pinMsg:'', added:false, acc:'Details', checkingOut:false, acct:{}, acForm:{}, acErr:'', retOpen:false};
     ['ctaRef','rootRef','navRef','curtainRef','trackRef','clothRef','rollRef','tagRef','bagBtnRef'].forEach(k => this[k] = createRef());
   }
   view(){ return this.props.route.view; }
@@ -57,10 +61,10 @@ export class ShellLogic extends Component<ShellProps, any> {
   pid(){ return this.props.route.pid || this.state.pid; }
   selOf(pid: string, st = this.state){ return st.selPid === pid ? st.sel : presetFor(pid); }
   componentDidMount(){
-    let s: any = {}, bag: any = [], acct: any = {};
-    try { s = JSON.parse(localStorage.getItem('dl2-nav') || '{}'); bag = JSON.parse(localStorage.getItem('dl2-bag') || '[]'); } catch(e) {}
+    let s: any = {}, acct: any = {};
+    try { s = JSON.parse(localStorage.getItem('dl2-nav') || '{}'); } catch(e) {}
     try { acct = JSON.parse(localStorage.getItem('dl2-acct') || '{}'); } catch(e) {}
-    this.setState({bag: Array.isArray(bag) ? bag : [], acct, ...(!this.props.route.cat && CATS.some((c: any) => c.k === s.cat) ? {cat: s.cat} : {})});
+    this.setState({acct, ...(!this.props.route.cat && CATS.some((c: any) => c.k === s.cat) ? {cat: s.cat} : {})});
     this.onResize = () => { const m = innerWidth < 768; if (m !== this.state.mobile) { this.setState({mobile:m}); this.applySb(); } };
     window.addEventListener('resize', this.onResize); this.onResize();
     window.addEventListener('scroll', this.onScroll, {passive:true});
@@ -80,7 +84,6 @@ export class ShellLogic extends Component<ShellProps, any> {
     if (ps.sb !== PROPS.scrollbar) this.applySb();
     if (ps.key !== this.props.locKey) this.onLocation();
     if (ps.view !== this.view() || ps.cat !== this.cat() || ps.pid !== this.pid()) { this.observe(); this.onScroll(); }
-    if (ps.bag !== s.bag) try { localStorage.setItem('dl2-bag', JSON.stringify(s.bag)); } catch(e) {}
     if (this.view() === 'help' && this.helpJump) { const id = this.helpJump; this.helpJump = null; setTimeout(() => this.scrollToId(id), 60); }
     this.snap();
   }
@@ -175,6 +178,8 @@ export class ShellLogic extends Component<ShellProps, any> {
     const c = this.curtainRef.current;
     if (PROPS.motion === 'reduced' || !c || !c.animate) return void apply();
     if (this.busy) return; this.busy = true;
+    // The next page's first photo downloads while the curtain comes down.
+    warm(view === 'home' ? (this.state.mobile ? HOME_HERO.mobile : HOME_HERO.desktop) : view === 'story' ? storyHero(cat) : view === 'product' ? firstPhoto(this.props.live, pid, sel) : '');
     let done = false, a1: any;
     const reveal = () => setTimeout(() => {
       const a = c.animate([{transform:'translateY(0)'},{transform:DOWN}], {duration:760, easing:EASE, fill:'forwards'});
@@ -196,33 +201,45 @@ export class ShellLogic extends Component<ShellProps, any> {
   acScreen(k: string){ this.setState({acScreen:k, acErr:''}); window.scrollTo(0, 0); }
   goStory(k: string){ this.go({view:'story', cat:k}); }
   scrollToId(id: string){ const el = document.getElementById(id); if (!el) return; window.scrollTo({top: el.getBoundingClientRect().top + scrollY - 107, behavior: PROPS.motion === 'reduced' ? 'auto' : 'smooth'}); }
-  defSel(pid: string, preset?: any){ const o: any = {}; P[pid].opts.forEach((x: any) => o[x.n] = (preset && preset[x.n] != null && preset[x.n] < x.vals.length) ? preset[x.n] : 0); return o; }
-  priceOf(pid: string, sel: any){ const p = P[pid]; return p.base + p.opts.reduce((a: number, o: any) => a + (o.vals[sel[o.n] ?? 0].p || 0), 0); }
+  defSel(pid: string, preset?: any){ const o: any = {}, given = (x: any) => preset && preset[x.n] != null && preset[x.n] < x.vals.length; P[pid].opts.forEach((x: any) => o[x.n] = given(x) ? preset[x.n] : 0);
+    // Options left open start on the first selection Shopify has in stock.
+    if (!availableOf(this.props.live, pid, o)) { const ok = combos(pid).find((c: any) => P[pid].opts.every((x: any) => !given(x) || x.n === 'Monogram' || c[x.n] === o[x.n]) && availableOf(this.props.live, pid, c)); if (ok) Object.assign(o, ok); }
+    return o; }
+  priceOf(pid: string, sel: any){ return priceOf(this.props.live, pid, sel); }
   openProduct(pid: string, preset?: any){ this.go({view:'product', pid, cat:P[pid].cat, sel:this.defSel(pid, preset)}); }
   media(pid: string){ const p = P[pid]; const col = p.opts.find((o: any) => o.swatch);
-    return (SHOP_MEDIA[pid] || []).map(([f, alt]: any, i: number) => { const tags = alt ? alt.split('|').map((x: string) => x.trim()) : []; const cv = col && col.vals.find((v: any) => tags.includes(v.v));
-      return {i, url: f ? IMG(f) : '', tags, alt: alt ? p.name + ' · ' + alt : p.name, tint: cv ? cv.hex : '#E2D6C2', ink: cv && /^#[0-6]/.test(cv.hex) ? '#F4EFE6' : '#3B342B'}; }); }
+    return (mediaOf(this.props.live, pid) || SHOP_MEDIA[pid] || []).map(([f, alt]: any, i: number) => { const tags = alt ? alt.split('|').map((x: string) => x.trim()) : []; const cv = col && col.vals.find((v: any) => tags.includes(v.v));
+      return {i, url: f ? (/^https?:/.test(f) ? f : IMG(f)) : '', tags, alt: alt ? p.name + ' · ' + alt : p.name, tint: cv ? cv.hex : '#E2D6C2', ink: cv && /^#[0-6]/.test(cv.hex) ? '#F4EFE6' : '#3B342B'}; }); }
   visible(pid: string, sel: any){ const p = P[pid]; const vals = p.opts.map((o: any) => o.vals[sel[o.n] ?? 0].v); return this.media(pid).filter((m: any) => !m.tags.length || m.tags.every((tg: string) => vals.includes(tg))); }
   pickOpt(pid: string, name: string, vi: number){ this.setState((st: any) => { const sel = {...this.defSel(pid, this.selOf(pid, st)), [name]:vi}; const val = P[pid].opts.find((o: any) => o.n === name).vals[vi].v; const vis = this.visible(pid, sel);
     const hit = vis.find((m: any) => m.tags.includes(val)); const keep = vis.find((m: any) => m.i === st.gi); return {sel, selPid:pid, added:false, notified:false, gi: hit ? hit.i : keep ? keep.i : (vis[0] ? vis[0].i : 0)}; }); }
   addToBag = () => {
-    const pid = this.pid(), {qty} = this.state, sel = this.defSel(pid, this.selOf(pid)), p = P[pid];
-    const key = pid + JSON.stringify(sel) + (this.state.mono || '');
+    const pid = this.pid(), {qty} = this.state, sel = this.defSel(pid, this.selOf(pid));
     const mono = sel.Monogram === 1 && this.state.mono ? this.state.mono : '';
-    const desc = p.opts.filter((o: any) => !(o.n === 'Monogram' && sel.Monogram !== 1)).map((o: any) => o.n === 'Monogram' ? 'Monogram ' + (mono || '—') : o.vals[sel[o.n]].v).join(' · ');
-    const col = p.opts.find((o: any) => o.swatch);
-    const chip = col ? col.vals[sel[col.n]].hex : '#E5DCCB';
-    const unit = this.priceOf(pid, sel);
+    // Shown in the bag at once; the Shopify cart then confirms it.
+    const item = {...bagItem({id:'', qty, total: this.priceOf(pid, sel) * qty, dl:{pid, sel, mono}, title:'', variant:'', kids:[]}), key:'pending'};
     this.setState((s: any) => {
-      const bag = s.bag.slice(); const i = bag.findIndex((b: any) => b.key === key);
-      if (i >= 0) bag[i] = {...bag[i], qty: bag[i].qty + qty}; else bag.push({key, pid, desc, chip, unit, qty});
+      const bag = s.bag.slice(); const i = bag.findIndex((b: any) => b.same === item.same);
+      if (i >= 0) bag[i] = {...bag[i], qty: bag[i].qty + qty, total: bag[i].total + item.total}; else bag.push(item);
       return {bag, added:true};
     });
+    this.cart({op:'add', pid, sel, qty, mono});
     const b = this.bagBtnRef.current;
     if (b && b.animate && PROPS.motion !== 'reduced') b.animate([{transform:'scale(1)'},{transform:'scale(1.22)'},{transform:'scale(.96)'},{transform:'scale(1)'}], {duration:620, easing:'cubic-bezier(.2,.7,.2,1)'});
     clearTimeout(this.addT); this.addT = setTimeout(() => this.setState({bagOpen:true}), 650);
   };
-  bagQty(i: number, d: number){ this.setState((s: any) => { const bag = s.bag.slice(); const q = bag[i].qty + d; if (q <= 0) bag.splice(i, 1); else bag[i] = {...bag[i], qty:q}; return {bag}; }); }
+  bagQty(i: number, d: number){
+    const b = this.state.bag[i]; if (!b) return;
+    this.setState((s: any) => { const bag = s.bag.slice(); const q = bag[i].qty + d; if (q <= 0) bag.splice(i, 1); else bag[i] = {...bag[i], qty:q, total: bag[i].total / bag[i].qty * q}; return {bag}; });
+    if (b.key !== 'pending') this.cart({op:'qty', line:b.key, qty:b.qty + d});
+  }
+  /** Sends a bag change to the Shopify cart, one at a time, and shows the cart it returns. */
+  cart(body: any){
+    this.cartQ = (this.cartQ || Promise.resolve()).then(() => fetch('/cart', {method:'POST', headers:{'Content-Type':'application/json'}, body:JSON.stringify(body)})
+      .then(r => r.json()).then((r: any) => { if (r && r.bag) this.setState({bag: bagItems(r.bag), checkoutUrl: r.bag.checkoutUrl || ''}); if (r && r.error) console.warn('Cart:', r.error); })
+      .catch(e => console.warn('Cart:', e)));
+    return this.cartQ;
+  }
   checkPin = () => {
     const pin = this.state.pin;
     if (!/^[1-9]\d{5}$/.test(pin)) return this.setState({pinMsg:'Please enter a valid 6-digit pincode.'});
@@ -235,7 +252,7 @@ export class ShellLogic extends Component<ShellProps, any> {
     const activeCat = this.view() === 'home' || this.view() === 'notfound' ? null : this.cat();
     const cats = CATS.map((c: any) => ({name:c.name, onClick:() => this.goStory(c.k), navColor: activeCat === c.k ? '#7E5232' : '#221E18'}));
     const bagCount = s.bag.reduce((a: number, b: any) => a + b.qty, 0);
-    const subtotal = s.bag.reduce((a: number, b: any) => a + b.qty * b.unit, 0);
+    const subtotal = s.bag.reduce((a: number, b: any) => a + b.total, 0);
     const a = s.acct || {};
     return {
       rootRef:this.rootRef, navRef:this.navRef, curtainRef:this.curtainRef, trackRef:this.trackRef, clothRef:this.clothRef, rollRef:this.rollRef, tagRef:this.tagRef, bagBtnRef:this.bagBtnRef,
@@ -260,10 +277,10 @@ export class ShellLogic extends Component<ShellProps, any> {
       menuIcon1: s.menuOpen ? 'M3 2l14 10' : 'M1 4h18', menuIcon2: s.menuOpen ? 'M3 12L17 2' : 'M1 10h18',
       helpLinks: [['Returns','help-returns'],['Care guide','help-care'],['Contact','help-contact']].map(([label, id]) => ({label, go: () => this.openHelp(id)})),
       hasBag: bagCount > 0, bagCount, bagEmpty: bagCount === 0, subtotal: fmt(subtotal),
-      bagItems: s.bag.map((b: any, i: number) => ({name:P[b.pid] ? P[b.pid].name : b.pid, desc:b.desc, chip:b.chip, qty:b.qty, line:fmt(b.unit * b.qty), inc: () => this.bagQty(i, 1), dec: () => this.bagQty(i, -1), remove: () => this.bagQty(i, -b.qty)})),
+      bagItems: s.bag.map((b: any, i: number) => ({name:b.name, desc:b.desc, chip:b.chip, qty:b.qty, line:fmt(b.total), inc: () => this.bagQty(i, 1), dec: () => this.bagQty(i, -1), remove: () => this.bagQty(i, -b.qty)})),
       openBag: () => this.setState({bagOpen:true, checkingOut:false}), closeBag: () => this.setState({bagOpen:false}), closeBagHome: () => this.go({view:'home'}),
       bagX: s.bagOpen ? 'translateX(0)' : 'translateX(104%)', bagOverlayOp: s.bagOpen ? 1 : 0, bagPe: s.bagOpen ? 'auto' : 'none',
-      checkout: () => this.setState({checkingOut:true}), checkoutLabel: s.checkingOut ? 'Opening secure checkout…' : 'Checkout'
+      checkout: () => { this.setState({checkingOut:true}); (this.cartQ || Promise.resolve()).then(() => { if (this.state.checkoutUrl) location.href = this.state.checkoutUrl; else this.setState({checkingOut:false}); }); }, checkoutLabel: s.checkingOut ? 'Opening secure checkout…' : 'Checkout'
     };
   }
   render(){
@@ -275,3 +292,21 @@ export class ShellLogic extends Component<ShellProps, any> {
     );
   }
 }
+
+/** The gallery photo a buy page opens on (its preset options unless given), or '' when it has none. */
+export function firstPhoto(live: Live | null, pid: string, sel?: any): string {
+  const sh: any = Object.create(ShellLogic.prototype); sh.props = {live};
+  const m = sh.visible(pid, sel || sh.defSel(pid, presetFor(pid)))[0];
+  return (m && m.url) || '';
+}
+
+/** A bag row as the design shows it, from a Shopify cart line (its add-ons priced in). */
+function bagItem(l: BagLine){
+  const total = l.total + l.kids.reduce((a, k) => a + k.total, 0), dl = l.dl, p = dl && P[dl.pid];
+  if (!p) return {key:l.id, same:l.id, name:l.title, desc:l.variant === 'Default Title' ? '' : l.variant, chip:'#E5DCCB', qty:l.qty, total};
+  const sel = dl.sel || {}, mono = dl.mono || '';
+  const desc = p.opts.filter((o: any) => !(o.n === 'Monogram' && sel.Monogram !== 1)).map((o: any) => o.n === 'Monogram' ? 'Monogram ' + (mono || '—') : o.vals[sel[o.n] ?? 0].v).join(' · ');
+  const col = p.opts.find((o: any) => o.swatch);
+  return {key:l.id, same:dl.pid + JSON.stringify(sel) + mono, name:p.name, desc, chip: col ? col.vals[sel[col.n] ?? 0].hex : '#E5DCCB', qty:l.qty, total};
+}
+const bagItems = (bag: Bag | null) => (bag ? bag.lines : []).map(bagItem);

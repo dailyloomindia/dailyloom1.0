@@ -218,6 +218,9 @@ export function ProductView({vals}: {vals: any}) {
                       <span style={{fontSize: "16px", color: "#857A6A", textDecoration: "line-through"}}>
                         {I(vals.pCompare)}
                       </span>
+                      <span style={{fontSize: "13px", letterSpacing: ".04em", color: "#7E5232"}}>
+                        {I(vals.pOff)}
+                      </span>
                       </>
                     ) : null}
                     {"\n            "}

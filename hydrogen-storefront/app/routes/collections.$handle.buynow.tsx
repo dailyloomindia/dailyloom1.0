@@ -1,22 +1,29 @@
 // Buy page: /collections/<handle>/buynow[?product=<id>]
 import {useLoaderData} from '@remix-run/react';
-import type {LoaderFunctionArgs} from '@shopify/remix-oxygen';
-import {PROPS, useShell, type ShellLogic} from '~/dl/Shell';
+import {json, type HeadersFunction, type LoaderFunctionArgs} from '@shopify/remix-oxygen';
+import {PROPS, firstPhoto, useShell, type ShellLogic} from '~/dl/Shell';
 import {ProductView} from '~/dl/views/ProductView';
 import {CATS, P, RECS, SRC, fmt} from '~/dl/data/catalog';
 import {DELIV} from '~/dl/data/product-data';
 import {CAT_BY_HANDLE, productFor} from '~/dl/routing';
+import {preloadHeader} from '~/dl/preload';
+import {availableOf, compareOf, fromPrice} from '~/dl/shop/live';
+import {getLive} from '~/dl/shop/catalog.server';
 
-export async function loader({params, request}: LoaderFunctionArgs) {
+export async function loader({params, request, context}: LoaderFunctionArgs) {
   const k = CAT_BY_HANDLE[params.handle || ''];
   const pid = k && productFor(k, new URL(request.url).searchParams.get('product'));
   if (!pid) throw new Response('Not found', {status: 404});
-  return {pid};
+  const photo = firstPhoto(await getLive((context as any).storefront).catch(() => null), pid);
+  return json({pid}, photo ? {headers: {Link: preloadHeader([photo])}} : undefined);
 }
+
+export const headers: HeadersFunction = ({loaderHeaders}) => loaderHeaders;
 
 function pdpVals(sh: ShellLogic, pid: string, p: any, sel: any){
   const s = sh.state, prev = PROPS.pdpPreview ?? 'ready';
-  const loading = prev === 'loading', avail = prev !== 'sold out';
+  const loading = prev === 'loading', avail = prev !== 'sold out' && availableOf(sh.props.live, pid, sel);
+  const was = compareOf(sh.props.live, pid, sel), now = sh.priceOf(pid, sel);
   const all = sh.media(pid), vis = sh.visible(pid, sel);
   const cur = vis.find((m: any) => m.i === s.gi) || vis[0] || all[0] || {i:-1};
   const vi = vis.indexOf(cur);
@@ -34,7 +41,7 @@ function pdpVals(sh: ShellLogic, pid: string, p: any, sel: any){
   const summary = p.opts.filter((o: any) => o.n !== 'Monogram' || sel.Monogram === 1).map((o: any) => o.n === 'Monogram' ? 'Monogram' : o.vals[sel[o.n] ?? 0].v).join(' · ');
   const mobile = !!s.mobile, showBar = !!s.ctaOut && !loading && !s.barHidden;
   return {
-    opts, pLoading: loading, pReady: !loading, pAvail: avail, pSoldOut: !avail, pHasCompare: false, pCompare: '',
+    opts, pLoading: loading, pReady: !loading, pAvail: avail, pSoldOut: !avail, pHasCompare: was > 0, pCompare: was ? fmt(was * s.qty) : '', pOff: was ? Math.round((was - now) / was * 100) + '% off' : '',
     ctaRef: sh.ctaRef, stagePos: (mobile || s.stacked) ? 'relative' : 'sticky', stageTop: (mobile || s.stacked) ? '0px' : '80px', stageH: mobile ? 'min(118vw, 640px)' : s.stacked ? 'min(80vw, 720px)' : 'calc(100vh - 300px)',
     gAll: all.map((m: any) => ({...m, bg: m.url ? 'url("' + m.url + '")' : 'none', hasUrl: !!m.url, noUrl: !m.url, op: m.i === cur.i ? 1 : 0, tf: m.i === cur.i ? 'scale(1)' : 'scale(1.035)'})),
     gThumbs: vis.map((m: any) => ({alt:m.alt, url:m.url, bg: m.url ? 'url("' + m.url + '")' : 'none', hasUrl: !!m.url, tint:m.tint, op: m.i === cur.i ? 1 : .55, ring: m.i === cur.i ? '1px solid #221E18' : '1px solid rgba(34,30,24,0)', pick: () => sh.setState({gi:m.i})})),
@@ -52,7 +59,7 @@ function productVals(sh: ShellLogic, pid: string){
   const s = sh.state, p = P[pid], sel = sh.defSel(pid, sh.selOf(pid));
   const accDefs = [['Details', p.details], ['Care', p.care], ['Delivery & returns', DELIV]];
   const acc = accDefs.map(([t, b]) => { const open = s.acc === t; return {title:t, body:b, rows: open ? '1fr' : '0fr', rot: open ? 'rotate(45deg)' : 'none', toggle: () => sh.setState((stt: any) => ({acc: stt.acc === t ? '' : t}))}; });
-  const recs = (RECS[p.cat] || []).map((rid: string, i: number) => { const ci = CATS.findIndex((c: any) => c.items.some((x: any) => x.pid === rid)); const ii = CATS[ci].items.findIndex((x: any) => x.pid === rid); return {name:P[rid].name, price:'From ' + fmt(sh.priceOf(rid, sh.defSel(rid))), slotId:`col-${CATS[ci].k}-${ii}`, src: SRC[`col-${CATS[ci].k}-${ii}`] || '', ph:`${P[rid].name} · product image`, delay:i * 120, onClick: () => sh.openProduct(rid)}; });
+  const recs = (RECS[p.cat] || []).map((rid: string, i: number) => { const ci = CATS.findIndex((c: any) => c.items.some((x: any) => x.pid === rid)); const ii = CATS[ci].items.findIndex((x: any) => x.pid === rid); return {name:P[rid].name, price:'From ' + fmt(fromPrice(sh.props.live, rid)), slotId:`col-${CATS[ci].k}-${ii}`, src: SRC[`col-${CATS[ci].k}-${ii}`] || '', ph:`${P[rid].name} · product image`, delay:i * 120, onClick: () => sh.openProduct(rid)}; });
   return {
     pName: p.name, pShort: p.short, pCatName: CATS.find((c: any) => c.k === p.cat).name, goPCat: () => sh.goStory(p.cat),
     pPrice: fmt(sh.priceOf(pid, sel) * s.qty),

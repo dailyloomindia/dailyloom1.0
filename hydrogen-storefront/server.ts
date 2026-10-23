@@ -2,6 +2,7 @@ import {storefrontRedirect} from '@shopify/hydrogen';
 import {createRequestHandler, type AppLoadContext} from '@shopify/remix-oxygen';
 import {createHydrogenContext} from '@shopify/hydrogen';
 import {AppSession} from '~/lib/session.server';
+import {CART_QUERY_FRAGMENT} from '~/dl/shop/cart.server';
 
 export default {
   async fetch(
@@ -18,6 +19,7 @@ export default {
         session,
         executionContext,
         waitUntil: executionContext.waitUntil.bind(executionContext),
+        cart: {queryFragment: CART_QUERY_FRAGMENT},
       });
 
       const handleRequest = createRequestHandler({
