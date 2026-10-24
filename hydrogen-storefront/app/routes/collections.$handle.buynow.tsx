@@ -1,14 +1,14 @@
 // Buy page: /collections/<handle>/buynow[?product=<id>]
 import {useLoaderData} from '@remix-run/react';
 import {Analytics} from '@shopify/hydrogen';
-import {json, type HeadersFunction, type LoaderFunctionArgs} from '@shopify/remix-oxygen';
+import {json, redirect, type HeadersFunction, type LoaderFunctionArgs} from '@shopify/remix-oxygen';
 import {PROPS, firstPhoto, photosOf, useShell, type ShellLogic} from '~/dl/Shell';
 import {ProductView} from '~/dl/views/ProductView';
 import {CATS, P, RECS, SRC, fmt} from '~/dl/data/catalog';
 import {DELIV} from '~/dl/data/product-data';
 import {CAT_BY_HANDLE, productFor} from '~/dl/routing';
 import {preloadHeader} from '~/dl/preload';
-import {analyticsProduct, availableOf, combos, compareOf, dealVals, fromDeal, priceOf, variantOf} from '~/dl/shop/live';
+import {analyticsProduct, availableOf, combos, compareOf, dealVals, fromDeal, inStore, priceOf, variantOf} from '~/dl/shop/live';
 import {HANDLE} from '~/dl/routing';
 import {ORIGIN, RETURN_POLICY, breadcrumbs, seo} from '~/dl/seo/meta';
 import {PRODUCT_SEO} from '~/dl/seo/keywords';
@@ -19,6 +19,8 @@ export async function loader({params, request, context}: LoaderFunctionArgs) {
   const pid = k && productFor(k, new URL(request.url).searchParams.get('product'));
   if (!pid) throw new Response('Not found', {status: 404});
   const live = await getLive((context as any).storefront).catch(() => null);
+  // Not sold yet: its collection page shows it as coming soon.
+  if (!inStore(live, pid)) throw redirect('/collections/' + params.handle, 302);
   const photo = firstPhoto(live, pid), url = new URL(request.url), path = url.pathname + url.search;
   // Product details for search results and Google Shopping (schema.org): one offer per variant the store sells.
   const seen = new Set<string>(), offers: any[] = [];
@@ -65,9 +67,11 @@ function pdpVals(sh: ShellLogic, pid: string, p: any, sel: any){
     const differ = prices.some((x: number) => x !== prices[0]);
     return {name:o.n, current: o.swatch || single ? cv.v : cv.v, single, singleText: cv.d ? cv.v + ' · ' + cv.d : cv.v, swatch: !!o.swatch && !single, tiles: !o.swatch && !single,
       vals: o.vals.map((v: any, k: number) => { const on = k === ci; const off = !!v.soon;
-        return {label:v.v, sub: v.d || '', hex:v.hex, price: differ && o.n !== 'Monogram' ? fmt(prices[k]) : (v.p && o.n === 'Monogram' ? '+' + fmt(v.p) : ''), disabled: off, cursor: off ? 'default' : 'pointer', op: off ? .45 : 1,
+        // Coming soon (monogramming, for now): greyed, and choosing it asks to be notified instead.
+        const nf = off ? (o.n === 'Monogram' ? sh.notifyFor(`Monogramming on the ${p.name}`, 'monogramming is available') : sh.notifyFor(`${p.name} · ${v.v}`, `the ${p.name} in ${v.v} arrives`)) : null;
+        return {label:v.v, sub: off ? 'Coming soon' : v.d || '', hasNf: !!nf, nfLabel: nf ? nf.label : '', hex:v.hex, price: off ? '' : differ && o.n !== 'Monogram' ? fmt(prices[k]) : (v.p && o.n === 'Monogram' ? '+' + fmt(v.p) : ''), disabled: false, cursor: 'pointer', op: off ? .45 : 1,
           bg: on ? 'rgba(244,239,230,.92)' : 'transparent', bd: on ? '#221E18' : 'rgba(34,30,24,.18)', outline: on ? '1px dashed rgba(126,82,50,.5)' : '1px dashed rgba(126,82,50,0)', fg: off ? '#9A8F7E' : '#221E18', subColor: off ? '#9A8F7E' : '#5F574B',
-          ring: on ? '0 0 0 2px #F4EFE6, 0 0 0 3.5px #221E18' : 'inset 0 0 0 1px rgba(34,30,24,.16)', pick: off ? null : () => sh.pickOpt(pid, o.n, k)}; })};
+          ring: on ? '0 0 0 2px #F4EFE6, 0 0 0 3.5px #221E18' : 'inset 0 0 0 1px rgba(34,30,24,.16)', pick: nf ? nf.go : () => sh.pickOpt(pid, o.n, k)}; })};
   });
   const summary = p.opts.filter((o: any) => o.n !== 'Monogram' || sel.Monogram === 1).map((o: any) => o.n === 'Monogram' ? 'Monogram' : o.vals[sel[o.n] ?? 0].v).join(' · ');
   const mobile = !!s.mobile, showBar = !!s.ctaOut && !loading && !s.barHidden;
@@ -99,7 +103,7 @@ function productVals(sh: ShellLogic, pid: string){
   const s = sh.state, p = P[pid], sel = sh.defSel(pid, sh.selOf(pid));
   const accDefs = [['Details', p.details], ['Care', p.care], ['Delivery & returns', DELIV]];
   const acc = accDefs.map(([t, b]) => { const open = s.acc === t; return {title:t, body:b, rows: open ? '1fr' : '0fr', rot: open ? 'rotate(45deg)' : 'none', toggle: () => sh.setState((stt: any) => ({acc: stt.acc === t ? '' : t}))}; });
-  const recs = (RECS[p.cat] || []).map((rid: string, i: number) => { const ci = CATS.findIndex((c: any) => c.items.some((x: any) => x.pid === rid)); const ii = CATS[ci].items.findIndex((x: any) => x.pid === rid); return {name:P[rid].name, price:'From ' + fmt(fromDeal(sh.props.live, rid).now), deal: dealVals(fromDeal(sh.props.live, rid), fmt), slotId:`col-${CATS[ci].k}-${ii}`, src: SRC[`col-${CATS[ci].k}-${ii}`] || '', ph:`${P[rid].name} · product image`, delay:i * 120, onClick: () => sh.openProduct(rid)}; });
+  const recs = (RECS[p.cat] || []).filter((rid: string) => P[rid] && inStore(sh.props.live, rid)).map((rid: string, i: number) => { const ci = CATS.findIndex((c: any) => c.items.some((x: any) => x.pid === rid)); const ii = CATS[ci].items.findIndex((x: any) => x.pid === rid); return {name:P[rid].name, price:'From ' + fmt(fromDeal(sh.props.live, rid).now), deal: dealVals(fromDeal(sh.props.live, rid), fmt), slotId:`col-${CATS[ci].k}-${ii}`, src: SRC[`col-${CATS[ci].k}-${ii}`] || '', ph:`${P[rid].name} · product image`, delay:i * 120, onClick: () => sh.openProduct(rid)}; });
   return {
     pName: p.name, pShort: p.short, pCatName: CATS.find((c: any) => c.k === p.cat).name, goPCat: () => sh.goStory(p.cat),
     pPrice: fmt(sh.priceOf(pid, sel) * s.qty),

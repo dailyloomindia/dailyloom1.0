@@ -35,5 +35,12 @@ export const MONOGRAM_HANDLE = 'monogram';
 /** How many pieces each product's monogram is embroidered on, as the design prices it. */
 export const MONOGRAM_PIECES: Record<string, number> = {'cotton-towel': 1, 'bamboo-towel': 1, 'cotton-towel-set': 3, 'bedsheet': 2, 'bed-set': 2};
 
+/** Monogramming is not offered yet: every "Add initials" choice shows as coming soon, with Notify me. */
+export const MONOGRAM_SOON = true;
+if (MONOGRAM_SOON) for (const pid of Object.keys(P)) {
+  const m = P[pid].opts.find((o: any) => o.n === 'Monogram');
+  if (m) m.vals.forEach((v: any, i: number) => { if (i > 0) v.soon = true; });
+}
+
 // The store sells the winter duvet as Single and King; King covers double beds too.
 P['winter-duvet'].opts[0].vals = P['winter-duvet'].opts[0].vals.filter((x: any) => x.v !== 'Double');

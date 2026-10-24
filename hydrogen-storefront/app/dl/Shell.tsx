@@ -204,6 +204,8 @@ export class ShellLogic extends Component<ShellProps, any> {
   scrollToId(id: string){ const el = document.getElementById(id); if (!el) return; window.scrollTo({top: el.getBoundingClientRect().top + scrollY - 107, behavior: PROPS.motion === 'reduced' ? 'auto' : 'smooth'}); }
   defSel(pid: string, preset?: any){ const o: any = {}, given = (x: any) => preset && preset[x.n] != null && preset[x.n] < x.vals.length; P[pid].opts.forEach((x: any) => o[x.n] = given(x) ? preset[x.n] : 0);
     // Options left open start on the first selection Shopify has in stock.
+    // Coming-soon choices (monogramming) are never selected.
+    P[pid].opts.forEach((x: any) => { if (x.vals[o[x.n]] && x.vals[o[x.n]].soon) o[x.n] = 0; });
     if (!availableOf(this.props.live, pid, o)) { const ok = combos(pid).find((c: any) => P[pid].opts.every((x: any) => !given(x) || x.n === 'Monogram' || c[x.n] === o[x.n]) && availableOf(this.props.live, pid, c)); if (ok) Object.assign(o, ok); }
     return o; }
   priceOf(pid: string, sel: any){ return priceOf(this.props.live, pid, sel); }
@@ -307,7 +309,8 @@ export class ShellLogic extends Component<ShellProps, any> {
       menuIcon1: s.menuOpen ? 'M3 2l14 10' : 'M1 4h18', menuIcon2: s.menuOpen ? 'M3 12L17 2' : 'M1 10h18',
       helpLinks: [['Returns','help-returns'],['Care guide','help-care'],['Contact','help-contact']].map(([label, id]) => ({label, go: () => this.openHelp(id)})),
       hasBag: bagCount > 0, bagCount, bagEmpty: bagCount === 0, subtotal: fmt(subtotal),
-      bagItems: s.bag.map((b: any, i: number) => ({name:b.name, desc:b.desc, chip:b.chip, qty:b.qty, line:fmt(b.total), inc: () => this.bagQty(i, 1), dec: () => this.bagQty(i, -1), remove: () => this.bagQty(i, -b.qty)})),
+      // Each bag item shows the first photo its buy page shows for that selection (else Shopify's photo of it).
+      bagItems: s.bag.map((b: any, i: number) => ({photo: (u => u ? `url("${u}")` : 'none')((b.pid && ((this.visible(b.pid, b.sel || {})[0] || {}).url)) || b.image), name:b.name, desc:b.desc, chip:b.chip, qty:b.qty, line:fmt(b.total), inc: () => this.bagQty(i, 1), dec: () => this.bagQty(i, -1), remove: () => this.bagQty(i, -b.qty)})),
       openBag: () => this.setState({bagOpen:true, bagByHand:true, checkingOut:false}), closeBag: () => this.setState({bagOpen:false}), closeBagHome: () => this.go({view:'home'}),
       bagX: s.bagOpen ? 'translateX(0)' : 'translateX(104%)', bagOverlayOp: s.bagOpen ? 1 : 0, bagPe: s.bagOpen ? 'auto' : 'none',
       ...(() => {
@@ -358,10 +361,10 @@ export function firstPhoto(live: Live | null, pid: string, sel?: any): string {
 /** A bag row as the design shows it, from a Shopify cart line (its add-ons priced in). */
 function bagItem(l: BagLine){
   const total = l.total + l.kids.reduce((a, k) => a + k.total, 0), dl = l.dl, p = dl && P[dl.pid];
-  if (!p) return {key:l.id, same:l.id, name:l.title, desc:l.variant === 'Default Title' ? '' : l.variant, chip:'#E5DCCB', qty:l.qty, total};
+  if (!p) return {key:l.id, same:l.id, image:l.image || '', name:l.title, desc:l.variant === 'Default Title' ? '' : l.variant, chip:'#E5DCCB', qty:l.qty, total};
   const sel = dl.sel || {}, mono = dl.mono || '';
   const desc = p.opts.filter((o: any) => !(o.n === 'Monogram' && sel.Monogram !== 1)).map((o: any) => o.n === 'Monogram' ? 'Monogram ' + (mono || '—') : o.vals[sel[o.n] ?? 0].v).join(' · ');
   const col = p.opts.find((o: any) => o.swatch);
-  return {key:l.id, same:dl.pid + JSON.stringify(sel) + mono, name:p.name, desc, chip: col ? col.vals[sel[col.n] ?? 0].hex : '#E5DCCB', qty:l.qty, total};
+  return {key:l.id, same:dl.pid + JSON.stringify(sel) + mono, pid: dl.pid, sel, image:l.image || '', name:p.name, desc, chip: col ? col.vals[sel[col.n] ?? 0].hex : '#E5DCCB', qty:l.qty, total};
 }
 const bagItems = (bag: Bag | null) => (bag ? bag.lines : []).map(bagItem);

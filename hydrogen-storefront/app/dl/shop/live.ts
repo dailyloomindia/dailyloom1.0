@@ -10,6 +10,20 @@ export type Live = {products: Record<string, {id: string; title: string; vendor:
 const optsOf = (pid: string) => P[pid].opts.filter((o: any) => o.n !== 'Monogram');
 const valsOf = (pid: string, sel: any) => Object.fromEntries(optsOf(pid).map((o: any) => [o.n, o.vals[sel[o.n] ?? 0].v]));
 
+/**
+ * Whether the store sells a product: it is mapped to Shopify and Shopify returns it (a product not
+ * published to the Hydrogen channel is not returned). Anything else shows as coming soon, never at a
+ * made-up price. Without Shopify's data at all (an outage), products show as designed.
+ */
+export function inStore(live: Live | null, pid: string): boolean {
+  if (!live) return true;
+  const pick = SHOPIFY[pid];
+  return !!pick && combos(pid).some(s => { const p = pick(valsOf(pid, s)); return !!(p && live.products[p.handle]); });
+}
+
+/** The number of choices an option offers today (monogramming, while coming soon, offers none). */
+export const choices = (o: any) => o.vals.filter((v: any) => !v.soon).length;
+
 /** The Shopify variant a selection is, or null when the store has none. */
 export function variantOf(live: Live | null, pid: string, sel: any): LiveVariant | null {
   const pick = SHOPIFY[pid] && SHOPIFY[pid](valsOf(pid, sel));
@@ -72,7 +86,7 @@ export function fromPrice(live: Live | null, pid: string): number {
 
 /** The lowest price in a collection. */
 export const catFrom = (live: Live | null, k: string) =>
-  Math.min(...CATS.find((c: any) => c.k === k).items.filter((x: any) => !x.soon).map((x: any) => fromPrice(live, x.pid)));
+  Math.min(...CATS.find((c: any) => c.k === k).items.filter((x: any) => !x.soon && inStore(live, x.pid)).map((x: any) => fromPrice(live, x.pid)));
 
 /** A price and the earlier price it is cut from (0 when not discounted), as the page shows them. */
 export type Deal = {now: number; was: number};
@@ -90,7 +104,7 @@ export const minDeal = (ds: Deal[]): Deal => ds.reduce((a, d) => d.now < a.now |
 
 /** The lowest price in a collection, with its earlier price. */
 export const catDeal = (live: Live | null, k: string) =>
-  minDeal(CATS.find((c: any) => c.k === k).items.filter((x: any) => !x.soon).map((x: any) => fromDeal(live, x.pid)));
+  minDeal(CATS.find((c: any) => c.k === k).items.filter((x: any) => !x.soon && inStore(live, x.pid)).map((x: any) => fromDeal(live, x.pid)));
 
 /** The struck-through earlier price and saving beside a price: {has, cmp, off}; has is false when not discounted. */
 export const dealVals = (d: Deal, fmt: (n: number) => string, qty = 1) =>

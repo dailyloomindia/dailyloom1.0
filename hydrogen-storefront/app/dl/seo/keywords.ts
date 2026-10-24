@@ -37,7 +37,7 @@ export const PRODUCT_SEO: Record<string, {title: string; description: string}> =
   },
   'bedsheet': {
     title: '300 TC Cotton Percale Bedsheet Set, King Size with 2 Pillow Covers',
-    description: 'King size percale flat sheet with two matching pillow covers, in 100% virgin Indian cotton, 300 TC. Optional monogram. In dark taupe and charcoal grey.',
+    description: 'King size percale flat sheet with two matching pillow covers, in 100% virgin Indian cotton, 300 TC. In dark taupe and charcoal grey.',
   },
   'bed-set': {
     title: 'The Complete Bed: Cotton Duvet Cover, Bedsheet & 2 Pillow Covers',
@@ -57,7 +57,7 @@ export const PRODUCT_SEO: Record<string, {title: string; description: string}> =
   },
   'cotton-towel-set': {
     title: '3-Piece Cotton Towel Set: Bath, Hand & Face Towel (Gift Set)',
-    description: 'One bath, one hand and one face towel in 650 GSM pure white cotton. A towel gift set with an optional monogram.',
+    description: 'One bath, one hand and one face towel in 650 GSM pure white cotton. A thoughtful towel gift set.',
   },
 };
 

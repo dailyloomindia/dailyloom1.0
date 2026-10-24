@@ -281,7 +281,7 @@ export function ShellView({vals, children}: {vals: any; children: ReactNode}) {
               {"\n      "}
               <div style={{display: "flex", gap: "18px", padding: "22px 0", borderBottom: "1.5px dashed rgba(126,82,50,.22)"}}>
                 {"\n        "}
-                <div style={css(`width:72px;height:88px;flex:none;background-color:${S(b?.chip)};background-image:repeating-linear-gradient(45deg, rgba(255,255,255,.2) 0 1px, transparent 1px 3px),repeating-linear-gradient(-45deg, rgba(0,0,0,.08) 0 1px, transparent 1px 3px);outline:1px dashed rgba(34,30,24,.25);outline-offset:-5px`)} />
+                <div style={css(`width:72px;height:88px;flex:none;background-color:${S(b?.chip)};background-image:${S(b?.photo)};background-size:cover;background-position:center;outline:1px dashed rgba(34,30,24,.25);outline-offset:-5px`)} />
                 {"\n        "}
                 <div style={{flex: "1", display: "flex", flexDirection: "column", gap: "6px", minWidth: "0"}}>
                   {"\n          "}

@@ -4,7 +4,7 @@ import {HomeView} from '~/dl/views/HomeView';
 import {P, TT, TOWEL_B, TOWEL_C, fmt} from '~/dl/data/catalog';
 import {GOOGLE, REVIEWS, TCS, TOWEL_IMGS} from '~/dl/data/home-data';
 import {DESKTOP_MEDIA, HOME_HERO, MOBILE_MEDIA} from '~/dl/preload';
-import {catDeal, dealVals, fromDeal} from '~/dl/shop/live';
+import {catDeal, dealVals, fromDeal, inStore} from '~/dl/shop/live';
 import {ORGANIZATION, WEBSITE, seo} from '~/dl/seo/meta';
 import {HOME_SEO} from '~/dl/seo/keywords';
 
@@ -39,7 +39,10 @@ function homeVals(sh: ShellLogic){
     towelMats: ['Cotton', 'Bamboo'].map((l, i) => ({label:l, bg: i === s.tMat ? '#F4EFE6' : 'transparent', shadow: i === s.tMat ? '0 1px 3px rgba(34,30,24,.12)' : 'none', outline: i === s.tMat ? '1px dashed rgba(126,82,50,.45)' : '1px dashed rgba(126,82,50,0)', pick: () => sh.setState({tMat:i, tCol:0})})),
     towelTypes: TT.map((t: any, i: number) => ({label:t.v, d:t.d, color: i === s.tType ? '#221E18' : '#857A6A', pick: () => sh.setState({tType:i})})),
     towelColours: TL.map((c: any, i: number) => ({label:c.v, hex:c.hex, ring: i === tci ? '0 0 0 2px #F4EFE6, 0 0 0 3.5px #221E18' : 'inset 0 0 0 1px rgba(34,30,24,.16)', pick: () => sh.setState({tCol:i})})),
-    towelPrice: 'From ' + fmt(towel.now), towelDeal: dealVals(towel, fmt),
+    // A towel material the store does not sell yet shows as coming soon, with Notify me.
+    ...(inStore(live, tPid)
+      ? {towelPrice: 'From ' + fmt(towel.now), towelDeal: dealVals(towel, fmt), towelSoon: false, nfTowel: {label: '', go: () => {}}}
+      : {towelPrice: 'Coming soon', towelDeal: {has: false}, towelSoon: true, nfTowel: sh.notifyFor(`${P[tPid].name}s`, `our ${P[tPid].name.toLowerCase()}s arrive`)}),
     reviews: (REVIEWS.length ? REVIEWS : [0,1,2].map(() => ({name:'Customer name', place:'City', product:'Product', stars:5, text:'Paste a Google review here.', ph:true}))).slice(0, 3).map((r: any, i: number) => ({name:r.name, meta:[r.place, r.product].filter(Boolean).join(' · '), stars:'★'.repeat(r.stars || 5), text: r.ph ? r.text : '“' + r.text + '”', textColor: r.ph ? '#9A8F7E' : '#221E18', delay:i * 120})),
     revSummary: GOOGLE.rating ? `${GOOGLE.rating} on Google · ${GOOGLE.count} reviews` : 'Rated on Google', revUrl: GOOGLE.url,
   };
