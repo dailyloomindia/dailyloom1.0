@@ -1,0 +1,79 @@
+// Buy page: /collections/<handle>/buynow[?product=<id>]
+import {useLoaderData} from '@remix-run/react';
+import {json, type HeadersFunction, type LoaderFunctionArgs} from '@shopify/remix-oxygen';
+import {PROPS, firstPhoto, useShell, type ShellLogic} from '~/dl/Shell';
+import {ProductView} from '~/dl/views/ProductView';
+import {CATS, P, RECS, SRC, fmt} from '~/dl/data/catalog';
+import {DELIV} from '~/dl/data/product-data';
+import {CAT_BY_HANDLE, productFor} from '~/dl/routing';
+import {preloadHeader} from '~/dl/preload';
+import {availableOf, compareOf, dealVals, fromDeal} from '~/dl/shop/live';
+import {getLive} from '~/dl/shop/catalog.server';
+
+export async function loader({params, request, context}: LoaderFunctionArgs) {
+  const k = CAT_BY_HANDLE[params.handle || ''];
+  const pid = k && productFor(k, new URL(request.url).searchParams.get('product'));
+  if (!pid) throw new Response('Not found', {status: 404});
+  const photo = firstPhoto(await getLive((context as any).storefront).catch(() => null), pid);
+  return json({pid}, photo ? {headers: {Link: preloadHeader([photo])}} : undefined);
+}
+
+export const headers: HeadersFunction = ({loaderHeaders}) => loaderHeaders;
+
+function pdpVals(sh: ShellLogic, pid: string, p: any, sel: any){
+  const s = sh.state, prev = PROPS.pdpPreview ?? 'ready';
+  const loading = prev === 'loading', avail = prev !== 'sold out' && availableOf(sh.props.live, pid, sel);
+  const was = compareOf(sh.props.live, pid, sel), now = sh.priceOf(pid, sel);
+  const all = sh.media(pid), vis = sh.visible(pid, sel);
+  const cur = vis.find((m: any) => m.i === s.gi) || vis[0] || all[0] || {i:-1};
+  const vi = vis.indexOf(cur);
+  const step = (d: number) => () => { if (!vis.length) return; sh.setState({gi: vis[(vi + d + vis.length) % vis.length].i}); };
+  const opts = p.opts.map((o: any) => {
+    const ci = sel[o.n] ?? 0, cv = o.vals[ci], single = o.vals.length === 1;
+    const prices = o.vals.map((v: any, k: number) => sh.priceOf(pid, {...sel, [o.n]:k}));
+    const differ = prices.some((x: number) => x !== prices[0]);
+    return {name:o.n, current: o.swatch || single ? cv.v : cv.v, single, singleText: cv.d ? cv.v + ' · ' + cv.d : cv.v, swatch: !!o.swatch && !single, tiles: !o.swatch && !single,
+      vals: o.vals.map((v: any, k: number) => { const on = k === ci; const off = !!v.soon;
+        return {label:v.v, sub: v.d || '', hex:v.hex, price: differ && o.n !== 'Monogram' ? fmt(prices[k]) : (v.p && o.n === 'Monogram' ? '+' + fmt(v.p) : ''), disabled: off, cursor: off ? 'default' : 'pointer', op: off ? .45 : 1,
+          bg: on ? 'rgba(244,239,230,.92)' : 'transparent', bd: on ? '#221E18' : 'rgba(34,30,24,.18)', outline: on ? '1px dashed rgba(126,82,50,.5)' : '1px dashed rgba(126,82,50,0)', fg: off ? '#9A8F7E' : '#221E18', subColor: off ? '#9A8F7E' : '#5F574B',
+          ring: on ? '0 0 0 2px #F4EFE6, 0 0 0 3.5px #221E18' : 'inset 0 0 0 1px rgba(34,30,24,.16)', pick: off ? null : () => sh.pickOpt(pid, o.n, k)}; })};
+  });
+  const summary = p.opts.filter((o: any) => o.n !== 'Monogram' || sel.Monogram === 1).map((o: any) => o.n === 'Monogram' ? 'Monogram' : o.vals[sel[o.n] ?? 0].v).join(' · ');
+  const mobile = !!s.mobile, showBar = !!s.ctaOut && !loading && !s.barHidden;
+  return {
+    opts, pLoading: loading, pReady: !loading, pAvail: avail, pSoldOut: !avail, pHasCompare: was > 0, pCompare: was ? fmt(was * s.qty) : '', pOff: was ? Math.round((was - now) / was * 100) + '% off' : '',
+    ctaRef: sh.ctaRef, stagePos: (mobile || s.stacked) ? 'relative' : 'sticky', stageTop: (mobile || s.stacked) ? '0px' : '80px', stageH: mobile ? 'min(118vw, 640px)' : s.stacked ? 'min(80vw, 720px)' : 'calc(100vh - 300px)',
+    gAll: all.map((m: any) => ({...m, bg: m.url ? 'url("' + m.url + '")' : 'none', hasUrl: !!m.url, noUrl: !m.url, op: m.i === cur.i ? 1 : 0, tf: m.i === cur.i ? 'scale(1)' : 'scale(1.035)'})),
+    gThumbs: vis.map((m: any) => ({alt:m.alt, url:m.url, bg: m.url ? 'url("' + m.url + '")' : 'none', hasUrl: !!m.url, tint:m.tint, op: m.i === cur.i ? 1 : .55, ring: m.i === cur.i ? '1px solid #221E18' : '1px solid rgba(34,30,24,0)', pick: () => sh.setState({gi:m.i})})),
+    gMulti: vis.length > 1, gCount: vis.length ? (vi + 1) + ' / ' + vis.length : '', gPrev: step(-1), gNext: step(1), gCaption: summary || p.name,
+    notifyEmail: s.notifyEmail || '', onNotifyEmail: (e: any) => sh.setState({notifyEmail: e.target.value, notified:false}),
+    notifyMe: () => { if (/\S+@\S+\.\S+/.test(s.notifyEmail || '')) sh.setState({notified:true}); }, notifyLabel: s.notified ? 'Noted ✓' : 'Notify me',
+    barTf: showBar ? 'translate(-50%, 0)' : 'translate(-50%, 140%)', barOp: showBar ? 1 : 0, barPe: showBar ? 'auto' : 'none',
+    barImg: cur.url || '', barBg: cur.url ? 'url("' + cur.url + '")' : 'none', barHasImg: !!cur.url, barTint: cur.tint || '#E2D6C2', barSummary: summary,
+    barClose: () => sh.setState({barHidden:true}), barW: mobile ? 'calc(100vw - 20px)' : 'min(980px,calc(100vw - 96px))', barBottom: mobile ? '10px' : '16px', barThumbDisp: mobile ? 'none' : 'block', barPriceDisp: mobile ? 'none' : 'inline', barSub: mobile ? fmt(sh.priceOf(pid, sel) * s.qty) : summary, barLabel: avail ? (s.added ? 'Added ✓' : 'Add to bag') : 'Notify me',
+    barAction: avail ? sh.addToBag : () => { const c = sh.ctaRef.current; if (c) window.scrollTo({top: c.getBoundingClientRect().top + scrollY - 140, behavior:'smooth'}); }
+  };
+}
+
+function productVals(sh: ShellLogic, pid: string){
+  const s = sh.state, p = P[pid], sel = sh.defSel(pid, sh.selOf(pid));
+  const accDefs = [['Details', p.details], ['Care', p.care], ['Delivery & returns', DELIV]];
+  const acc = accDefs.map(([t, b]) => { const open = s.acc === t; return {title:t, body:b, rows: open ? '1fr' : '0fr', rot: open ? 'rotate(45deg)' : 'none', toggle: () => sh.setState((stt: any) => ({acc: stt.acc === t ? '' : t}))}; });
+  const recs = (RECS[p.cat] || []).map((rid: string, i: number) => { const ci = CATS.findIndex((c: any) => c.items.some((x: any) => x.pid === rid)); const ii = CATS[ci].items.findIndex((x: any) => x.pid === rid); return {name:P[rid].name, price:'From ' + fmt(fromDeal(sh.props.live, rid).now), deal: dealVals(fromDeal(sh.props.live, rid), fmt), slotId:`col-${CATS[ci].k}-${ii}`, src: SRC[`col-${CATS[ci].k}-${ii}`] || '', ph:`${P[rid].name} · product image`, delay:i * 120, onClick: () => sh.openProduct(rid)}; });
+  return {
+    pName: p.name, pShort: p.short, pCatName: CATS.find((c: any) => c.k === p.cat).name, goPCat: () => sh.goStory(p.cat),
+    pPrice: fmt(sh.priceOf(pid, sel) * s.qty),
+    ...pdpVals(sh, pid, p, sel),
+    showMono: !!p.opts.find((o: any) => o.n === 'Monogram') && sel.Monogram === 1, monoNote: p.cat === 'towels' ? "Embroidered in our workshop. Monogrammed towels can be returned only if they arrive damaged." : "Embroidered on both pillow covers. Monogrammed pillow covers can be returned only if they arrive damaged.", mono: s.mono || '', onMono: (e: any) => sh.setState({mono: e.target.value.toUpperCase().replace(/[^A-Z]/g, '').slice(0, 3), added:false}), acc, recs, qty: s.qty,
+    qtyInc: () => sh.setState((stt: any) => ({qty: Math.min(10, stt.qty + 1), added:false})), qtyDec: () => sh.setState((stt: any) => ({qty: Math.max(1, stt.qty - 1), added:false})),
+    g1:`pdp-${pid}-1`, g1src: SRC[`pdp-${pid}-1`] || '', g2:`pdp-${pid}-2`, g3:`pdp-${pid}-3`, g4:`pdp-${pid}-4`, g1ph:`${p.name} · hero product image`,
+    addToBag: sh.addToBag, addLabel: s.added ? 'Added to bag ✓' : 'Add to bag', addBg: s.added ? '#55573F' : '#221E18',
+    pin: s.pin, onPin: (e: any) => sh.setState({pin: e.target.value.replace(/\D/g, '').slice(0, 6), pinMsg:''}), onPinKey: (e: any) => { if (e.key === 'Enter') sh.checkPin(); }, checkPin: sh.checkPin, pinMsg: s.pinMsg, hasPinMsg: !!s.pinMsg,
+  };
+}
+
+export default function Product() {
+  const {pid} = useLoaderData<typeof loader>();
+  const {sh, base} = useShell();
+  return <ProductView vals={{...base, ...productVals(sh, pid)}} />;
+}

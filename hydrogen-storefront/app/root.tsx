@@ -1,36 +1,96 @@
-import {Links, Meta, Outlet, Scripts} from '@remix-run/react';
+import {Links, Meta, Outlet, Scripts, isRouteErrorResponse, useRouteError, type ShouldRevalidateFunction} from '@remix-run/react';
+import type {LoaderFunctionArgs} from '@shopify/remix-oxygen';
+import type {ReactNode} from 'react';
+import pseudoStyles from '~/dl/pseudo.css?url';
+import {Shell} from '~/dl/Shell';
+import {NotFoundView} from '~/dl/NotFoundView';
+import {getLive} from '~/dl/shop/catalog.server';
+import {getBag} from '~/dl/shop/cart.server';
 
-export default function App() {
+export const meta = () => [{title: 'Daily Loom'}];
+
+/** Every page gets the store's prices, stock and photos, and the visitor's bag. */
+export async function loader({context}: LoaderFunctionArgs) {
+  const {storefront, cart} = context as any;
+  const [live, bag] = await Promise.all([getLive(storefront).catch(() => null), getBag(cart)]);
+  return {live, bag};
+}
+
+// Loaded once per visit; the bag then updates from the cart actions themselves.
+export const shouldRevalidate: ShouldRevalidateFunction = () => false;
+
+export function links() {
+  return [
+    {rel: 'preconnect', href: 'https://fonts.googleapis.com'},
+    {rel: 'preconnect', href: 'https://fonts.gstatic.com', crossOrigin: 'anonymous'},
+    {rel: 'preconnect', href: 'https://cdn.shopify.com'},
+    {rel: 'stylesheet', href: 'https://fonts.googleapis.com/css2?family=Marcellus&family=Jost:wght@300;400;500;600&display=swap'},
+    {rel: 'stylesheet', href: pseudoStyles},
+    // image-slot.js reads the photo framing from this file before it shows any photo.
+    {rel: 'preload', as: 'fetch', href: '/.image-slots.state.json', crossOrigin: 'anonymous'},
+  ];
+}
+
+// The design file's <helmet> style, unchanged.
+const DESIGN_CSS = `
+html,body{margin:0;background:#F4EFE6;-webkit-font-smoothing:antialiased}
+button,input{font:inherit;color:inherit}
+::selection{background:#C8925E;color:#fff}
+a{color:#7E5232;text-decoration:none}
+a:hover{color:#221E18}
+`;
+// Page-level CSS the design tool's runtime adds around the design.
+const RUNTIME_CSS = 'html,body{height:100%;margin:0}#dc-root,#dc-root>.sc-host{height:100%}';
+// Until the app starts, the page waits behind the curtain (the root's last child),
+// exactly as the design opens; Shell removes this and plays the curtain lift.
+const BOOT_CSS = '#dc-root>.sc-host>div>div:last-child{transform:translateY(0)!important}';
+
+function Document({children}: {children: ReactNode}) {
   return (
     <html lang="en">
       <head>
         <meta charSet="utf-8" />
-        <meta name="viewport" content="width=device-width,initial-scale=1" />
+        <meta name="viewport" content="width=device-width, initial-scale=1" />
         <Meta />
         <Links />
+        <style dangerouslySetInnerHTML={{__html: DESIGN_CSS}} />
+        <style dangerouslySetInnerHTML={{__html: RUNTIME_CSS}} />
+        <style id="dl-boot" dangerouslySetInnerHTML={{__html: BOOT_CSS}} />
+        <noscript>
+          <style dangerouslySetInnerHTML={{__html: '#dc-root>.sc-host>div>div:last-child{display:none}'}} />
+        </noscript>
+        <script src="/image-slot.js" defer />
       </head>
       <body>
-        <Outlet />
+        <div id="dc-root">
+          <div className="sc-host" data-sc-name="Root">
+            {children}
+          </div>
+        </div>
         <Scripts />
       </body>
     </html>
   );
 }
 
-export function ErrorBoundary() {
+export default function App() {
   return (
-    <html lang="en">
-      <head>
-        <meta charSet="utf-8" />
-        <meta name="viewport" content="width=device-width,initial-scale=1" />
-        <Meta />
-        <Links />
-      </head>
-      <body>
-        <p>Something went wrong.</p>
-        <a href="/">Return home</a>
-        <Scripts />
-      </body>
-    </html>
+    <Document>
+      <Shell>
+        <Outlet />
+      </Shell>
+    </Document>
+  );
+}
+
+export function ErrorBoundary() {
+  const error = useRouteError();
+  const notFound = isRouteErrorResponse(error) && error.status === 404;
+  return (
+    <Document>
+      <Shell view="notfound">
+        <NotFoundView notFound={notFound} />
+      </Shell>
+    </Document>
   );
 }

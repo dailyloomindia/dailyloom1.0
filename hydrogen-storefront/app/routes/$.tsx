@@ -1,7 +1,8 @@
-// The v4 design is a single page that navigates internally, so every other
-// path (old /collections, /products, /pages links) goes back to it.
-import {redirect} from '@shopify/remix-oxygen';
-
+// Any path without a route is a 404.
 export async function loader() {
-  return redirect('/', 301);
+  throw new Response('Not found', {status: 404});
+}
+
+export default function NotFound() {
+  return null;
 }
