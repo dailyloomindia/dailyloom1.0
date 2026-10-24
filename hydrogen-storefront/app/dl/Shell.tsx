@@ -209,11 +209,18 @@ export class ShellLogic extends Component<ShellProps, any> {
   priceOf(pid: string, sel: any){ return priceOf(this.props.live, pid, sel); }
   openProduct(pid: string, preset?: any){ this.go({view:'product', pid, cat:P[pid].cat, sel:this.defSel(pid, preset)}); }
   media(pid: string){ const p = P[pid]; const col = p.opts.find((o: any) => o.swatch);
-    return (mediaOf(this.props.live, pid) || SHOP_MEDIA[pid] || []).map(([f, alt]: any, i: number) => { const tags = alt ? alt.split('|').map((x: string) => x.trim()) : []; const cv = col && col.vals.find((v: any) => tags.includes(v.v));
-      return {i, url: f ? (/^https?:/.test(f) ? f : IMG(f)) : '', tags, alt: alt ? p.name + ' · ' + alt : p.name, tint: cv ? cv.hex : '#E2D6C2', ink: cv && /^#[0-6]/.test(cv.hex) ? '#F4EFE6' : '#3B342B'}; }); }
-  visible(pid: string, sel: any){ const p = P[pid]; const vals = p.opts.map((o: any) => o.vals[sel[o.n] ?? 0].v); return this.media(pid).filter((m: any) => !m.tags.length || m.tags.every((tg: string) => vals.includes(tg))); }
+    return (mediaOf(this.props.live, pid) || SHOP_MEDIA[pid] || []).map(([f, alt]: any, i: number) => { const all = alt ? alt.split('|').map((x: string) => x.trim()) : [];
+      // "value" shows the photo only for that value; "~value" shows it always, first when that value is chosen.
+      const tags = all.filter((x: string) => x[0] !== '~'), prefer = all.filter((x: string) => x[0] === '~').map((x: string) => x.slice(1)), named = [...tags, ...prefer];
+      const cv = col && col.vals.find((v: any) => named.includes(v.v));
+      return {i, url: f ? (/^https?:/.test(f) ? f : IMG(f)) : '', tags, prefer, alt: named.length ? p.name + ' · ' + named.join(' · ') : p.name, tint: cv ? cv.hex : '#E2D6C2', ink: cv && /^#[0-6]/.test(cv.hex) ? '#F4EFE6' : '#3B342B'}; }); }
+  visible(pid: string, sel: any){ const p = P[pid]; const vals = p.opts.map((o: any) => o.vals[sel[o.n] ?? 0].v);
+    const shown = this.media(pid).filter((m: any) => !m.tags.length || m.tags.every((tg: string) => vals.includes(tg)));
+    // The chosen size or colour's own photos first, then the general ones, then the other options' photos.
+    const rank = (m: any) => !m.prefer.length ? 1 : m.prefer.some((tg: string) => vals.includes(tg)) ? 0 : 2;
+    return shown.map((m: any, k: number) => [m, k]).sort((a: any, b: any) => rank(a[0]) - rank(b[0]) || a[1] - b[1]).map((x: any) => x[0]); }
   pickOpt(pid: string, name: string, vi: number){ this.setState((st: any) => { const sel = {...this.defSel(pid, this.selOf(pid, st)), [name]:vi}; const val = P[pid].opts.find((o: any) => o.n === name).vals[vi].v; const vis = this.visible(pid, sel);
-    const hit = vis.find((m: any) => m.tags.includes(val)); const keep = vis.find((m: any) => m.i === st.gi); return {sel, selPid:pid, added:false, notified:false, gi: hit ? hit.i : keep ? keep.i : (vis[0] ? vis[0].i : 0)}; }); }
+    const hit = vis.find((m: any) => m.tags.includes(val) || m.prefer.includes(val)); const keep = vis.find((m: any) => m.i === st.gi); return {sel, selPid:pid, added:false, notified:false, gi: hit ? hit.i : keep ? keep.i : (vis[0] ? vis[0].i : 0)}; }); }
   addToBag = () => {
     const pid = this.pid(), {qty} = this.state, sel = this.defSel(pid, this.selOf(pid));
     const mono = sel.Monogram === 1 && this.state.mono ? this.state.mono : '';
