@@ -9,6 +9,7 @@ const PRODUCT = `#graphql
     id
     handle
     title
+    updatedAt
     vendor
     productType
     images(first: 20) { nodes { url altText } }
@@ -29,7 +30,7 @@ export async function getLive(storefront: Storefront): Promise<Live> {
   for (const p of Object.values(data || {}) as any[]) {
     if (!p) continue;
     products[p.handle] = {
-      id: p.id, title: p.title, vendor: p.vendor, type: p.productType || '',
+      id: p.id, title: p.title, vendor: p.vendor, type: p.productType || '', updatedAt: p.updatedAt || '',
       images: p.images.nodes.map((im: any) => ({url: sized(im.url), alt: im.altText || ''})),
       variants: p.variants.nodes.map((v: any) => ({
         id: v.id, title: v.title, sku: v.sku || '', ok: !!v.availableForSale, price: Math.round(+v.price.amount),
