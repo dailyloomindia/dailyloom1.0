@@ -24,6 +24,8 @@ export const PROPS: {
 
 const EASE = 'cubic-bezier(.76,0,.24,1)';
 const UP = 'translateY(calc(-100% - 48px))', DOWN = 'translateY(calc(100% + 48px))';
+/** Where Notify me requests are emailed (contact@dailyloom.in, via formsubmit.co). */
+const NOTIFY_FORM = 'https://formsubmit.co/ajax/contact@dailyloom.in';
 const RESET = {nf:null, notifyErr:'', barHidden:false, menuOpen:false, gi:null, notified:false, qty:1, added:false, pinMsg:'', acc:'Details', cl:0, mono:'', ritOpen:false, bagOpen:false};
 
 /** The option preset a collection card opens a product with. */
@@ -272,11 +274,20 @@ export class ShellLogic extends Component<ShellProps, any> {
   }
   /** Sends a notify-me request to the shop. Resolves to an error message, or '' when sent. */
   sendNotify(item: string, email: string): Promise<string> {
-    return fetch('/notify', {method: 'POST', headers: {'Content-Type': 'application/json'}, body: JSON.stringify({item, email, page: location.href})})
+    const failed = 'Something went wrong. Please write to contact@dailyloom.in.';
+    return fetch('/notify', {method: 'POST', headers: {'Content-Type': 'application/json'}, body: JSON.stringify({item, email})})
       .then(r => r.json()).catch(() => ({error: 'send'}))
       .then((r: any) => {
-        if (r && r.ok) { this.setState((s: any) => ({noted: {...(s.noted || {}), [item]: true}})); return ''; }
-        return r && r.error === 'email' ? 'Please enter a valid email address.' : 'Something went wrong. Please write to contact@dailyloom.in.';
+        if (!r || !r.ok) return r && r.error === 'email' ? 'Please enter a valid email address.' : failed;
+        // The email to contact@dailyloom.in (formsubmit.co, a form-to-email service; replies go to the customer).
+        return fetch(NOTIFY_FORM, {method: 'POST', headers: {'Content-Type': 'application/json', Accept: 'application/json'}, body: JSON.stringify({
+          _subject: `Notify me: ${r.item}`, _template: 'table', _captcha: 'false',
+          Product: r.item, email: r.email, Name: r.name || '—', 'Signed in': r.signedIn ? 'Yes' : 'No', Page: location.href,
+        })}).then(x => x.json()).catch(() => null).then((x: any) => {
+          if (!x || String(x.success) !== 'true') return failed;
+          this.setState((s: any) => ({noted: {...(s.noted || {}), [item]: true}}));
+          return '';
+        });
       });
   }
 

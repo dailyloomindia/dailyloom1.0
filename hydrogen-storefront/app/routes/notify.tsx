@@ -1,10 +1,7 @@
-// POST /notify: a "Notify me" request for something sold out or coming soon, emailed to the shop.
-// Signed-in customers are identified from their account; anyone else gives an email.
+// POST /notify: checks a "Notify me" request for something sold out or coming soon, and gives back
+// who it is from: a signed-in customer's account email, or the email they entered. The browser then
+// emails it to the shop (lib below), since the email service accepts website forms, not servers.
 import {json, type ActionFunctionArgs} from '@shopify/remix-oxygen';
-
-const SHOP_EMAIL = 'contact@dailyloom.in';
-// Delivers the email (formsubmit.co: no account; the first request asks the inbox to confirm once).
-const SEND_TO = `https://formsubmit.co/ajax/${SHOP_EMAIL}`;
 
 const ME = `#graphql
   query DlNotifyCustomer { customer { displayName emailAddress { emailAddress } } }`;
@@ -23,18 +20,5 @@ export async function action({request, context}: ActionFunctionArgs) {
     if (c && c.emailAddress && c.emailAddress.emailAddress) { email = c.emailAddress.emailAddress; name = c.displayName || ''; signedIn = true; }
   }
   if (!EMAIL.test(email)) return json({error: 'email'}, {status: 400});
-  const res = await fetch(SEND_TO, {
-    method: 'POST',
-    headers: {'Content-Type': 'application/json', Accept: 'application/json', Origin: 'https://dailyloom.in', Referer: 'https://dailyloom.in/'},
-    body: JSON.stringify({
-      _subject: `Notify me: ${item}`, _template: 'table', _captcha: 'false',
-      Product: item, email, Name: name || '—', 'Signed in': signedIn ? 'Yes' : 'No', Page: String(body.page || '').slice(0, 300),
-    }),
-  }).catch(() => null);
-  const out: any = res ? await res.json().catch(() => null) : null;
-  if (!out || String(out.success) !== 'true') {
-    console.error('Notify me not delivered:', out && out.message);
-    return json({error: 'send'}, {status: 502});
-  }
-  return json({ok: true});
+  return json({ok: true, item, email, name, signedIn});
 }

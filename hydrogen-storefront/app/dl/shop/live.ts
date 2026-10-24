@@ -5,7 +5,7 @@ import {CATS, P} from '../data/catalog';
 import {MONOGRAM_HANDLE, MONOGRAM_PIECES, SHOPIFY} from './map';
 
 export type LiveVariant = {id: string; title: string; sku: string; ok: boolean; price: number; cmp: number; values: string[]; image: string};
-export type Live = {products: Record<string, {id: string; title: string; vendor: string; type: string; images: {url: string; alt: string}[]; variants: LiveVariant[]}>};
+export type Live = {products: Record<string, {id: string; title: string; vendor: string; type: string; updatedAt?: string; images: {url: string; alt: string}[]; variants: LiveVariant[]}>};
 
 const optsOf = (pid: string) => P[pid].opts.filter((o: any) => o.n !== 'Monogram');
 const valsOf = (pid: string, sel: any) => Object.fromEntries(optsOf(pid).map((o: any) => [o.n, o.vals[sel[o.n] ?? 0].v]));
@@ -19,6 +19,13 @@ export function inStore(live: Live | null, pid: string): boolean {
   if (!live) return true;
   const pick = SHOPIFY[pid];
   return !!pick && combos(pid).some(s => { const p = pick(valsOf(pid, s)); return !!(p && live.products[p.handle]); });
+}
+
+/** When Shopify last changed the product (its newest variant product), as YYYY-MM-DD, or ''. */
+export function updatedOf(live: Live | null, pid: string): string {
+  const pick = SHOPIFY[pid]; if (!live || !pick) return '';
+  const ds = combos(pid).map(s => { const p = pick(valsOf(pid, s)); return (p && live.products[p.handle] && live.products[p.handle].updatedAt) || ''; }).filter(Boolean).sort();
+  return ds.length ? ds[ds.length - 1].slice(0, 10) : '';
 }
 
 /** The number of choices an option offers today (monogramming, while coming soon, offers none). */
