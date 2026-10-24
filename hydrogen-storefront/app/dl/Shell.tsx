@@ -5,6 +5,7 @@
 // the URL, and moving between views navigates to that view's route.
 import {Component, createContext, createRef, useContext, type ReactNode} from 'react';
 import {useLocation, useNavigate, useRouteLoaderData} from '@remix-run/react';
+import {Analytics} from '@shopify/hydrogen';
 import {CATS, P, SHOP_MEDIA, IMG, fmt} from './data/catalog';
 import {availableOf, combos, mediaOf, priceOf, type Live} from './shop/live';
 import type {Bag, BagLine} from './shop/cart.server';
@@ -28,7 +29,7 @@ const RESET = {barHidden:false, menuOpen:false, gi:null, notified:false, qty:1, 
 /** The option preset a collection card opens a product with. */
 const presetFor = (pid: string) => (CATS.flatMap((c: any) => c.items).find((x: any) => x.pid === pid) || {}).sel;
 
-type ShellProps = {route: Route; locKey: string; navigate: (to: string) => void; live: Live | null; bag: Bag | null; children: ReactNode};
+type ShellProps = {route: Route; locKey: string; navigate: (to: string) => void; live: Live | null; bag: Bag | null; onCart?: (cart: any) => void; children: ReactNode};
 type Ctx = {sh: ShellLogic; base: any};
 const ShellContext = createContext<Ctx | null>(null);
 
@@ -39,12 +40,12 @@ export function useShell(): Ctx {
   return c;
 }
 
-export function Shell({view, children}: {view?: View; children: ReactNode}) {
+export function Shell({view, onCart, children}: {view?: View; onCart?: (cart: any) => void; children: ReactNode}) {
   const location = useLocation();
   const navigate = useNavigate();
   const route = view ? {view} : parseRoute(location.pathname, location.search);
   const data = useRouteLoaderData('root') as {live: Live | null; bag: Bag | null} | undefined;
-  return <ShellLogic route={route} locKey={location.key} navigate={navigate} live={data ? data.live : null} bag={data ? data.bag : null}>{children}</ShellLogic>;
+  return <ShellLogic route={route} locKey={location.key} navigate={navigate} live={data ? data.live : null} bag={data ? data.bag : null} onCart={onCart}>{children}</ShellLogic>;
 }
 
 export class ShellLogic extends Component<ShellProps, any> {
@@ -226,7 +227,7 @@ export class ShellLogic extends Component<ShellProps, any> {
     this.cart({op:'add', pid, sel, qty, mono});
     const b = this.bagBtnRef.current;
     if (b && b.animate && PROPS.motion !== 'reduced') b.animate([{transform:'scale(1)'},{transform:'scale(1.22)'},{transform:'scale(.96)'},{transform:'scale(1)'}], {duration:620, easing:'cubic-bezier(.2,.7,.2,1)'});
-    clearTimeout(this.addT); this.addT = setTimeout(() => this.setState({bagOpen:true}), 650);
+    clearTimeout(this.addT); this.addT = setTimeout(() => this.setState({bagOpen:true, bagByHand:false}), 650);
   };
   bagQty(i: number, d: number){
     const b = this.state.bag[i]; if (!b) return;
@@ -236,7 +237,7 @@ export class ShellLogic extends Component<ShellProps, any> {
   /** Sends a bag change to the Shopify cart, one at a time, and shows the cart it returns. */
   cart(body: any){
     this.cartQ = (this.cartQ || Promise.resolve()).then(() => fetch('/cart', {method:'POST', headers:{'Content-Type':'application/json'}, body:JSON.stringify(body)})
-      .then(r => r.json()).then((r: any) => { if (r && r.bag) this.setState({bag: bagItems(r.bag), checkoutUrl: r.bag.checkoutUrl || ''}); if (r && r.error) console.warn('Cart:', r.error); })
+      .then(r => r.json()).then((r: any) => { if (r && r.bag) { this.setState({bag: bagItems(r.bag), checkoutUrl: r.bag.checkoutUrl || ''}); if (this.props.onCart) this.props.onCart(r.bag.raw); } if (r && r.error) console.warn('Cart:', r.error); })
       .catch(e => console.warn('Cart:', e)));
     return this.cartQ;
   }
@@ -277,7 +278,7 @@ export class ShellLogic extends Component<ShellProps, any> {
       helpLinks: [['Returns','help-returns'],['Care guide','help-care'],['Contact','help-contact']].map(([label, id]) => ({label, go: () => this.openHelp(id)})),
       hasBag: bagCount > 0, bagCount, bagEmpty: bagCount === 0, subtotal: fmt(subtotal),
       bagItems: s.bag.map((b: any, i: number) => ({name:b.name, desc:b.desc, chip:b.chip, qty:b.qty, line:fmt(b.total), inc: () => this.bagQty(i, 1), dec: () => this.bagQty(i, -1), remove: () => this.bagQty(i, -b.qty)})),
-      openBag: () => this.setState({bagOpen:true, checkingOut:false}), closeBag: () => this.setState({bagOpen:false}), closeBagHome: () => this.go({view:'home'}),
+      openBag: () => this.setState({bagOpen:true, bagByHand:true, checkingOut:false}), closeBag: () => this.setState({bagOpen:false}), closeBagHome: () => this.go({view:'home'}),
       bagX: s.bagOpen ? 'translateX(0)' : 'translateX(104%)', bagOverlayOp: s.bagOpen ? 1 : 0, bagPe: s.bagOpen ? 'auto' : 'none',
       checkout: () => { this.setState({checkingOut:true}); (this.cartQ || Promise.resolve()).then(() => { if (this.state.checkoutUrl) location.href = this.state.checkoutUrl; else this.setState({checkingOut:false}); }); }, checkoutLabel: s.checkingOut ? 'Opening secure checkout…' : 'Checkout'
     };
@@ -287,6 +288,8 @@ export class ShellLogic extends Component<ShellProps, any> {
     return (
       <ShellContext.Provider value={{sh: this, base}}>
         <ShellView vals={base}>{this.props.children}</ShellView>
+        {/* A visitor opening the bag (not the bag opening itself after an add) counts as viewing it. */}
+        {this.props.onCart && this.state.bagOpen && this.state.bagByHand ? <Analytics.CartView /> : null}
       </ShellContext.Provider>
     );
   }

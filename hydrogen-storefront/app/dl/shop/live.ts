@@ -4,8 +4,8 @@
 import {CATS, P} from '../data/catalog';
 import {MONOGRAM_HANDLE, MONOGRAM_PIECES, SHOPIFY} from './map';
 
-export type LiveVariant = {id: string; ok: boolean; price: number; cmp: number; values: string[]; image: string};
-export type Live = {products: Record<string, {images: {url: string; alt: string}[]; variants: LiveVariant[]}>};
+export type LiveVariant = {id: string; title: string; sku: string; ok: boolean; price: number; cmp: number; values: string[]; image: string};
+export type Live = {products: Record<string, {id: string; title: string; vendor: string; type: string; images: {url: string; alt: string}[]; variants: LiveVariant[]}>};
 
 const optsOf = (pid: string) => P[pid].opts.filter((o: any) => o.n !== 'Monogram');
 const valsOf = (pid: string, sel: any) => Object.fromEntries(optsOf(pid).map((o: any) => [o.n, o.vals[sel[o.n] ?? 0].v]));
@@ -16,6 +16,14 @@ export function variantOf(live: Live | null, pid: string, sel: any): LiveVariant
   const prod = pick && live && live.products[pick.handle];
   if (!pick || !prod || pick.values.some(x => !x)) return null;
   return prod.variants.find(v => pick.values.every(x => v.values.includes(x))) || null;
+}
+
+/** A selection as Shopify analytics describes a product, or null when the store does not have it. */
+export function analyticsProduct(live: Live | null, pid: string, sel: any) {
+  const pick = SHOPIFY[pid] && SHOPIFY[pid](valsOf(pid, sel)), v = variantOf(live, pid, sel);
+  const prod = pick && live && live.products[pick.handle];
+  if (!prod || !v) return null;
+  return {id: prod.id, title: prod.title, vendor: prod.vendor, productType: prod.type, variantId: v.id, variantTitle: v.title, price: String(v.price), sku: v.sku, quantity: 1};
 }
 
 /** The monogram add-on for a product: the Shopify variant charged per piece, and how many pieces. */

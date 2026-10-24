@@ -6,9 +6,13 @@ import type {Live} from './live';
 
 const PRODUCT = `#graphql
   fragment DlProduct on Product {
+    id
     handle
+    title
+    vendor
+    productType
     images(first: 20) { nodes { url altText } }
-    variants(first: 50) { nodes { id availableForSale price { amount } compareAtPrice { amount } selectedOptions { value } image { url } } }
+    variants(first: 50) { nodes { id title sku availableForSale price { amount } compareAtPrice { amount } selectedOptions { value } image { url } } }
   }`;
 
 const QUERY = `#graphql
@@ -25,9 +29,10 @@ export async function getLive(storefront: Storefront): Promise<Live> {
   for (const p of Object.values(data || {}) as any[]) {
     if (!p) continue;
     products[p.handle] = {
+      id: p.id, title: p.title, vendor: p.vendor, type: p.productType || '',
       images: p.images.nodes.map((im: any) => ({url: sized(im.url), alt: im.altText || ''})),
       variants: p.variants.nodes.map((v: any) => ({
-        id: v.id, ok: !!v.availableForSale, price: Math.round(+v.price.amount),
+        id: v.id, title: v.title, sku: v.sku || '', ok: !!v.availableForSale, price: Math.round(+v.price.amount),
         cmp: v.compareAtPrice ? Math.round(+v.compareAtPrice.amount) : 0,
         values: v.selectedOptions.map((o: any) => o.value).filter((x: string) => x !== 'Default Title'),
         image: v.image ? sized(v.image.url) : '',

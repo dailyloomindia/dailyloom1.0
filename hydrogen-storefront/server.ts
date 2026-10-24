@@ -17,7 +17,6 @@ export default {
         env,
         request,
         session,
-        executionContext,
         waitUntil: executionContext.waitUntil.bind(executionContext),
         cart: {queryFragment: CART_QUERY_FRAGMENT},
       });
@@ -79,4 +78,7 @@ interface Env {
   PUBLIC_CUSTOMER_ACCOUNT_API_CLIENT_ID: string;
   PUBLIC_CUSTOMER_ACCOUNT_API_URL: string;
   SHOP_ID: string;
+  PUBLIC_CHECKOUT_DOMAIN: string;
+  PUBLIC_GA_MEASUREMENT_ID?: string;
+  PUBLIC_GOOGLE_SITE_VERIFICATION?: string;
 }

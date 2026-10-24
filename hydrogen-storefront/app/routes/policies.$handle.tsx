@@ -2,6 +2,7 @@
 // /policies/terms-of-service, /policies/refund-policy, /policies/shipping-policy.
 import {useLoaderData} from '@remix-run/react';
 import {json, type LoaderFunctionArgs} from '@shopify/remix-oxygen';
+import {seo} from '~/dl/seo/meta';
 
 const FIELD: Record<string, string> = {
   'privacy-policy': 'privacyPolicy', 'terms-of-service': 'termsOfService', 'refund-policy': 'refundPolicy', 'shipping-policy': 'shippingPolicy',
@@ -28,7 +29,7 @@ export async function loader({params, context}: LoaderFunctionArgs) {
   return json({title: policy.title as string, body: policy.body as string});
 }
 
-export const meta = ({data}: any) => [{title: data ? `${data.title} · Daily Loom` : 'Daily Loom'}];
+export const meta = ({data, params}: any) => seo({title: data ? data.title : undefined, path: '/policies/' + params.handle});
 
 // The policy text in the Help page's type: Marcellus headings, light Jost body.
 const POLICY_CSS = `

@@ -7,20 +7,24 @@ export const CART_QUERY_FRAGMENT = `#graphql
   fragment CartApiQuery on Cart {
     id
     checkoutUrl
+    updatedAt
+    totalQuantity
+    cost { subtotalAmount { amount currencyCode } totalAmount { amount currencyCode } }
     lines(first: $numCartLines) {
       nodes {
         id
         quantity
         attributes { key value }
-        cost { totalAmount { amount } }
-        merchandise { ... on ProductVariant { id title product { title } } }
+        cost { totalAmount { amount currencyCode } }
+        merchandise { ... on ProductVariant { id title sku price { amount currencyCode } product { id title vendor handle productType } } }
         ... on CartLine { parentRelationship { parent { id } } }
       }
     }
   }`;
 
 export type BagLine = {id: string; qty: number; total: number; dl: any; title: string; variant: string; kids: {id: string; qty: number; total: number}[]};
-export type Bag = {checkoutUrl: string; lines: BagLine[]};
+/** `raw` is the cart as Shopify returned it, for Shopify analytics. */
+export type Bag = {checkoutUrl: string; lines: BagLine[]; raw: any};
 
 /** The cart as the bag needs it: top-level items, with their add-ons folded in. */
 export function toBag(cart: any): Bag {
@@ -35,7 +39,7 @@ export function toBag(cart: any): Bag {
       kids: kidsOf(n.id).map(k => ({id: k.id, qty: k.quantity, total: Math.round(+k.cost.totalAmount.amount)})),
     };
   });
-  return {checkoutUrl: (cart && cart.checkoutUrl) || '', lines};
+  return {checkoutUrl: (cart && cart.checkoutUrl) || '', lines, raw: cart && cart.id ? cart : null};
 }
 
 export async function getBag(cart: HydrogenCart): Promise<Bag> {
