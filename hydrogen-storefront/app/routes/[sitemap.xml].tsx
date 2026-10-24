@@ -4,6 +4,7 @@ import {CATS} from '~/dl/data/catalog';
 import {HANDLE, urlFor} from '~/dl/routing';
 import {photosOf} from '~/dl/Shell';
 import {getLive} from '~/dl/shop/catalog.server';
+import {inStore} from '~/dl/shop/live';
 import {storyHero} from '~/dl/preload';
 
 const POLICIES = `#graphql
@@ -17,7 +18,7 @@ export async function loader({request, context}: LoaderFunctionArgs) {
     storefront.query(POLICIES, {cache: storefront.CacheLong()}).catch(() => ({shop: {}})),
     getLive(storefront).catch(() => null),
   ]);
-  const pids = [...new Set(CATS.flatMap((c: any) => c.items.filter((x: any) => !x.soon).map((x: any) => x.pid)))] as string[];
+  const pids = [...new Set(CATS.flatMap((c: any) => c.items.filter((x: any) => !x.soon && inStore(live, x.pid)).map((x: any) => x.pid)))] as string[];
   const pages: [string, string[]][] = [
     ['/', []],
     ...Object.entries(HANDLE).map(([k, h]) => [`/collections/${h}`, [storyHero(k)].filter(Boolean)] as [string, string[]]),

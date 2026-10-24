@@ -299,6 +299,18 @@ export function ProductView({vals}: {vals: any}) {
                                 <span style={css(`font-size:13px;line-height:1.45;color:${S(v?.subColor)}`)}>
                                   {I(v?.sub)}
                                 </span>
+                                {"\n                    "}
+                                {v?.hasNf ? (
+                                  <>
+                                  <span style={{display: "inline-flex", alignItems: "center", gap: "5px", fontSize: "11px", letterSpacing: ".03em", color: "#7E5232"}}>
+                                    <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round" strokeLinejoin="round" style={{flex: "none"}}>
+                                      <path d="M6 8a6 6 0 0 1 12 0c0 7 3 9 3 9H3s3-2 3-9" />
+                                      <path d="M10.3 21a1.94 1.94 0 0 0 3.4 0" />
+                                    </svg>
+                                    {I(v?.nfLabel)}
+                                  </span>
+                                  </>
+                                ) : null}
                                 {"\n                  "}
                               </button>
                               {"\n                "}

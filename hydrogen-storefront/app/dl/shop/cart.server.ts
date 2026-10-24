@@ -16,13 +16,13 @@ export const CART_QUERY_FRAGMENT = `#graphql
         quantity
         attributes { key value }
         cost { totalAmount { amount currencyCode } }
-        merchandise { ... on ProductVariant { id title sku price { amount currencyCode } product { id title vendor handle productType } } }
+        merchandise { ... on ProductVariant { id title sku image { url } price { amount currencyCode } product { id title vendor handle productType featuredImage { url } } } }
         ... on CartLine { parentRelationship { parent { id } } }
       }
     }
   }`;
 
-export type BagLine = {id: string; qty: number; total: number; dl: any; title: string; variant: string; kids: {id: string; qty: number; total: number}[]};
+export type BagLine = {id: string; qty: number; total: number; dl: any; title: string; variant: string; image?: string; kids: {id: string; qty: number; total: number}[]};
 /** `raw` is the cart as Shopify returned it, for Shopify analytics. */
 export type Bag = {checkoutUrl: string; lines: BagLine[]; raw: any};
 
@@ -36,6 +36,7 @@ export function toBag(cart: any): Bag {
     return {
       id: n.id, qty: n.quantity, total: Math.round(+n.cost.totalAmount.amount), dl,
       title: (n.merchandise && n.merchandise.product && n.merchandise.product.title) || '', variant: (n.merchandise && n.merchandise.title) || '',
+      image: (n.merchandise && ((n.merchandise.image && n.merchandise.image.url) || (n.merchandise.product.featuredImage && n.merchandise.product.featuredImage.url))) || '',
       kids: kidsOf(n.id).map(k => ({id: k.id, qty: k.quantity, total: Math.round(+k.cost.totalAmount.amount)})),
     };
   });

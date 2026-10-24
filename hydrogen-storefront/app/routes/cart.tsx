@@ -3,6 +3,7 @@ import {json, type ActionFunctionArgs} from '@shopify/remix-oxygen';
 import {getLive} from '~/dl/shop/catalog.server';
 import {getBag, type Bag} from '~/dl/shop/cart.server';
 import {monogramOf, variantOf} from '~/dl/shop/live';
+import {MONOGRAM_SOON} from '~/dl/shop/map';
 
 const LINES_ADD = `#graphql
   mutation DlLinesAdd($cartId: ID!, $lines: [CartLineInput!]!) {
@@ -36,7 +37,9 @@ export async function action({request, context}: ActionFunctionArgs) {
   };
 
   if (body.op === 'add') {
-    const {pid, sel = {}, qty = 1} = body;
+    const {pid, qty = 1} = body;
+    // Monogramming is not offered yet.
+    const sel = {...(body.sel || {}), ...(MONOGRAM_SOON && body.sel && body.sel.Monogram != null ? {Monogram: 0} : {})};
     const live = await getLive(storefront);
     const v = variantOf(live, pid, sel);
     if (!v || !v.ok) return json({error: 'sold out', bag: await getBag(cart)}, {status: 409});
