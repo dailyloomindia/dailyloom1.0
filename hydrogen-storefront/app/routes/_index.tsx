@@ -5,6 +5,10 @@ import {P, TT, TOWEL_B, TOWEL_C, fmt} from '~/dl/data/catalog';
 import {GOOGLE, REVIEWS, TCS, TOWEL_IMGS} from '~/dl/data/home-data';
 import {DESKTOP_MEDIA, HOME_HERO, MOBILE_MEDIA} from '~/dl/preload';
 import {catDeal, dealVals, fromDeal} from '~/dl/shop/live';
+import {ORGANIZATION, WEBSITE, seo} from '~/dl/seo/meta';
+import {HOME_SEO} from '~/dl/seo/keywords';
+
+export const meta = () => seo({fullTitle: HOME_SEO.title, description: HOME_SEO.description, image: HOME_HERO.desktop, ld: [ORGANIZATION, WEBSITE]});
 
 // The hero is fetched first, only in the size the screen shows.
 export const links = () => [

@@ -1,7 +1,7 @@
 // Collection story page: /collections/<handle>
 import {useLoaderData} from '@remix-run/react';
 import {Analytics} from '@shopify/hydrogen';
-import {json, type HeadersFunction, type LoaderFunctionArgs} from '@shopify/remix-oxygen';
+import {json, redirect, type HeadersFunction, type LoaderFunctionArgs} from '@shopify/remix-oxygen';
 import {useShell, type ShellLogic} from '~/dl/Shell';
 import {StoryView} from '~/dl/views/StoryView';
 import {CATS, P, RECS, SRC, fmt} from '~/dl/data/catalog';
@@ -9,20 +9,27 @@ import {STORY} from '~/dl/data/story.server';
 import {CAT_BY_HANDLE} from '~/dl/routing';
 import {preloadHeader, storyHero} from '~/dl/preload';
 import {dealOf, dealVals, fromDeal, minDeal} from '~/dl/shop/live';
-import {seo} from '~/dl/seo/meta';
+import {breadcrumbs, seo} from '~/dl/seo/meta';
+import {CAT_SEO} from '~/dl/seo/keywords';
 
 const COLLECTION_QUERY = `#graphql
   query DlCollection($handle: String!) { collection(handle: $handle) { id handle title } }`;
 
 export async function loader({params, context}: LoaderFunctionArgs) {
   const k = CAT_BY_HANDLE[params.handle || ''];
+  // The earlier theme's all-products page.
+  if (params.handle === 'all') throw redirect('/', 301);
   if (!k) throw new Response('Not found', {status: 404});
   // The Shopify collection, for Shopify analytics' collection views.
   const {collection} = await (context as any).storefront.query(COLLECTION_QUERY, {variables: {handle: params.handle}, cache: (context as any).storefront.CacheLong()}).catch(() => ({collection: null}));
   return json({k, st: STORY[k], collection}, {headers: {Link: preloadHeader([storyHero(k)])}});
 }
 
-export const meta = ({data, params}: any) => data ? seo({title: (CATS.find((c: any) => c.k === data.k) || {}).name, description: [data.st.tagline, data.st.intro, data.st.accent].filter(Boolean).join(' '), image: storyHero(data.k), path: '/collections/' + params.handle}) : [];
+export const meta = ({data, params}: any) => {
+  if (!data) return [];
+  const name = (CATS.find((c: any) => c.k === data.k) || {}).name, path = '/collections/' + params.handle, kw = CAT_SEO[data.k];
+  return seo({title: kw ? kw.title : name, description: kw ? kw.description : [data.st.tagline, data.st.intro, data.st.accent].filter(Boolean).join(' '), image: storyHero(data.k), path, ld: [breadcrumbs([[name, path]])]});
+};
 
 export const headers: HeadersFunction = ({loaderHeaders}) => loaderHeaders;
 

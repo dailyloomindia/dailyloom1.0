@@ -296,6 +296,12 @@ export class ShellLogic extends Component<ShellProps, any> {
 }
 
 /** The gallery photo a buy page opens on (its preset options unless given), or '' when it has none. */
+/** Every photo of a product, for search engines. */
+export function photosOf(live: Live | null, pid: string): string[] {
+  const sh: any = Object.create(ShellLogic.prototype); sh.props = {live};
+  return [...new Set((sh.media(pid) || []).map((m: any) => m.url).filter(Boolean))] as string[];
+}
+
 export function firstPhoto(live: Live | null, pid: string, sel?: any): string {
   const sh: any = Object.create(ShellLogic.prototype); sh.props = {live};
   const m = sh.visible(pid, sel || sh.defSel(pid, presetFor(pid)))[0];

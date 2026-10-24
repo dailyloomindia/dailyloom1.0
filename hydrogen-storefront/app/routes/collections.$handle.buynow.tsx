@@ -2,14 +2,16 @@
 import {useLoaderData} from '@remix-run/react';
 import {Analytics} from '@shopify/hydrogen';
 import {json, type HeadersFunction, type LoaderFunctionArgs} from '@shopify/remix-oxygen';
-import {PROPS, firstPhoto, useShell, type ShellLogic} from '~/dl/Shell';
+import {PROPS, firstPhoto, photosOf, useShell, type ShellLogic} from '~/dl/Shell';
 import {ProductView} from '~/dl/views/ProductView';
 import {CATS, P, RECS, SRC, fmt} from '~/dl/data/catalog';
 import {DELIV} from '~/dl/data/product-data';
 import {CAT_BY_HANDLE, productFor} from '~/dl/routing';
 import {preloadHeader} from '~/dl/preload';
-import {analyticsProduct, availableOf, combos, compareOf, dealVals, fromDeal, fromPrice} from '~/dl/shop/live';
-import {ORIGIN, seo} from '~/dl/seo/meta';
+import {analyticsProduct, availableOf, combos, compareOf, dealVals, fromDeal, priceOf, variantOf} from '~/dl/shop/live';
+import {HANDLE} from '~/dl/routing';
+import {ORIGIN, RETURN_POLICY, breadcrumbs, seo} from '~/dl/seo/meta';
+import {PRODUCT_SEO} from '~/dl/seo/keywords';
 import {getLive} from '~/dl/shop/catalog.server';
 
 export async function loader({params, request, context}: LoaderFunctionArgs) {
@@ -18,17 +20,34 @@ export async function loader({params, request, context}: LoaderFunctionArgs) {
   if (!pid) throw new Response('Not found', {status: 404});
   const live = await getLive((context as any).storefront).catch(() => null);
   const photo = firstPhoto(live, pid), url = new URL(request.url), path = url.pathname + url.search;
-  // Product details for search results (schema.org), at the lowest price it sells for.
-  const ld = {
-    '@context': 'https://schema.org', '@type': 'Product', name: P[pid].name, description: P[pid].short, ...(photo ? {image: photo} : {}),
-    brand: {'@type': 'Brand', name: 'Daily Loom'},
-    offers: {'@type': 'Offer', url: ORIGIN + path, priceCurrency: 'INR', price: fromPrice(live, pid),
-      availability: combos(pid).some(s => availableOf(live, pid, s)) ? 'https://schema.org/InStock' : 'https://schema.org/OutOfStock'},
-  };
+  // Product details for search results and Google Shopping (schema.org): one offer per variant the store sells.
+  const seen = new Set<string>(), offers: any[] = [];
+  for (const s of combos(pid)) {
+    const v = variantOf(live, pid, s);
+    if (v && seen.has(v.id)) continue;
+    if (v) seen.add(v.id);
+    offers.push({
+      '@type': 'Offer', url: ORIGIN + path, priceCurrency: 'INR', price: priceOf(live, pid, s), itemCondition: 'https://schema.org/NewCondition',
+      availability: availableOf(live, pid, s) ? 'https://schema.org/InStock' : 'https://schema.org/OutOfStock',
+      ...(v ? {sku: v.sku || v.id.split('/').pop(), name: v.title === 'Default Title' ? P[pid].name : `${P[pid].name} · ${v.title}`} : {}),
+      seller: {'@type': 'Organization', name: 'Daily Loom'}, hasMerchantReturnPolicy: RETURN_POLICY,
+    });
+  }
+  const photos = photosOf(live, pid).slice(0, 8), kw = PRODUCT_SEO[pid];
+  const cat = P[pid].cat, catName = CATS.find((c: any) => c.k === cat).name;
+  const ld = [
+    {'@context': 'https://schema.org', '@type': 'Product', name: P[pid].name, description: kw ? kw.description : P[pid].short,
+      ...(photos.length ? {image: photos} : photo ? {image: [photo]} : {}), brand: {'@type': 'Brand', name: 'Daily Loom'}, offers},
+    breadcrumbs([[catName, '/collections/' + HANDLE[cat]], [P[pid].name, path]]),
+  ];
   return json({pid, photo, path, ld}, photo ? {headers: {Link: preloadHeader([photo])}} : undefined);
 }
 
-export const meta = ({data}: any) => data ? seo({title: P[data.pid].name, description: P[data.pid].short, image: data.photo, path: data.path}) : [];
+export const meta = ({data}: any) => {
+  if (!data) return [];
+  const kw = PRODUCT_SEO[data.pid];
+  return seo({title: kw ? kw.title : P[data.pid].name, description: kw ? kw.description : P[data.pid].short, image: data.photo, path: data.path, ld: data.ld});
+};
 
 export const headers: HeadersFunction = ({loaderHeaders}) => loaderHeaders;
 
@@ -85,12 +104,11 @@ function productVals(sh: ShellLogic, pid: string){
 }
 
 export default function Product() {
-  const {pid, ld} = useLoaderData<typeof loader>();
+  const {pid} = useLoaderData<typeof loader>();
   const {sh, base} = useShell();
   const product = analyticsProduct(sh.props.live, pid, sh.defSel(pid, sh.selOf(pid)));
   return <>
     <ProductView vals={{...base, ...productVals(sh, pid)}} />
-    <script type="application/ld+json" dangerouslySetInnerHTML={{__html: JSON.stringify(ld).replace(/</g, '\\u003c')}} />
     {product ? <Analytics.ProductView data={{products: [product]}} /> : null}
   </>;
 }
