@@ -81,4 +81,6 @@ interface Env {
   PUBLIC_CHECKOUT_DOMAIN: string;
   PUBLIC_GA_MEASUREMENT_ID?: string;
   PUBLIC_GOOGLE_SITE_VERIFICATION?: string;
+  GOOGLE_PLACES_API_KEY?: string;
+  GOOGLE_PLACE_ID?: string;
 }
