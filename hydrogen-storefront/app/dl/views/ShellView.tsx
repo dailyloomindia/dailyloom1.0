@@ -366,6 +366,49 @@ export function ShellView({vals, children}: {vals: any; children: ReactNode}) {
           </>
         ) : null}
       </aside>
+      <div onClick={vals.nfClose} style={css(`position:fixed;inset:0;z-index:95;background:rgba(20,17,13,.42);opacity:${S(vals.nfOp)};pointer-events:${S(vals.nfPe)};transition:opacity .6s cubic-bezier(.2,.7,.2,1)`)} />
+      <div data-screen-label="Notify me" role="dialog" aria-label="Notify me" style={css(`position:fixed;left:50%;top:50%;z-index:96;width:min(440px,calc(100vw - 32px));box-sizing:border-box;isolation:isolate;overflow:hidden;background-color:#F1E9DB;background-image:linear-gradient(rgba(244,239,230,0.3),rgba(244,239,230,0.3)),url(/assets/satin.jpg);background-size:cover,cover;background-position:center,center;background-blend-mode:normal,multiply;outline:1px dashed rgba(126,82,50,.4);outline-offset:-8px;box-shadow:0 30px 80px rgba(20,17,13,.18);padding:30px 28px 28px;display:flex;flex-direction:column;gap:16px;opacity:${S(vals.nfOp)};pointer-events:${S(vals.nfPe)};transform:${S(vals.nfTf)};transition:opacity .5s cubic-bezier(.2,.7,.2,1),transform .6s cubic-bezier(.2,.8,.2,1)`)}>
+        {"\n  "}
+        <div style={{display: "flex", justifyContent: "space-between", alignItems: "center", gap: "16px"}}>
+          {"\n    "}
+          <span style={{fontFamily: "'Marcellus',serif", fontSize: "28px", lineHeight: "1.1"}}>
+            {I(vals.nfTitle)}
+          </span>
+          {"\n    "}
+          <button onClick={vals.nfClose} aria-label="Close" style={{flex: "none", width: "40px", height: "40px", borderRadius: "50%", border: "0", background: "rgba(34,30,24,.06)", cursor: "pointer", fontSize: "18px", transition: "background .3s"}} className="scpj">
+            {"×"}
+          </button>
+          {"\n  "}
+        </div>
+        {"\n  "}
+        <span style={{fontSize: "15px", lineHeight: "1.55", fontWeight: "300", color: "#5F574B"}}>
+          {I(vals.nfText)}
+        </span>
+        {"\n  "}
+        {vals.nfAsk ? (
+          <>
+          {"\n    "}
+          <div style={{display: "flex", gap: "10px", alignItems: "stretch"}}>
+            {"\n      "}
+            <input value={VAL(vals.nfEmail)} onChange={vals.onNfEmail} type="email" placeholder="Email address" style={{flex: "1", minWidth: "0", background: "transparent", border: "1px solid rgba(34,30,24,.25)", borderRadius: "999px", outline: "none", padding: "0 20px", height: "52px", fontSize: "15px"}} />
+            {"\n      "}
+            <button onClick={vals.nfSend} style={{backgroundColor: "#221E18", backgroundImage: "repeating-linear-gradient(135deg, rgba(255,255,255,.07) 0 1px, transparent 1px 3px),linear-gradient(180deg, rgba(255,255,255,.1), rgba(0,0,0,.18))", color: "#F4EFE6", border: "0", borderRadius: "999px", outline: "1px dashed rgba(244,239,230,.42)", outlineOffset: "-5px", letterSpacing: ".05em", cursor: "pointer", transition: "background-color .5s,outline-offset .4s,transform .3s", padding: "0 22px", height: "54px", fontSize: "14px"}} className="scpa">
+              {I(vals.nfLabel)}
+            </button>
+            {"\n    "}
+          </div>
+          {"\n  "}
+          </>
+        ) : null}
+        {"\n  "}
+        {vals.nfHasErr ? (
+          <>
+          <span style={{fontSize: "14px", color: "#8A3B2A"}}>
+            {I(vals.nfErr)}
+          </span>
+          </>
+        ) : null}
+      </div>
       {vals.fabric ? (
         <>
         {"\n  "}

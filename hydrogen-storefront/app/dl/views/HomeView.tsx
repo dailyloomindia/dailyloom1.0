@@ -130,10 +130,19 @@ export function HomeView({vals}: {vals: any}) {
               {"\n      "}
             </div>
             {"\n      "}
-            <div style={{display: "flex", alignItems: "center", gap: "12px", marginTop: "18px", paddingTop: "22px", borderTop: "1.5px dashed rgba(126,82,50,.28)", fontSize: "14px", color: "#5F574B"}}>
+            <div style={{display: "flex", flexWrap: "wrap", alignItems: "center", gap: "10px 12px", marginTop: "18px", paddingTop: "22px", borderTop: "1.5px dashed rgba(126,82,50,.28)", fontSize: "14px", color: "#5F574B"}}>
               {"\n        "}
               <span style={{width: "7px", height: "7px", borderRadius: "50%", background: "#A3A585", flex: "none"}} />
-              {"Summer Comforter · coming for the warmer months\n      "}
+              {"Summer Comforter · coming for the warmer months\n        "}
+              <span style={{flex: "1"}} />
+              <button onClick={vals.nfSummer?.go} style={{display: "inline-flex", alignItems: "center", gap: "6px", background: "none", border: "0", padding: "2px 0", cursor: "pointer", fontSize: "14px", letterSpacing: ".02em", color: "#7E5232", backgroundImage: "repeating-linear-gradient(90deg, #7E5232 0 5px, transparent 5px 8px)", backgroundRepeat: "no-repeat", backgroundPosition: "0 100%", backgroundSize: "0% 1.5px", transition: "background-size .6s cubic-bezier(.2,.7,.2,1)"}} className="scp5">
+                <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round" strokeLinejoin="round" style={{flex: "none"}}>
+                  <path d="M6 8a6 6 0 0 1 12 0c0 7 3 9 3 9H3s3-2 3-9" />
+                  <path d="M10.3 21a1.94 1.94 0 0 0 3.4 0" />
+                </svg>
+                {I(vals.nfSummer?.label)}
+              </button>
+              {"\n      "}
             </div>
             {"\n    "}
           </div>
@@ -216,8 +225,17 @@ export function HomeView({vals}: {vals: any}) {
                   </Fragment>
                 ))}
                 {"\n          "}
-                <span style={{paddingTop: "10px", borderTop: "1.5px dashed rgba(126,82,50,.3)", fontSize: "10px", letterSpacing: ".06em", color: "#A39886"}}>
-                  {"* 400 TC, 600 TC and 800 TC coming soon."}
+                <span style={{display: "flex", flexWrap: "wrap", alignItems: "center", justifyContent: "space-between", gap: "6px 16px", paddingTop: "10px", borderTop: "1.5px dashed rgba(126,82,50,.3)", fontSize: "10px", letterSpacing: ".06em", color: "#A39886"}}>
+                  <span>
+                    {"* 400 TC, 600 TC and 800 TC coming soon."}
+                  </span>
+                  <button onClick={vals.nfTc?.go} style={{display: "inline-flex", alignItems: "center", gap: "6px", background: "none", border: "0", padding: "2px 0", cursor: "pointer", fontSize: "12px", letterSpacing: ".02em", color: "#7E5232", backgroundImage: "repeating-linear-gradient(90deg, #7E5232 0 5px, transparent 5px 8px)", backgroundRepeat: "no-repeat", backgroundPosition: "0 100%", backgroundSize: "0% 1.5px", transition: "background-size .6s cubic-bezier(.2,.7,.2,1)"}} className="scp5">
+                    <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round" strokeLinejoin="round" style={{flex: "none"}}>
+                      <path d="M6 8a6 6 0 0 1 12 0c0 7 3 9 3 9H3s3-2 3-9" />
+                      <path d="M10.3 21a1.94 1.94 0 0 0 3.4 0" />
+                    </svg>
+                    {I(vals.nfTc?.label)}
+                  </button>
                 </span>
                 {"\n        "}
               </div>

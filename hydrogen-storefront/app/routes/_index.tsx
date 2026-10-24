@@ -27,6 +27,8 @@ function homeVals(sh: ShellLogic){
     heroBottom: s.mobile ? '30%' : '0', heroMobDisp: s.mobile ? 'block' : 'none', heroDeskDisp: s.mobile ? 'none' : 'block',
     storyDuvets: () => sh.goStory('duvets'), storyCovers: () => sh.goStory('covers'), storySheets: () => sh.goStory('sheets'), storyPillows: () => sh.goStory('pillows'), storyTowels: () => sh.goStory('towels'),
     openDuvet: () => sh.openProduct('winter-duvet'),
+    nfSummer: sh.notifyFor('Summer Comforter', 'the Summer Comforter arrives'),
+    nfTc: sh.notifyFor('Duvet covers and bedsheets in 400, 600 and 800 TC', 'our 400, 600 and 800 TC covers and sheets arrive'),
     duvetFrom: fmt(duvet.now), coverFrom: fmt(cover.now), sheetFrom: fmt(sheet.now), pillowFrom: fmt(pillow.now),
     duvetDeal: dealVals(duvet, fmt), coverDeal: dealVals(cover, fmt), sheetDeal: dealVals(sheet, fmt), pillowDeal: dealVals(pillow, fmt),
     tcs: TCS.map((t: any, i: number) => ({n:t.n, d:t.d, star: t.soon ? '*' : '', color: i === s.tc ? '#221E18' : '#857A6A', pick: () => sh.setState({tc:i})})),

@@ -24,12 +24,12 @@ export const PROPS: {
 
 const EASE = 'cubic-bezier(.76,0,.24,1)';
 const UP = 'translateY(calc(-100% - 48px))', DOWN = 'translateY(calc(100% + 48px))';
-const RESET = {barHidden:false, menuOpen:false, gi:null, notified:false, qty:1, added:false, pinMsg:'', acc:'Details', cl:0, mono:'', ritOpen:false, bagOpen:false};
+const RESET = {nf:null, notifyErr:'', barHidden:false, menuOpen:false, gi:null, notified:false, qty:1, added:false, pinMsg:'', acc:'Details', cl:0, mono:'', ritOpen:false, bagOpen:false};
 
 /** The option preset a collection card opens a product with. */
 const presetFor = (pid: string) => (CATS.flatMap((c: any) => c.items).find((x: any) => x.pid === pid) || {}).sel;
 
-type ShellProps = {route: Route; locKey: string; navigate: (to: string) => void; live: Live | null; bag: Bag | null; onCart?: (cart: any) => void; children: ReactNode};
+type ShellProps = {route: Route; locKey: string; navigate: (to: string) => void; live: Live | null; bag: Bag | null; signedIn?: boolean; onCart?: (cart: any) => void; children: ReactNode};
 type Ctx = {sh: ShellLogic; base: any};
 const ShellContext = createContext<Ctx | null>(null);
 
@@ -44,8 +44,8 @@ export function Shell({view, onCart, children}: {view?: View; onCart?: (cart: an
   const location = useLocation();
   const navigate = useNavigate();
   const route = view ? {view} : parseRoute(location.pathname, location.search);
-  const data = useRouteLoaderData('root') as {live: Live | null; bag: Bag | null} | undefined;
-  return <ShellLogic route={route} locKey={location.key} navigate={navigate} live={data ? data.live : null} bag={data ? data.bag : null} onCart={onCart}>{children}</ShellLogic>;
+  const data = useRouteLoaderData('root') as {live: Live | null; bag: Bag | null; signedIn?: boolean} | undefined;
+  return <ShellLogic route={route} locKey={location.key} navigate={navigate} live={data ? data.live : null} bag={data ? data.bag : null} signedIn={!!(data && data.signedIn)} onCart={onCart}>{children}</ShellLogic>;
 }
 
 export class ShellLogic extends Component<ShellProps, any> {
@@ -255,6 +255,29 @@ export class ShellLogic extends Component<ShellProps, any> {
     this.setState({pinMsg:`Estimated delivery by ${d.toLocaleDateString('en-IN', {weekday:'short', day:'numeric', month:'short'})} to ${pin}.`});
   };
   /** Template values shared by every view (the header, menu, footer, bag, scrollbar and photo masks). */
+  /**
+   * "Notify me" for something sold out or coming soon. `item` names it in the email to the shop;
+   * `when` ends "we will write the day …". Signed-in customers are noted at once, with their account's
+   * email; anyone else is asked for an email first.
+   */
+  notifyFor(item: string, when: string){
+    const done = !!(this.state.noted && this.state.noted[item]);
+    return {label: done ? 'Noted ✓' : 'Notify me', go: () => {
+      if (done) return;
+      if (this.props.signedIn) return this.sendNotify(item, '');
+      this.setState({nf: {item, when, email: (this.state.nf && this.state.nf.email) || '', err: '', sent: false}});
+    }};
+  }
+  /** Sends a notify-me request to the shop. Resolves to an error message, or '' when sent. */
+  sendNotify(item: string, email: string): Promise<string> {
+    return fetch('/notify', {method: 'POST', headers: {'Content-Type': 'application/json'}, body: JSON.stringify({item, email, page: location.href})})
+      .then(r => r.json()).catch(() => ({error: 'send'}))
+      .then((r: any) => {
+        if (r && r.ok) { this.setState((s: any) => ({noted: {...(s.noted || {}), [item]: true}})); return ''; }
+        return r && r.error === 'email' ? 'Please enter a valid email address.' : 'Something went wrong. Please write to contact@dailyloom.in.';
+      });
+  }
+
   baseVals(){
     const s = this.state, devNotes = !!PROPS.devNotes, fabric = (PROPS.scrollbar ?? 'fabric') === 'fabric' && !s.mobile;
     const activeCat = this.view() === 'home' || this.view() === 'notfound' || this.view() === 'policy' ? null : this.cat();
@@ -287,6 +310,23 @@ export class ShellLogic extends Component<ShellProps, any> {
       bagItems: s.bag.map((b: any, i: number) => ({name:b.name, desc:b.desc, chip:b.chip, qty:b.qty, line:fmt(b.total), inc: () => this.bagQty(i, 1), dec: () => this.bagQty(i, -1), remove: () => this.bagQty(i, -b.qty)})),
       openBag: () => this.setState({bagOpen:true, bagByHand:true, checkingOut:false}), closeBag: () => this.setState({bagOpen:false}), closeBagHome: () => this.go({view:'home'}),
       bagX: s.bagOpen ? 'translateX(0)' : 'translateX(104%)', bagOverlayOp: s.bagOpen ? 1 : 0, bagPe: s.bagOpen ? 'auto' : 'none',
+      ...(() => {
+        const nf = s.nf, open = !!(nf && !nf.closed), sent = !!(nf && nf.sent);
+        const close = () => this.setState((x: any) => ({nf: x.nf && {...x.nf, closed: true}}));
+        const send = () => {
+          if (!nf || nf.sending) return;
+          if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test((nf.email || '').trim())) return this.setState({nf: {...nf, err: 'Please enter a valid email address.'}});
+          this.setState({nf: {...nf, err: '', sending: true}});
+          this.sendNotify(nf.item, nf.email.trim()).then(err => this.setState((x: any) => ({nf: {...x.nf, sending: false, err, sent: !err}})));
+        };
+        return {
+          nfOp: open ? 1 : 0, nfPe: open ? 'auto' : 'none', nfTf: open ? 'translate(-50%, -50%)' : 'translate(-50%, calc(-50% + 16px))', nfClose: close,
+          nfTitle: sent ? 'Noted.' : 'Notify me.', nfAsk: !sent,
+          nfText: !nf ? '' : sent ? `Thank you. We will write to ${nf.email.trim()} the day ${nf.when}.` : `Leave your email and we will write the day ${nf.when}.`,
+          nfEmail: (nf && nf.email) || '', onNfEmail: (e: any) => this.setState({nf: {...nf, email: e.target.value, err: ''}}),
+          nfSend: send, nfLabel: nf && nf.sending ? 'Sending…' : 'Notify me', nfHasErr: !!(nf && nf.err), nfErr: (nf && nf.err) || '',
+        };
+      })(),
       checkout: () => { this.setState({checkingOut:true}); (this.cartQ || Promise.resolve()).then(() => { if (this.state.checkoutUrl) location.href = this.state.checkoutUrl; else this.setState({checkingOut:false}); }); }, checkoutLabel: s.checkingOut ? 'Opening secure checkout…' : 'Checkout'
     };
   }
