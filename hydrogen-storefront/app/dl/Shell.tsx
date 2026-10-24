@@ -249,7 +249,7 @@ export class ShellLogic extends Component<ShellProps, any> {
   /** Template values shared by every view (the header, menu, footer, bag, scrollbar and photo masks). */
   baseVals(){
     const s = this.state, devNotes = !!PROPS.devNotes, fabric = (PROPS.scrollbar ?? 'fabric') === 'fabric' && !s.mobile;
-    const activeCat = this.view() === 'home' || this.view() === 'notfound' ? null : this.cat();
+    const activeCat = this.view() === 'home' || this.view() === 'notfound' || this.view() === 'policy' ? null : this.cat();
     const cats = CATS.map((c: any) => ({name:c.name, onClick:() => this.goStory(c.k), navColor: activeCat === c.k ? '#7E5232' : '#221E18'}));
     const bagCount = s.bag.reduce((a: number, b: any) => a + b.qty, 0);
     const subtotal = s.bag.reduce((a: number, b: any) => a + b.total, 0);

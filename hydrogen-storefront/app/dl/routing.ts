@@ -4,6 +4,7 @@
 //   /collections/<handle>/buynow        buy page (first product of the collection)
 //   /collections/<handle>/buynow?product=<id>   buy page for another product in it
 //   /help, /account
+//   /policies/<handle>                  a store policy (privacy, terms, refund, shipping)
 // Anything else, including /collections on its own, is a 404.
 import {CATS, P} from './data/catalog';
 
@@ -19,7 +20,7 @@ export const CAT_BY_HANDLE: Record<string, string> = Object.fromEntries(
   Object.entries(HANDLE).map(([k, h]) => [h, k]),
 );
 
-export type View = 'home' | 'story' | 'product' | 'help' | 'account' | 'notfound';
+export type View = 'home' | 'story' | 'product' | 'help' | 'account' | 'policy' | 'notfound';
 export type Route = {view: View; cat?: string; pid?: string};
 
 export const defaultProduct = (k: string): string =>
@@ -53,6 +54,7 @@ export function parseRoute(pathname: string, search: string): Route {
   if (p === '/') return {view: 'home'};
   if (p === '/help') return {view: 'help'};
   if (p === '/account') return {view: 'account'};
+  if (/^\/policies\/[^/]+$/.test(p)) return {view: 'policy'};
   const m = p.match(/^\/collections\/([^/]+)(\/buynow)?$/);
   const k = m && CAT_BY_HANDLE[m[1]];
   if (k) {
