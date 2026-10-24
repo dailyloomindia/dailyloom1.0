@@ -1,5 +1,8 @@
 // Home page.
+import {useLoaderData} from '@remix-run/react';
+import type {LoaderFunctionArgs} from '@shopify/remix-oxygen';
 import {useShell, type ShellLogic} from '~/dl/Shell';
+import {getGoogleReviews, type GoogleReviews} from '~/dl/shop/reviews.server';
 import {HomeView} from '~/dl/views/HomeView';
 import {P, TT, TOWEL_B, TOWEL_C, fmt} from '~/dl/data/catalog';
 import {GOOGLE, REVIEWS, TCS, TOWEL_IMGS} from '~/dl/data/home-data';
@@ -7,6 +10,12 @@ import {DESKTOP_MEDIA, HOME_HERO, MOBILE_MEDIA} from '~/dl/preload';
 import {catDeal, dealVals, fromDeal, inStore} from '~/dl/shop/live';
 import {ORGANIZATION, WEBSITE, seo} from '~/dl/seo/meta';
 import {HOME_SEO} from '~/dl/seo/keywords';
+
+/** The Google rating and top reviews (never holding the page up for more than 2.5 seconds). */
+export async function loader({context}: LoaderFunctionArgs) {
+  const google = await Promise.race([getGoogleReviews((context as any).env).catch(() => null), new Promise<null>(r => setTimeout(() => r(null), 2500))]);
+  return {google};
+}
 
 export const meta = () => seo({fullTitle: HOME_SEO.title, description: HOME_SEO.description, image: HOME_HERO.desktop, ld: [ORGANIZATION, WEBSITE]});
 
@@ -16,7 +25,7 @@ export const links = () => [
   {rel: 'preload', as: 'image', href: HOME_HERO.desktop, media: DESKTOP_MEDIA, fetchpriority: 'high'},
 ];
 
-function homeVals(sh: ShellLogic){
+function homeVals(sh: ShellLogic, google: GoogleReviews | null){
   const s = sh.state, live = sh.props.live;
   const tcn = TCS[s.tc].n;
   const tPid = s.tMat ? 'bamboo-towel' : 'cotton-towel';
@@ -43,12 +52,17 @@ function homeVals(sh: ShellLogic){
     ...(inStore(live, tPid)
       ? {towelPrice: 'From ' + fmt(towel.now), towelDeal: dealVals(towel, fmt), towelSoon: false, nfTowel: {label: '', go: () => {}}}
       : {towelPrice: 'Coming soon', towelDeal: {has: false}, towelSoon: true, nfTowel: sh.notifyFor(`${P[tPid].name}s`, `our ${P[tPid].name.toLowerCase()}s arrive`)}),
-    reviews: (REVIEWS.length ? REVIEWS : [0,1,2].map(() => ({name:'Customer name', place:'City', product:'Product', stars:5, text:'Paste a Google review here.', ph:true}))).slice(0, 3).map((r: any, i: number) => ({name:r.name, meta:[r.place, r.product].filter(Boolean).join(' · '), stars:'★'.repeat(r.stars || 5), text: r.ph ? r.text : '“' + r.text + '”', textColor: r.ph ? '#9A8F7E' : '#221E18', delay:i * 120})),
-    revSummary: GOOGLE.rating ? `${GOOGLE.rating} on Google · ${GOOGLE.count} reviews` : 'Rated on Google', revUrl: GOOGLE.url,
+    // Google reviews from the Business Profile (top 3), or the design's own when not connected.
+    ...(() => { const g = google && google.reviews.length ? google : null, REV = g ? g.reviews : REVIEWS, G = g || GOOGLE;
+      return {
+        reviews: (REV.length ? REV : [0,1,2].map(() => ({name:'Customer name', place:'City', product:'Product', stars:5, text:'Paste a Google review here.', ph:true}))).slice(0, 3).map((r: any, i: number) => ({name:r.name, meta:[r.place, r.product].filter(Boolean).join(' · '), stars:'★'.repeat(r.stars || 5), text: r.ph ? r.text : '“' + r.text + '”', textColor: r.ph ? '#9A8F7E' : '#221E18', delay:i * 120})),
+        revSummary: G.rating ? `${G.rating} on Google · ${G.count} reviews` : 'Rated on Google', revUrl: G.url,
+      }; })(),
   };
 }
 
 export default function Home() {
+  const {google} = useLoaderData<typeof loader>();
   const {sh, base} = useShell();
-  return <HomeView vals={{...base, ...homeVals(sh)}} />;
+  return <HomeView vals={{...base, ...homeVals(sh, google)}} />;
 }
