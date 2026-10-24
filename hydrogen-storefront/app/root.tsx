@@ -68,7 +68,7 @@ function Document({children}: {children: ReactNode}) {
   const data = useRouteLoaderData('root') as any;
   const verify = data && data.google && data.google.verify;
   return (
-    <html lang="en">
+    <html lang="en-IN">
       <head>
         <meta charSet="utf-8" />
         <meta name="viewport" content="width=device-width, initial-scale=1" />

@@ -1107,6 +1107,10 @@
         };
       }
       this._cap.textContent = this.getAttribute('placeholder') || 'Drop an image';
+      // The photo's description for search engines and screen readers: the caption without
+      // its size notes ("2400 × 2000 (6:5)") and the generic "product image".
+      this._img.alt = (this.getAttribute('placeholder') || '').split(' · ')
+        .filter(t => t && !/\d\s*[×x]\s*\d/.test(t) && !/^(product image|image from shopify|full-bleed story hero|phones)$/i.test(t.trim())).join(', ');
       // Toggle via style.display — the [hidden] attribute alone loses to
       // the display:flex / display:block rules in the stylesheet above.
       // An Unsplash src with no credit attribute must NOT render — showing
