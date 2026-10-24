@@ -3,6 +3,9 @@ import {useLoaderData} from '@remix-run/react';
 import {useShell, type ShellLogic} from '~/dl/Shell';
 import {HelpView} from '~/dl/views/HelpView';
 import {CARE_GUIDE, HELP_RETURNS} from '~/dl/data/help.server';
+import {seo} from '~/dl/seo/meta';
+
+export const meta = () => seo({title: 'Help', description: 'Returns, care and contact for Daily Loom duvets, bedsheets, pillows and towels.', path: '/help'});
 
 export async function loader() {
   return {HELP_RETURNS, CARE_GUIDE};

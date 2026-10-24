@@ -5,6 +5,9 @@ import {useShell, type ShellLogic} from '~/dl/Shell';
 import {AccountView} from '~/dl/views/AccountView';
 import {P, fmt} from '~/dl/data/catalog';
 import {getAccount, type AccountData} from '~/dl/shop/customer.server';
+import {seo} from '~/dl/seo/meta';
+
+export const meta = () => [...seo({title: 'Your account', path: '/account'}), {name: 'robots', content: 'noindex'}];
 
 export async function loader({context}: LoaderFunctionArgs) {
   const account = await getAccount((context as any).customerAccount).catch(() => null);

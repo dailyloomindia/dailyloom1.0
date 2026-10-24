@@ -1,19 +1,35 @@
-import {Links, Meta, Outlet, Scripts, isRouteErrorResponse, useRouteError, type ShouldRevalidateFunction} from '@remix-run/react';
+import {Links, Meta, Outlet, Scripts, isRouteErrorResponse, useRouteError, useRouteLoaderData, type ShouldRevalidateFunction} from '@remix-run/react';
+import {Analytics, getShopAnalytics} from '@shopify/hydrogen';
 import type {LoaderFunctionArgs} from '@shopify/remix-oxygen';
-import type {ReactNode} from 'react';
+import {useState, type ReactNode} from 'react';
 import pseudoStyles from '~/dl/pseudo.css?url';
 import {Shell} from '~/dl/Shell';
 import {NotFoundView} from '~/dl/NotFoundView';
 import {getLive} from '~/dl/shop/catalog.server';
 import {getBag} from '~/dl/shop/cart.server';
+import {GoogleAnalytics} from '~/dl/google';
+import {HOME_HERO} from '~/dl/preload';
+import {seo} from '~/dl/seo/meta';
 
-export const meta = () => [{title: 'Daily Loom'}];
+export const meta = () => seo({image: HOME_HERO.desktop});
+
+/** Google Analytics 4 property "dailyloom.in", web stream "Daily Loom website". */
+const GA_MEASUREMENT_ID = 'G-4B13ET2DZS';
 
 /** Every page gets the store's prices, stock and photos, and the visitor's bag. */
 export async function loader({context}: LoaderFunctionArgs) {
-  const {storefront, cart} = context as any;
-  const [live, bag] = await Promise.all([getLive(storefront).catch(() => null), getBag(cart)]);
-  return {live, bag};
+  const {storefront, cart, env} = context as any;
+  const [live, bag, shop] = await Promise.all([
+    getLive(storefront).catch(() => null), getBag(cart),
+    getShopAnalytics({storefront, publicStorefrontId: env.PUBLIC_STOREFRONT_ID}).catch(() => null),
+  ]);
+  return {
+    live, bag,
+    // Shopify analytics (Analytics → Reports in Shopify admin). No consent banner: the store sells in India.
+    shop, consent: {checkoutDomain: env.PUBLIC_CHECKOUT_DOMAIN || env.PUBLIC_STORE_DOMAIN, storefrontAccessToken: env.PUBLIC_STOREFRONT_API_TOKEN, withPrivacyBanner: false, country: 'IN', language: 'EN'},
+    // Google: the Analytics 4 measurement ID (an Oxygen environment variable overrides it) and Search Console verification.
+    google: {ga: env.PUBLIC_GA_MEASUREMENT_ID || GA_MEASUREMENT_ID, verify: env.PUBLIC_GOOGLE_SITE_VERIFICATION || ''},
+  };
 }
 
 // Loaded once per visit; the bag then updates from the cart actions themselves.
@@ -21,6 +37,9 @@ export const shouldRevalidate: ShouldRevalidateFunction = () => false;
 
 export function links() {
   return [
+    {rel: 'icon', href: '/favicon.ico', sizes: '32x32'},
+    {rel: 'icon', type: 'image/png', href: '/favicon-32.png'},
+    {rel: 'apple-touch-icon', href: '/apple-touch-icon.png'},
     {rel: 'preconnect', href: 'https://fonts.googleapis.com'},
     {rel: 'preconnect', href: 'https://fonts.gstatic.com', crossOrigin: 'anonymous'},
     {rel: 'preconnect', href: 'https://cdn.shopify.com'},
@@ -46,11 +65,14 @@ const RUNTIME_CSS = 'html,body{height:100%;margin:0}#dc-root,#dc-root>.sc-host{h
 const BOOT_CSS = '#dc-root>.sc-host>div>div:last-child{transform:translateY(0)!important}';
 
 function Document({children}: {children: ReactNode}) {
+  const data = useRouteLoaderData('root') as any;
+  const verify = data && data.google && data.google.verify;
   return (
     <html lang="en">
       <head>
         <meta charSet="utf-8" />
         <meta name="viewport" content="width=device-width, initial-scale=1" />
+        {verify ? <meta name="google-site-verification" content={verify} /> : null}
         <Meta />
         <Links />
         <style dangerouslySetInnerHTML={{__html: DESIGN_CSS}} />
@@ -74,11 +96,17 @@ function Document({children}: {children: ReactNode}) {
 }
 
 export default function App() {
+  const data = useRouteLoaderData('root') as any;
+  // The bag's latest Shopify cart: Shopify analytics compares each version with the last to count adds and removals.
+  const [cart, setCart] = useState(data.bag ? data.bag.raw : null);
   return (
     <Document>
-      <Shell>
-        <Outlet />
-      </Shell>
+      <Analytics.Provider cart={cart} shop={data.shop} consent={data.consent}>
+        <Shell onCart={setCart}>
+          <Outlet />
+        </Shell>
+        <GoogleAnalytics id={data.google.ga} />
+      </Analytics.Provider>
     </Document>
   );
 }

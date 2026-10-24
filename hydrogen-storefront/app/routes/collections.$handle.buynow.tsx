@@ -1,5 +1,6 @@
 // Buy page: /collections/<handle>/buynow[?product=<id>]
 import {useLoaderData} from '@remix-run/react';
+import {Analytics} from '@shopify/hydrogen';
 import {json, type HeadersFunction, type LoaderFunctionArgs} from '@shopify/remix-oxygen';
 import {PROPS, firstPhoto, useShell, type ShellLogic} from '~/dl/Shell';
 import {ProductView} from '~/dl/views/ProductView';
@@ -7,16 +8,27 @@ import {CATS, P, RECS, SRC, fmt} from '~/dl/data/catalog';
 import {DELIV} from '~/dl/data/product-data';
 import {CAT_BY_HANDLE, productFor} from '~/dl/routing';
 import {preloadHeader} from '~/dl/preload';
-import {availableOf, compareOf, dealVals, fromDeal} from '~/dl/shop/live';
+import {analyticsProduct, availableOf, combos, compareOf, dealVals, fromDeal, fromPrice} from '~/dl/shop/live';
+import {ORIGIN, seo} from '~/dl/seo/meta';
 import {getLive} from '~/dl/shop/catalog.server';
 
 export async function loader({params, request, context}: LoaderFunctionArgs) {
   const k = CAT_BY_HANDLE[params.handle || ''];
   const pid = k && productFor(k, new URL(request.url).searchParams.get('product'));
   if (!pid) throw new Response('Not found', {status: 404});
-  const photo = firstPhoto(await getLive((context as any).storefront).catch(() => null), pid);
-  return json({pid}, photo ? {headers: {Link: preloadHeader([photo])}} : undefined);
+  const live = await getLive((context as any).storefront).catch(() => null);
+  const photo = firstPhoto(live, pid), url = new URL(request.url), path = url.pathname + url.search;
+  // Product details for search results (schema.org), at the lowest price it sells for.
+  const ld = {
+    '@context': 'https://schema.org', '@type': 'Product', name: P[pid].name, description: P[pid].short, ...(photo ? {image: photo} : {}),
+    brand: {'@type': 'Brand', name: 'Daily Loom'},
+    offers: {'@type': 'Offer', url: ORIGIN + path, priceCurrency: 'INR', price: fromPrice(live, pid),
+      availability: combos(pid).some(s => availableOf(live, pid, s)) ? 'https://schema.org/InStock' : 'https://schema.org/OutOfStock'},
+  };
+  return json({pid, photo, path, ld}, photo ? {headers: {Link: preloadHeader([photo])}} : undefined);
 }
+
+export const meta = ({data}: any) => data ? seo({title: P[data.pid].name, description: P[data.pid].short, image: data.photo, path: data.path}) : [];
 
 export const headers: HeadersFunction = ({loaderHeaders}) => loaderHeaders;
 
@@ -73,7 +85,12 @@ function productVals(sh: ShellLogic, pid: string){
 }
 
 export default function Product() {
-  const {pid} = useLoaderData<typeof loader>();
+  const {pid, ld} = useLoaderData<typeof loader>();
   const {sh, base} = useShell();
-  return <ProductView vals={{...base, ...productVals(sh, pid)}} />;
+  const product = analyticsProduct(sh.props.live, pid, sh.defSel(pid, sh.selOf(pid)));
+  return <>
+    <ProductView vals={{...base, ...productVals(sh, pid)}} />
+    <script type="application/ld+json" dangerouslySetInnerHTML={{__html: JSON.stringify(ld).replace(/</g, '\\u003c')}} />
+    {product ? <Analytics.ProductView data={{products: [product]}} /> : null}
+  </>;
 }
