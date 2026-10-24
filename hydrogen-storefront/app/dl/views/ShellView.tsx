@@ -227,7 +227,10 @@ export function ShellView({vals, children}: {vals: any; children: ReactNode}) {
         <div style={{display: "flex", flexWrap: "wrap", justifyContent: "space-between", gap: "16px", marginTop: "72px", paddingTop: "24px", borderTop: "1.5px dashed rgba(200,146,94,.3)", fontSize: "13px", color: "#B8AE9E"}}>
           {"\n    "}
           <span>
-            {"© 2026 Daily Loom. All rights reserved."}
+            {"© 2026 Daily Loom. All rights reserved. · "}
+            <a href="/policies/privacy-policy" style={{color: "#B8AE9E", transition: "color .3s"}} className="scpk">
+              {"Privacy policy"}
+            </a>
           </span>
           {"\n    "}
           <span>
