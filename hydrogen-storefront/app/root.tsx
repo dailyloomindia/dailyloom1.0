@@ -18,13 +18,14 @@ const GA_MEASUREMENT_ID = 'G-4B13ET2DZS';
 
 /** Every page gets the store's prices, stock and photos, and the visitor's bag. */
 export async function loader({context}: LoaderFunctionArgs) {
-  const {storefront, cart, env} = context as any;
-  const [live, bag, shop] = await Promise.all([
+  const {storefront, cart, env, customerAccount} = context as any;
+  const [live, bag, shop, signedIn] = await Promise.all([
     getLive(storefront).catch(() => null), getBag(cart),
     getShopAnalytics({storefront, publicStorefrontId: env.PUBLIC_STOREFRONT_ID}).catch(() => null),
+    customerAccount.isLoggedIn().catch(() => false),
   ]);
   return {
-    live, bag,
+    live, bag, signedIn: !!signedIn,
     // Shopify analytics (Analytics → Reports in Shopify admin). No consent banner: the store sells in India.
     shop, consent: {checkoutDomain: env.PUBLIC_CHECKOUT_DOMAIN || env.PUBLIC_STORE_DOMAIN, storefrontAccessToken: env.PUBLIC_STOREFRONT_API_TOKEN, withPrivacyBanner: false, country: 'IN', language: 'EN'},
     // Google: the Analytics 4 measurement ID (an Oxygen environment variable overrides it) and Search Console verification.

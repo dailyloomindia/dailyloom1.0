@@ -77,8 +77,17 @@ function pdpVals(sh: ShellLogic, pid: string, p: any, sel: any){
     gAll: all.map((m: any) => ({...m, bg: m.url ? 'url("' + m.url + '")' : 'none', hasUrl: !!m.url, noUrl: !m.url, op: m.i === cur.i ? 1 : 0, tf: m.i === cur.i ? 'scale(1)' : 'scale(1.035)'})),
     gThumbs: vis.map((m: any) => ({alt:m.alt, url:m.url, bg: m.url ? 'url("' + m.url + '")' : 'none', hasUrl: !!m.url, tint:m.tint, op: m.i === cur.i ? 1 : .55, ring: m.i === cur.i ? '1px solid #221E18' : '1px solid rgba(34,30,24,0)', pick: () => sh.setState({gi:m.i})})),
     gMulti: vis.length > 1, gCount: vis.length ? (vi + 1) + ' / ' + vis.length : '', gPrev: step(-1), gNext: step(1), gCaption: summary || p.name,
-    notifyEmail: s.notifyEmail || '', onNotifyEmail: (e: any) => sh.setState({notifyEmail: e.target.value, notified:false}),
-    notifyMe: () => { if (/\S+@\S+\.\S+/.test(s.notifyEmail || '')) sh.setState({notified:true}); }, notifyLabel: s.notified ? 'Noted ✓' : 'Notify me',
+    // Sold out: the request goes to the shop; signed-in customers are not asked for their email.
+    notifyAsk: !sh.props.signedIn, notifyLede: sh.props.signedIn ? 'We will write to you the day it is back.' : 'Leave your email and we will write the day it is back.',
+    notifyEmail: s.notifyEmail || '', onNotifyEmail: (e: any) => sh.setState({notifyEmail: e.target.value, notified:false, notifyErr:''}),
+    notifyMe: () => {
+      if (s.notified || s.notifying) return;
+      const email = (s.notifyEmail || '').trim();
+      if (!sh.props.signedIn && !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) return sh.setState({notifyErr: 'Please enter a valid email address.'});
+      sh.setState({notifying: true, notifyErr: ''});
+      sh.sendNotify(`${p.name} · ${summary}`, sh.props.signedIn ? '' : email).then((err: string) => sh.setState({notifying: false, notifyErr: err, notified: !err}));
+    },
+    notifyLabel: s.notifying ? 'Sending…' : s.notified ? 'Noted ✓' : 'Notify me', notifyHasErr: !!s.notifyErr, notifyErr: s.notifyErr || '',
     barTf: showBar ? 'translate(-50%, 0)' : 'translate(-50%, 140%)', barOp: showBar ? 1 : 0, barPe: showBar ? 'auto' : 'none',
     barImg: cur.url || '', barBg: cur.url ? 'url("' + cur.url + '")' : 'none', barHasImg: !!cur.url, barTint: cur.tint || '#E2D6C2', barSummary: summary,
     barClose: () => sh.setState({barHidden:true}), barW: mobile ? 'calc(100vw - 20px)' : 'min(980px,calc(100vw - 96px))', barBottom: mobile ? '10px' : '16px', barThumbDisp: mobile ? 'none' : 'block', barPriceDisp: mobile ? 'none' : 'inline', barSub: mobile ? fmt(sh.priceOf(pid, sel) * s.qty) : summary, barLabel: avail ? (s.added ? 'Added ✓' : 'Add to bag') : 'Notify me',

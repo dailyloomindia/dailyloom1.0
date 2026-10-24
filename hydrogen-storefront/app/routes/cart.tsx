@@ -48,7 +48,8 @@ export async function action({request, context}: ActionFunctionArgs) {
     else {
       const attributes = [{key: '_dl', value: JSON.stringify(dl)}, ...(sel.Monogram === 1 ? [{key: 'Monogram', value: initials || '—'}] : [])];
       const line = {merchandiseId: v.id, quantity: qty, attributes};
-      if (!cart.getCartId()) { const r = await cart.create({lines: [line]}); if (r && r.userErrors && r.userErrors.length) error = r.userErrors.map((x: any) => x.message).join(' '); }
+      // No cart yet, or the remembered one is gone (Shopify closes a cart once its order is placed): start a new one.
+      if (!before.raw) { const r = await cart.create({lines: [line]}); if (r && r.userErrors && r.userErrors.length) error = r.userErrors.map((x: any) => x.message).join(' '); }
       else fail(await storefront.mutate(LINES_ADD, {variables: {cartId: cart.getCartId(), lines: [line]}}), 'cartLinesAdd');
       const mono = sel.Monogram === 1 && !error ? monogramOf(live, pid) : null;
       if (mono) {

@@ -674,6 +674,20 @@ export function StoryView({vals}: {vals: any}) {
                       {I(it?.label)}
                     </span>
                     {"\n            "}
+                    {it?.soon ? (
+                      <>
+                      <span style={{marginTop: "6px"}}>
+                        <button onClick={it?.nf?.go} style={{display: "inline-flex", alignItems: "center", gap: "6px", background: "none", border: "0", padding: "2px 0", cursor: "pointer", fontSize: "14px", letterSpacing: ".02em", color: "#7E5232", backgroundImage: "repeating-linear-gradient(90deg, #7E5232 0 5px, transparent 5px 8px)", backgroundRepeat: "no-repeat", backgroundPosition: "0 100%", backgroundSize: "0% 1.5px", transition: "background-size .6s cubic-bezier(.2,.7,.2,1)"}} className="scp5">
+                          <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round" strokeLinejoin="round" style={{flex: "none"}}>
+                            <path d="M6 8a6 6 0 0 1 12 0c0 7 3 9 3 9H3s3-2 3-9" />
+                            <path d="M10.3 21a1.94 1.94 0 0 0 3.4 0" />
+                          </svg>
+                          {I(it?.nf?.label)}
+                        </button>
+                      </span>
+                      </>
+                    ) : null}
+                    {"\n            "}
                     {it?.hasSizes ? (
                       <>
                       <span style={{fontSize: "14px", lineHeight: "1.6", color: "#221E18"}}>

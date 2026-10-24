@@ -377,18 +377,30 @@ export function ProductView({vals}: {vals: any}) {
                       </span>
                       {"\n              "}
                       <span style={{fontSize: "14px", lineHeight: "1.5", color: "#5F574B"}}>
-                        {"Leave your email and we will write the day it is back."}
+                        {I(vals.notifyLede)}
                       </span>
                       {"\n              "}
                       <div style={{display: "flex", gap: "10px", alignItems: "stretch"}}>
                         {"\n                "}
-                        <input value={VAL(vals.notifyEmail)} onChange={vals.onNotifyEmail} type="email" placeholder="Email address" style={{flex: "1", minWidth: "0", background: "transparent", border: "1px solid rgba(34,30,24,.25)", borderRadius: "999px", outline: "none", padding: "0 20px", height: "52px", fontSize: "15px"}} />
+                        {vals.notifyAsk ? (
+                          <>
+                          <input value={VAL(vals.notifyEmail)} onChange={vals.onNotifyEmail} type="email" placeholder="Email address" style={{flex: "1", minWidth: "0", background: "transparent", border: "1px solid rgba(34,30,24,.25)", borderRadius: "999px", outline: "none", padding: "0 20px", height: "52px", fontSize: "15px"}} />
+                          </>
+                        ) : null}
                         {"\n                "}
                         <button onClick={vals.notifyMe} style={{backgroundColor: "#221E18", backgroundImage: "repeating-linear-gradient(135deg, rgba(255,255,255,.07) 0 1px, transparent 1px 3px),linear-gradient(180deg, rgba(255,255,255,.1), rgba(0,0,0,.18))", color: "#F4EFE6", border: "0", borderRadius: "999px", outline: "1px dashed rgba(244,239,230,.42)", outlineOffset: "-5px", letterSpacing: ".05em", cursor: "pointer", transition: "background-color .5s,outline-offset .4s,transform .3s", padding: "0 22px", height: "54px", fontSize: "14px"}} className="scpa">
                           {I(vals.notifyLabel)}
                         </button>
                         {"\n              "}
                       </div>
+                      {"\n              "}
+                      {vals.notifyHasErr ? (
+                        <>
+                        <span style={{fontSize: "14px", color: "#8A3B2A"}}>
+                          {I(vals.notifyErr)}
+                        </span>
+                        </>
+                      ) : null}
                       {"\n            "}
                     </div>
                     {"\n          "}

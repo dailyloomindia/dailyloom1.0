@@ -103,8 +103,9 @@ a:hover{color:#221E18}
         <button onClick="{{ storyDuvets }}" style="background-color:#221E18;background-image:repeating-linear-gradient(135deg, rgba(255,255,255,.07) 0 1px, transparent 1px 3px),linear-gradient(180deg, rgba(255,255,255,.1), rgba(0,0,0,.18));color:#F4EFE6;border:0;border-radius:999px;outline:1px dashed rgba(244,239,230,.42);outline-offset:-5px;padding:15px 28px;font-size:14px;letter-spacing:.05em;cursor:pointer;transition:background-color .4s,outline-offset .4s,transform .3s" style-hover="background-color:#7E5232;outline-offset:-4px" style-active="transform:scale(.97)">Discover duvets</button>
         <button onClick="{{ openDuvet }}" style="background:none;border:0;padding:4px 0;cursor:pointer;font-size:15px;color:#7E5232;background-image:repeating-linear-gradient(90deg, #7E5232 0 5px, transparent 5px 8px);background-repeat:no-repeat;background-position:0 100%;background-size:0% 1.5px;transition:background-size .6s cubic-bezier(.2,.7,.2,1)" style-hover="background-size:100% 1.5px">Buy →</button>
       </div>
-      <div style="display:flex;align-items:center;gap:12px;margin-top:18px;padding-top:22px;border-top:1.5px dashed rgba(126,82,50,.28);font-size:14px;color:#5F574B">
+      <div style="display:flex;flex-wrap:wrap;align-items:center;gap:10px 12px;margin-top:18px;padding-top:22px;border-top:1.5px dashed rgba(126,82,50,.28);font-size:14px;color:#5F574B">
         <span style="width:7px;height:7px;border-radius:50%;background:#A3A585;flex:none"></span>Summer Comforter · coming for the warmer months
+        <span style="flex:1"></span><button onClick="{{ nfSummer.go }}" style="display:inline-flex;align-items:center;gap:6px;background:none;border:0;padding:2px 0;cursor:pointer;font-size:14px;letter-spacing:.02em;color:#7E5232;background-image:repeating-linear-gradient(90deg, #7E5232 0 5px, transparent 5px 8px);background-repeat:no-repeat;background-position:0 100%;background-size:0% 1.5px;transition:background-size .6s cubic-bezier(.2,.7,.2,1)" style-hover="background-size:100% 1.5px"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" style="flex:none"><path d="M6 8a6 6 0 0 1 12 0c0 7 3 9 3 9H3s3-2 3-9"/><path d="M10.3 21a1.94 1.94 0 0 0 3.4 0"/></svg>{{ nfSummer.label }}</button>
       </div>
     </div>
   </section>
@@ -136,7 +137,7 @@ a:hover{color:#221E18}
               <span style="font-size:16px;line-height:1.5;font-weight:300;max-width:260px">{{ t.d }}</span>
             </button>
           </sc-for>
-          <span style="padding-top:10px;border-top:1.5px dashed rgba(126,82,50,.3);font-size:10px;letter-spacing:.06em;color:#A39886">* 400 TC, 600 TC and 800 TC coming soon.</span>
+          <span style="display:flex;flex-wrap:wrap;align-items:center;justify-content:space-between;gap:6px 16px;padding-top:10px;border-top:1.5px dashed rgba(126,82,50,.3);font-size:10px;letter-spacing:.06em;color:#A39886"><span>* 400 TC, 600 TC and 800 TC coming soon.</span><button onClick="{{ nfTc.go }}" style="display:inline-flex;align-items:center;gap:6px;background:none;border:0;padding:2px 0;cursor:pointer;font-size:12px;letter-spacing:.02em;color:#7E5232;background-image:repeating-linear-gradient(90deg, #7E5232 0 5px, transparent 5px 8px);background-repeat:no-repeat;background-position:0 100%;background-size:0% 1.5px;transition:background-size .6s cubic-bezier(.2,.7,.2,1)" style-hover="background-size:100% 1.5px"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" style="flex:none"><path d="M6 8a6 6 0 0 1 12 0c0 7 3 9 3 9H3s3-2 3-9"/><path d="M10.3 21a1.94 1.94 0 0 0 3.4 0"/></svg>{{ nfTc.label }}</button></span>
         </div>
         <div style="display:flex;flex-wrap:wrap;gap:12px">
           <button onClick="{{ storyCovers }}" style="background-color:#221E18;background-image:repeating-linear-gradient(135deg, rgba(255,255,255,.07) 0 1px, transparent 1px 3px),linear-gradient(180deg, rgba(255,255,255,.1), rgba(0,0,0,.18));color:#F4EFE6;border:0;border-radius:999px;outline:1px dashed rgba(244,239,230,.42);outline-offset:-5px;padding:15px 26px;font-size:14px;letter-spacing:.05em;cursor:pointer;transition:background-color .4s,outline-offset .4s,transform .3s" style-hover="background-color:#7E5232;outline-offset:-4px" style-active="transform:scale(.97)">Discover duvet covers</button>
@@ -505,6 +506,7 @@ a:hover{color:#221E18}
             
             <span style="font-family:'Marcellus',serif;font-size:clamp(24px,2.2vw,32px)">{{ it.title }}</span>
             <span style="font-size:15px;color:#5F574B">{{ it.label }}</span>
+            <sc-if value="{{ it.soon }}" hint-placeholder-val="{{ false }}"><span style="margin-top:6px"><button onClick="{{ it.nf.go }}" style="display:inline-flex;align-items:center;gap:6px;background:none;border:0;padding:2px 0;cursor:pointer;font-size:14px;letter-spacing:.02em;color:#7E5232;background-image:repeating-linear-gradient(90deg, #7E5232 0 5px, transparent 5px 8px);background-repeat:no-repeat;background-position:0 100%;background-size:0% 1.5px;transition:background-size .6s cubic-bezier(.2,.7,.2,1)" style-hover="background-size:100% 1.5px"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" style="flex:none"><path d="M6 8a6 6 0 0 1 12 0c0 7 3 9 3 9H3s3-2 3-9"/><path d="M10.3 21a1.94 1.94 0 0 0 3.4 0"/></svg>{{ it.nf.label }}</button></span></sc-if>
             <sc-if value="{{ it.hasSizes }}" hint-placeholder-val="{{ false }}"><span style="font-size:14px;line-height:1.6;color:#221E18">{{ it.sizes }}</span></sc-if>
           </div>
           <sc-if value="{{ it.notSoon }}" hint-placeholder-val="{{ true }}">
@@ -667,11 +669,12 @@ a:hover{color:#221E18}
           <sc-if value="{{ pSoldOut }}" hint-placeholder-val="{{ false }}">
             <div style="display:flex;flex-direction:column;gap:12px">
               <span style="font-family:'Marcellus',serif;font-size:22px">Sold out in this selection.</span>
-              <span style="font-size:14px;line-height:1.5;color:#5F574B">Leave your email and we will write the day it is back.</span>
+              <span style="font-size:14px;line-height:1.5;color:#5F574B">{{ notifyLede }}</span>
               <div style="display:flex;gap:10px;align-items:stretch">
-                <input value="{{ notifyEmail }}" onChange="{{ onNotifyEmail }}" type="email" placeholder="Email address" style="flex:1;min-width:0;background:transparent;border:1px solid rgba(34,30,24,.25);border-radius:999px;outline:none;padding:0 20px;height:52px;font-size:15px">
+                <sc-if value="{{ notifyAsk }}" hint-placeholder-val="{{ true }}"><input value="{{ notifyEmail }}" onChange="{{ onNotifyEmail }}" type="email" placeholder="Email address" style="flex:1;min-width:0;background:transparent;border:1px solid rgba(34,30,24,.25);border-radius:999px;outline:none;padding:0 20px;height:52px;font-size:15px"></sc-if>
                 <button onClick="{{ notifyMe }}" style="background-color:#221E18;background-image:repeating-linear-gradient(135deg, rgba(255,255,255,.07) 0 1px, transparent 1px 3px),linear-gradient(180deg, rgba(255,255,255,.1), rgba(0,0,0,.18));color:#F4EFE6;border:0;border-radius:999px;outline:1px dashed rgba(244,239,230,.42);outline-offset:-5px;letter-spacing:.05em;cursor:pointer;transition:background-color .5s,outline-offset .4s,transform .3s;padding:0 22px;height:54px;font-size:14px" style-hover="background-color:#7E5232">{{ notifyLabel }}</button>
               </div>
+              <sc-if value="{{ notifyHasErr }}" hint-placeholder-val="{{ false }}"><span style="font-size:14px;color:#8A3B2A">{{ notifyErr }}</span></sc-if>
             </div>
           </sc-if>
           <div style="display:flex;flex-direction:column;gap:6px;font-size:13px;line-height:1.5;color:#5F574B">
@@ -1105,6 +1108,23 @@ a:hover{color:#221E18}
     </div>
   </sc-if>
 </aside>
+
+<!-- NOTIFY ME: email box for visitors not signed in -->
+<div onClick="{{ nfClose }}" style="position:fixed;inset:0;z-index:95;background:rgba(20,17,13,.42);opacity:{{ nfOp }};pointer-events:{{ nfPe }};transition:opacity .6s cubic-bezier(.2,.7,.2,1)"></div>
+<div data-screen-label="Notify me" role="dialog" aria-label="Notify me" style="position:fixed;left:50%;top:50%;z-index:96;width:min(440px,calc(100vw - 32px));box-sizing:border-box;isolation:isolate;overflow:hidden;background-color:#F1E9DB;background-image:linear-gradient(rgba(244,239,230,0.3),rgba(244,239,230,0.3)),url(./assets/satin.jpg);background-size:cover,cover;background-position:center,center;background-blend-mode:normal,multiply;outline:1px dashed rgba(126,82,50,.4);outline-offset:-8px;box-shadow:0 30px 80px rgba(20,17,13,.18);padding:30px 28px 28px;display:flex;flex-direction:column;gap:16px;opacity:{{ nfOp }};pointer-events:{{ nfPe }};transform:{{ nfTf }};transition:opacity .5s cubic-bezier(.2,.7,.2,1),transform .6s cubic-bezier(.2,.8,.2,1)">
+  <div style="display:flex;justify-content:space-between;align-items:center;gap:16px">
+    <span style="font-family:'Marcellus',serif;font-size:28px;line-height:1.1">{{ nfTitle }}</span>
+    <button onClick="{{ nfClose }}" aria-label="Close" style="flex:none;width:40px;height:40px;border-radius:50%;border:0;background:rgba(34,30,24,.06);cursor:pointer;font-size:18px;transition:background .3s" style-hover="background:rgba(34,30,24,.12)">×</button>
+  </div>
+  <span style="font-size:15px;line-height:1.55;font-weight:300;color:#5F574B">{{ nfText }}</span>
+  <sc-if value="{{ nfAsk }}" hint-placeholder-val="{{ true }}">
+    <div style="display:flex;gap:10px;align-items:stretch">
+      <input value="{{ nfEmail }}" onChange="{{ onNfEmail }}" type="email" placeholder="Email address" style="flex:1;min-width:0;background:transparent;border:1px solid rgba(34,30,24,.25);border-radius:999px;outline:none;padding:0 20px;height:52px;font-size:15px">
+      <button onClick="{{ nfSend }}" style="background-color:#221E18;background-image:repeating-linear-gradient(135deg, rgba(255,255,255,.07) 0 1px, transparent 1px 3px),linear-gradient(180deg, rgba(255,255,255,.1), rgba(0,0,0,.18));color:#F4EFE6;border:0;border-radius:999px;outline:1px dashed rgba(244,239,230,.42);outline-offset:-5px;letter-spacing:.05em;cursor:pointer;transition:background-color .5s,outline-offset .4s,transform .3s;padding:0 22px;height:54px;font-size:14px" style-hover="background-color:#7E5232">{{ nfLabel }}</button>
+    </div>
+  </sc-if>
+  <sc-if value="{{ nfHasErr }}" hint-placeholder-val="{{ false }}"><span style="font-size:14px;color:#8A3B2A">{{ nfErr }}</span></sc-if>
+</div>
 
 <!-- FABRIC BOLT SCROLLBAR -->
 <sc-if value="{{ fabric }}" hint-placeholder-val="{{ true }}">
@@ -1572,7 +1592,7 @@ class Component extends DCLogic {
       goHome: () => this.go({view:'home'}),
       storyDuvets: () => this.goStory('duvets'), storyCovers: () => this.goStory('covers'), storySheets: () => this.goStory('sheets'), storyPillows: () => this.goStory('pillows'), storyTowels: () => this.goStory('towels'),
       openDuvet: () => this.openProduct('winter-duvet'),
-      duvetFrom: fmt(P['winter-duvet'].base), coverFrom: fmt(P['duvet-cover'].base), sheetFrom: fmt(P['bedsheet'].base), pillowFrom: fmt(P['latex-pillow'].base), duvetDeal: {has:false}, coverDeal: {has:false}, sheetDeal: {has:false}, pillowDeal: {has:false}, towelDeal: {has:false}, stDeal: {has:false}, pairDeal: {has:false},
+      duvetFrom: fmt(P['winter-duvet'].base), coverFrom: fmt(P['duvet-cover'].base), sheetFrom: fmt(P['bedsheet'].base), pillowFrom: fmt(P['latex-pillow'].base), nfSummer: {label:'Notify me'}, nfTc: {label:'Notify me'}, duvetDeal: {has:false}, coverDeal: {has:false}, sheetDeal: {has:false}, pillowDeal: {has:false}, towelDeal: {has:false}, stDeal: {has:false}, pairDeal: {has:false},
       tcs: TCS.map((t, i) => ({n:t.n, d:t.d, star: t.soon ? '*' : '', color: i === s.tc ? '#221E18' : '#857A6A', pick: () => this.setState({tc:i})})),
       tcImgs: TCS.map((t, i) => ({id:`tc-${t.n}`, src:t.src || '', ph:`${t.n} TC · dark taupe percale · 2400 × 2000`, op: i === s.tc ? 1 : 0, tf: i === s.tc ? 'scale(1)' : 'scale(1.06)'})),
       tcNow: tcn, tcZoom: `${Math.round(110 + 260 * 300 / tcn * (300 / tcn))}%`,
