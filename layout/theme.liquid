@@ -1,6 +1,14 @@
 <!doctype html>
 <html class="js" lang="{{ request.locale.iso_code }}">
   <head>
+    {%- comment -%}
+      The shop is at dailyloom.in (the Hydrogen storefront). This theme only answers Shopify's own links,
+      such as "Continue shopping" after checkout, so every visit goes on to the same page there.
+      Not in the theme editor, so the theme can still be edited.
+    {%- endcomment -%}
+    {%- unless request.design_mode -%}
+      <script>location.replace('https://dailyloom.in' + (/^\/cart/.test(location.pathname) ? '/' : location.pathname) + location.search);</script>
+    {%- endunless -%}
     <meta charset="utf-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width,initial-scale=1">

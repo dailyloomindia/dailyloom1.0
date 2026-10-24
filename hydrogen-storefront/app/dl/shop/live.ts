@@ -97,8 +97,10 @@ export const dealVals = (d: Deal, fmt: (n: number) => string, qty = 1) =>
   d.was > d.now ? {has: true, cmp: fmt(d.was * qty), off: Math.round((d.was - d.now) / d.was * 100) + '% off'} : {has: false, cmp: '', off: ''};
 
 /**
- * The product's photos from Shopify, as [url, tags]: a photo set as a variant's image (or whose
- * alt text names an option value) shows only for that value; the rest show for every selection.
+ * The product's photos from Shopify, as [url, tags]. Every photo shows for every selection; a photo
+ * set as a variant's image (or whose alt text names an option value) is tagged "~value", so it comes
+ * first when that value is chosen. Only where each value of an option is a separate Shopify product
+ * (the towel types) is a photo tagged "value": it shows only for that value.
  * Null when Shopify has none, so the design's photos stay.
  */
 export function mediaOf(live: Live | null, pid: string): [string, string][] | null {
@@ -118,7 +120,7 @@ export function mediaOf(live: Live | null, pid: string): [string, string][] | nu
         if (o === whole) continue;
         o.vals.forEach((val: any, i: number) => {
           const v = variantOf(live, pid, {...mine[0], [o.n]: i});
-          if ((v && prod.variants.length > 1 && v.image === im.url) || im.alt.split('|').map(x => x.trim()).includes(val.v)) tags.push(val.v);
+          if ((v && prod.variants.length > 1 && v.image === im.url) || im.alt.split('|').map(x => x.trim()).includes(val.v)) tags.push('~' + val.v);
         });
       }
       out.push([im.url, [...new Set(tags)].join('|')]);
