@@ -66,6 +66,28 @@ export function fromPrice(live: Live | null, pid: string): number {
 export const catFrom = (live: Live | null, k: string) =>
   Math.min(...CATS.find((c: any) => c.k === k).items.filter((x: any) => !x.soon).map((x: any) => fromPrice(live, x.pid)));
 
+/** A price and the earlier price it is cut from (0 when not discounted), as the page shows them. */
+export type Deal = {now: number; was: number};
+export const dealOf = (live: Live | null, pid: string, sel: any): Deal => ({now: priceOf(live, pid, sel), was: compareOf(live, pid, sel)});
+
+/** The lowest price a product sells at, with the earlier price of that selection when it is discounted. */
+export function fromDeal(live: Live | null, pid: string): Deal {
+  const now = fromPrice(live, pid), all = combos(pid), ok = all.filter(s => availableOf(live, pid, s));
+  const at = (ok.length ? ok : all).filter(s => priceOf(live, pid, s) === now);
+  return {now, was: Math.max(0, ...at.map(s => compareOf(live, pid, s)))};
+}
+
+/** The cheapest of several deals. */
+export const minDeal = (ds: Deal[]): Deal => ds.reduce((a, d) => d.now < a.now || (d.now === a.now && d.was > a.was) ? d : a);
+
+/** The lowest price in a collection, with its earlier price. */
+export const catDeal = (live: Live | null, k: string) =>
+  minDeal(CATS.find((c: any) => c.k === k).items.filter((x: any) => !x.soon).map((x: any) => fromDeal(live, x.pid)));
+
+/** The struck-through earlier price and saving beside a price: {has, cmp, off}; has is false when not discounted. */
+export const dealVals = (d: Deal, fmt: (n: number) => string, qty = 1) =>
+  d.was > d.now ? {has: true, cmp: fmt(d.was * qty), off: Math.round((d.was - d.now) / d.was * 100) + '% off'} : {has: false, cmp: '', off: ''};
+
 /**
  * The product's photos from Shopify, as [url, tags]: a photo set as a variant's image (or whose
  * alt text names an option value) shows only for that value; the rest show for every selection.

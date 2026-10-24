@@ -253,7 +253,6 @@ export class ShellLogic extends Component<ShellProps, any> {
     const cats = CATS.map((c: any) => ({name:c.name, onClick:() => this.goStory(c.k), navColor: activeCat === c.k ? '#7E5232' : '#221E18'}));
     const bagCount = s.bag.reduce((a: number, b: any) => a + b.qty, 0);
     const subtotal = s.bag.reduce((a: number, b: any) => a + b.total, 0);
-    const a = s.acct || {};
     return {
       rootRef:this.rootRef, navRef:this.navRef, curtainRef:this.curtainRef, trackRef:this.trackRef, clothRef:this.clothRef, rollRef:this.rollRef, tagRef:this.tagRef, bagBtnRef:this.bagBtnRef,
       devNotes, fabric, cats, onTrackDown:this.onTrackDown,
@@ -271,7 +270,7 @@ export class ShellLogic extends Component<ShellProps, any> {
       })(),
       ...(s.mobile && (PROPS.photoBlend ?? 'dissolve') !== 'framed' ? {mHero:'linear-gradient(to bottom, #000 0%, #000 70%, transparent 100%)'} : {}),
       goHome: () => this.go({view:'home'}),
-      acOpen: () => this.go({view:'account', acScreen: a.auth ? 'orders' : 'signin'}),
+      acOpen: () => this.go({view:'account'}),
       navDisp: s.mobile ? 'none' : 'flex', menuDisp: s.mobile ? 'grid' : 'none', toggleMenu: () => this.setState((x: any) => ({menuOpen: !x.menuOpen})),
       menuTf: s.menuOpen && s.mobile ? 'translateY(0)' : 'translateY(-16px)', menuOp: s.menuOpen && s.mobile ? 1 : 0, menuPe: s.menuOpen && s.mobile ? 'auto' : 'none',
       menuIcon1: s.menuOpen ? 'M3 2l14 10' : 'M1 4h18', menuIcon2: s.menuOpen ? 'M3 12L17 2' : 'M1 10h18',

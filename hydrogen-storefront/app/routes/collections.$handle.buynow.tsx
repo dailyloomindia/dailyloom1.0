@@ -7,7 +7,7 @@ import {CATS, P, RECS, SRC, fmt} from '~/dl/data/catalog';
 import {DELIV} from '~/dl/data/product-data';
 import {CAT_BY_HANDLE, productFor} from '~/dl/routing';
 import {preloadHeader} from '~/dl/preload';
-import {availableOf, compareOf, fromPrice} from '~/dl/shop/live';
+import {availableOf, compareOf, dealVals, fromDeal} from '~/dl/shop/live';
 import {getLive} from '~/dl/shop/catalog.server';
 
 export async function loader({params, request, context}: LoaderFunctionArgs) {
@@ -59,7 +59,7 @@ function productVals(sh: ShellLogic, pid: string){
   const s = sh.state, p = P[pid], sel = sh.defSel(pid, sh.selOf(pid));
   const accDefs = [['Details', p.details], ['Care', p.care], ['Delivery & returns', DELIV]];
   const acc = accDefs.map(([t, b]) => { const open = s.acc === t; return {title:t, body:b, rows: open ? '1fr' : '0fr', rot: open ? 'rotate(45deg)' : 'none', toggle: () => sh.setState((stt: any) => ({acc: stt.acc === t ? '' : t}))}; });
-  const recs = (RECS[p.cat] || []).map((rid: string, i: number) => { const ci = CATS.findIndex((c: any) => c.items.some((x: any) => x.pid === rid)); const ii = CATS[ci].items.findIndex((x: any) => x.pid === rid); return {name:P[rid].name, price:'From ' + fmt(fromPrice(sh.props.live, rid)), slotId:`col-${CATS[ci].k}-${ii}`, src: SRC[`col-${CATS[ci].k}-${ii}`] || '', ph:`${P[rid].name} · product image`, delay:i * 120, onClick: () => sh.openProduct(rid)}; });
+  const recs = (RECS[p.cat] || []).map((rid: string, i: number) => { const ci = CATS.findIndex((c: any) => c.items.some((x: any) => x.pid === rid)); const ii = CATS[ci].items.findIndex((x: any) => x.pid === rid); return {name:P[rid].name, price:'From ' + fmt(fromDeal(sh.props.live, rid).now), deal: dealVals(fromDeal(sh.props.live, rid), fmt), slotId:`col-${CATS[ci].k}-${ii}`, src: SRC[`col-${CATS[ci].k}-${ii}`] || '', ph:`${P[rid].name} · product image`, delay:i * 120, onClick: () => sh.openProduct(rid)}; });
   return {
     pName: p.name, pShort: p.short, pCatName: CATS.find((c: any) => c.k === p.cat).name, goPCat: () => sh.goStory(p.cat),
     pPrice: fmt(sh.priceOf(pid, sel) * s.qty),

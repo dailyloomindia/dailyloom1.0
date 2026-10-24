@@ -5,7 +5,10 @@ import {toWebUrls, webMap} from './web-assets.mjs';
 
 const [, , SRC_FILE, OUT_DIR] = process.argv;
 const lines = fs.readFileSync(SRC_FILE, 'utf8').split('\n');
-const take = (a, b) => lines.slice(a - 1, b).join('\n');
+// Line numbers below are as in the v4 file, where the data block starts at line 1141 with
+// `const fmt`; they shift with any edit made above it.
+const shift = lines.findIndex(l => l.startsWith('const fmt = n =>')) + 1 - 1141;
+const take = (a, b) => lines.slice(a - 1 + shift, b + shift).join('\n');
 const exp = s => s
   .replace(/^const fmt = n =>/m, 'export const fmt = (n: number) =>')
   .replace(/^const IMG = f =>/m, 'export const IMG = (f: string) =>')

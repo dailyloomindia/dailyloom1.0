@@ -106,6 +106,16 @@ export function HomeView({vals}: {vals: any}) {
             {"\n      "}
             <div style={{fontSize: "15px"}}>
               {"From "}{I(vals.duvetFrom)}
+              {vals.duvetDeal?.has ? (
+                <>
+                <span style={{marginLeft: "10px", color: "#857A6A", textDecoration: "line-through"}}>
+                  {I(vals.duvetDeal?.cmp)}
+                </span>
+                <span style={{marginLeft: "10px", fontSize: "13px", letterSpacing: ".04em", color: "#7E5232"}}>
+                  {I(vals.duvetDeal?.off)}
+                </span>
+                </>
+              ) : null}
             </div>
             {"\n      "}
             <div style={{display: "flex", flexWrap: "wrap", alignItems: "center", gap: "24px"}}>
@@ -253,7 +263,18 @@ export function HomeView({vals}: {vals: any}) {
               </h3>
               {"\n        "}
               <div style={{fontSize: "15px", color: "#5F574B"}}>
-                {"From "}{I(vals.coverFrom)}{" · 300 and 400 TC"}
+                {"From "}{I(vals.coverFrom)}
+                {vals.coverDeal?.has ? (
+                  <>
+                  <span style={{marginLeft: "10px", color: "#857A6A", textDecoration: "line-through"}}>
+                    {I(vals.coverDeal?.cmp)}
+                  </span>
+                  <span style={{marginLeft: "10px", fontSize: "13px", letterSpacing: ".04em", color: "#7E5232"}}>
+                    {I(vals.coverDeal?.off)}
+                  </span>
+                  </>
+                ) : null}
+                {" · 300 and 400 TC"}
               </div>
               {"\n        "}
               <button onClick={vals.storyCovers} style={{alignSelf: "flex-start", background: "none", border: "0", padding: "4px 0", cursor: "pointer", fontSize: "15px", color: "#7E5232", backgroundImage: "repeating-linear-gradient(90deg, #7E5232 0 5px, transparent 5px 8px)", backgroundRepeat: "no-repeat", backgroundPosition: "0 100%", backgroundSize: "0% 1.5px", transition: "background-size .6s cubic-bezier(.2,.7,.2,1)"}} className="scp5">
@@ -285,7 +306,18 @@ export function HomeView({vals}: {vals: any}) {
               </h3>
               {"\n        "}
               <div style={{fontSize: "15px", color: "#5F574B"}}>
-                {"From "}{I(vals.sheetFrom)}{" · with two pillow covers"}
+                {"From "}{I(vals.sheetFrom)}
+                {vals.sheetDeal?.has ? (
+                  <>
+                  <span style={{marginLeft: "10px", color: "#857A6A", textDecoration: "line-through"}}>
+                    {I(vals.sheetDeal?.cmp)}
+                  </span>
+                  <span style={{marginLeft: "10px", fontSize: "13px", letterSpacing: ".04em", color: "#7E5232"}}>
+                    {I(vals.sheetDeal?.off)}
+                  </span>
+                  </>
+                ) : null}
+                {" · with two pillow covers"}
               </div>
               {"\n        "}
               <button onClick={vals.storySheets} style={{alignSelf: "flex-start", background: "none", border: "0", padding: "4px 0", cursor: "pointer", fontSize: "15px", color: "#7E5232", backgroundImage: "repeating-linear-gradient(90deg, #7E5232 0 5px, transparent 5px 8px)", backgroundRepeat: "no-repeat", backgroundPosition: "0 100%", backgroundSize: "0% 1.5px", transition: "background-size .6s cubic-bezier(.2,.7,.2,1)"}} className="scp5">
@@ -326,6 +358,16 @@ export function HomeView({vals}: {vals: any}) {
               {"\n        "}
               <span style={{fontSize: "15px", color: "#B8AE9E"}}>
                 {"From "}{I(vals.pillowFrom)}
+                {vals.pillowDeal?.has ? (
+                  <>
+                  <span style={{marginLeft: "10px", color: "#8E8576", textDecoration: "line-through"}}>
+                    {I(vals.pillowDeal?.cmp)}
+                  </span>
+                  <span style={{marginLeft: "10px", fontSize: "13px", letterSpacing: ".04em", color: "#E3C9A6"}}>
+                    {I(vals.pillowDeal?.off)}
+                  </span>
+                  </>
+                ) : null}
               </span>
               {"\n      "}
             </div>
@@ -457,6 +499,16 @@ export function HomeView({vals}: {vals: any}) {
                 {"\n          "}
                 <span style={{fontSize: "16px"}}>
                   {I(vals.towelPrice)}
+                  {vals.towelDeal?.has ? (
+                    <>
+                    <span style={{marginLeft: "10px", color: "#857A6A", textDecoration: "line-through"}}>
+                      {I(vals.towelDeal?.cmp)}
+                    </span>
+                    <span style={{marginLeft: "10px", fontSize: "13px", letterSpacing: ".04em", color: "#7E5232"}}>
+                      {I(vals.towelDeal?.off)}
+                    </span>
+                    </>
+                  ) : null}
                 </span>
                 {"\n          "}
                 <button onClick={vals.storyTowels} style={{backgroundColor: "#221E18", backgroundImage: "repeating-linear-gradient(135deg, rgba(255,255,255,.07) 0 1px, transparent 1px 3px),linear-gradient(180deg, rgba(255,255,255,.1), rgba(0,0,0,.18))", color: "#F4EFE6", border: "0", borderRadius: "999px", outline: "1px dashed rgba(244,239,230,.42)", outlineOffset: "-5px", padding: "15px 28px", fontSize: "14px", letterSpacing: ".05em", cursor: "pointer", transition: "background-color .4s,outline-offset .4s,transform .3s"}} className="scp2 scp3">

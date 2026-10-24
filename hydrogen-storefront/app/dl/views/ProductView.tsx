@@ -540,6 +540,16 @@ export function ProductView({vals}: {vals: any}) {
                     {"\n            "}
                     <span style={{fontSize: "14px", color: "#5F574B"}}>
                       {I(r?.price)}
+                      {r?.deal?.has ? (
+                        <>
+                        <span style={{marginLeft: "10px", color: "#857A6A", textDecoration: "line-through"}}>
+                          {I(r?.deal?.cmp)}
+                        </span>
+                        <span style={{marginLeft: "10px", fontSize: "13px", letterSpacing: ".04em", color: "#7E5232"}}>
+                          {I(r?.deal?.off)}
+                        </span>
+                        </>
+                      ) : null}
                     </span>
                     {"\n          "}
                   </div>

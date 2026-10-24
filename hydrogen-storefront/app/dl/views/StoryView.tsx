@@ -16,6 +16,16 @@ export function StoryView({vals}: {vals: any}) {
           {"\n    "}
           <span style={{flex: "none", fontSize: "14px", letterSpacing: ".02em", color: "#554D42"}}>
             {I(vals.stFrom)}
+            {vals.stDeal?.has ? (
+              <>
+              <span style={{marginLeft: "10px", color: "#857A6A", textDecoration: "line-through"}}>
+                {I(vals.stDeal?.cmp)}
+              </span>
+              <span style={{marginLeft: "10px", fontSize: "13px", letterSpacing: ".04em", color: "#7E5232"}}>
+                {I(vals.stDeal?.off)}
+              </span>
+              </>
+            ) : null}
           </span>
           {"\n    "}
           <button onClick={vals.stBuyScroll} style={{flex: "none", backgroundColor: "#221E18", backgroundImage: "repeating-linear-gradient(135deg, rgba(255,255,255,.07) 0 1px, transparent 1px 3px)", color: "#F4EFE6", border: "0", borderRadius: "999px", outline: "1px dashed rgba(244,239,230,.42)", outlineOffset: "-4px", padding: "8px 18px", fontSize: "13px", letterSpacing: ".04em", cursor: "pointer", transition: "background-color .4s"}} className="scpa">
@@ -681,6 +691,16 @@ export function StoryView({vals}: {vals: any}) {
                       {"\n              "}
                       <span style={{fontSize: "16px"}}>
                         {I(it?.price)}
+                        {it?.deal?.has ? (
+                          <>
+                          <span style={{marginLeft: "10px", color: "#857A6A", textDecoration: "line-through"}}>
+                            {I(it?.deal?.cmp)}
+                          </span>
+                          <span style={{marginLeft: "10px", fontSize: "13px", letterSpacing: ".04em", color: "#7E5232"}}>
+                            {I(it?.deal?.off)}
+                          </span>
+                          </>
+                        ) : null}
                       </span>
                       {"\n              "}
                       <button onClick={it?.buy} style={{backgroundColor: "#221E18", backgroundImage: "repeating-linear-gradient(135deg, rgba(255,255,255,.07) 0 1px, transparent 1px 3px),linear-gradient(180deg, rgba(255,255,255,.1), rgba(0,0,0,.18))", color: "#F4EFE6", border: "0", borderRadius: "999px", outline: "1px dashed rgba(244,239,230,.42)", outlineOffset: "-5px", padding: "14px 26px", fontSize: "14px", letterSpacing: ".05em", cursor: "pointer", transition: "background-color .4s,outline-offset .4s,transform .3s"}} className="scp2 scp3">
@@ -732,6 +752,16 @@ export function StoryView({vals}: {vals: any}) {
                 {"\n          "}
                 <span style={{fontSize: "15px"}}>
                   {I(vals.pairPrice)}
+                  {vals.pairDeal?.has ? (
+                    <>
+                    <span style={{marginLeft: "10px", color: "#857A6A", textDecoration: "line-through"}}>
+                      {I(vals.pairDeal?.cmp)}
+                    </span>
+                    <span style={{marginLeft: "10px", fontSize: "13px", letterSpacing: ".04em", color: "#7E5232"}}>
+                      {I(vals.pairDeal?.off)}
+                    </span>
+                    </>
+                  ) : null}
                 </span>
                 {"\n          "}
                 <span style={{fontSize: "15px", color: "#7E5232", backgroundImage: "repeating-linear-gradient(90deg, #7E5232 0 5px, transparent 5px 8px)", backgroundRepeat: "no-repeat", backgroundPosition: "0 100%", backgroundSize: "100% 1.5px", paddingBottom: "3px"}}>

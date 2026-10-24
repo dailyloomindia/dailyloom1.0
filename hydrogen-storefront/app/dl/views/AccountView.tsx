@@ -41,17 +41,6 @@ export function AccountView({vals}: {vals: any}) {
                   <input value={VAL(vals.acEmailIn)} onChange={vals.acOnEmail} type="email" autoComplete="email" style={{background: "transparent", border: "0", borderBottom: "1.5px dashed rgba(34,30,24,.4)", outline: "none", padding: "10px 0 9px", fontSize: "17px", color: "#221E18"}} className="scpl" />
                 </label>
                 {"\n          "}
-                <label style={{display: "flex", flexDirection: "column", gap: "6px"}}>
-                  <span style={{fontSize: "13px", letterSpacing: ".06em", color: "#5F574B"}}>
-                    {"Password"}
-                  </span>
-                  <input value={VAL(vals.acPassIn)} onChange={vals.acOnPass} type="password" autoComplete="current-password" style={{background: "transparent", border: "0", borderBottom: "1.5px dashed rgba(34,30,24,.4)", outline: "none", padding: "10px 0 9px", fontSize: "17px", color: "#221E18"}} className="scpl" />
-                </label>
-                {"\n          "}
-                <button type="button" onClick={vals.acToForgot} style={{alignSelf: "flex-end", marginTop: "-10px", background: "none", border: "0", padding: "4px 0", cursor: "pointer", fontSize: "14px", color: "#7E5232", backgroundImage: "repeating-linear-gradient(90deg, #7E5232 0 5px, transparent 5px 8px)", backgroundRepeat: "no-repeat", backgroundPosition: "0 100%", backgroundSize: "0% 1.5px", transition: "background-size .6s cubic-bezier(.2,.7,.2,1)"}}>
-                  {"Forgot password?"}
-                </button>
-                {"\n          "}
                 <button type="submit" style={{backgroundColor: "#221E18", backgroundImage: "repeating-linear-gradient(135deg, rgba(255,255,255,.07) 0 1px, transparent 1px 3px),linear-gradient(180deg, rgba(255,255,255,.1), rgba(0,0,0,.18))", color: "#F4EFE6", border: "0", borderRadius: "999px", outline: "1px dashed rgba(244,239,230,.42)", outlineOffset: "-5px", letterSpacing: ".05em", cursor: "pointer", transition: "background-color .5s,outline-offset .4s,transform .3s", height: "54px", fontSize: "15px"}} className="scpa">
                   {"Sign in"}
                 </button>
@@ -275,6 +264,14 @@ export function AccountView({vals}: {vals: any}) {
                     {"\n          "}
                   </Fragment>
                 ))}
+                {"\n          "}
+                {vals.acNoOrders ? (
+                  <>
+                  <span style={{borderTop: "1.5px dashed rgba(126,82,50,.28)", padding: "26px 0", fontSize: "14px", lineHeight: "1.5", color: "#5F574B"}}>
+                    {"No orders yet."}
+                  </span>
+                  </>
+                ) : null}
                 {"\n        "}
               </div>
               {"\n        "}
