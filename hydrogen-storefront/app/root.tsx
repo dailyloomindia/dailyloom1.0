@@ -84,7 +84,7 @@ function Document({children}: {children: ReactNode}) {
         <noscript>
           <style dangerouslySetInnerHTML={{__html: '#dc-root>.sc-host>div>div:last-child{display:none}'}} />
         </noscript>
-        <script src="/image-slot.js" defer />
+        <script src="/image-slot.js?v=2" defer />
       </head>
       <body>
         <div id="dc-root">
