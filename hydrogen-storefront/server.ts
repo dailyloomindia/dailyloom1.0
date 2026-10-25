@@ -1,4 +1,4 @@
-import {storefrontRedirect} from '@shopify/hydrogen';
+import {cartSetIdDefault, storefrontRedirect} from '@shopify/hydrogen';
 import {createRequestHandler, type AppLoadContext} from '@shopify/remix-oxygen';
 import {createHydrogenContext} from '@shopify/hydrogen';
 import {AppSession} from '~/lib/session.server';
@@ -18,7 +18,8 @@ export default {
         request,
         session,
         waitUntil: executionContext.waitUntil.bind(executionContext),
-        cart: {queryFragment: CART_QUERY_FRAGMENT},
+        // The cart cookie: never sent by other websites' requests, never readable by page scripts.
+        cart: {queryFragment: CART_QUERY_FRAGMENT, setId: cartSetIdDefault({path: '/', samesite: 'Lax', secure: true, httponly: true})},
       });
 
       const handleRequest = createRequestHandler({

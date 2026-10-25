@@ -3,7 +3,9 @@ import {json, type ActionFunctionArgs} from '@shopify/remix-oxygen';
 import {getLive} from '~/dl/shop/catalog.server';
 import {getBag, type Bag} from '~/dl/shop/cart.server';
 import {monogramOf, variantOf} from '~/dl/shop/live';
-import {MONOGRAM_SOON} from '~/dl/shop/map';
+import {MONOGRAM_SOON, SHOPIFY} from '~/dl/shop/map';
+import {P} from '~/dl/data/catalog';
+import {sameOrigin} from '~/dl/shop/guard.server';
 
 const LINES_ADD = `#graphql
   mutation DlLinesAdd($cartId: ID!, $lines: [CartLineInput!]!) {
@@ -18,11 +20,22 @@ const LINES_REMOVE = `#graphql
     cartLinesRemove(cartId: $cartId, lineIds: $lineIds) { cart { id } userErrors { message } }
   }`;
 
+/** A whole number of pieces within 1..max, or 0 when it is not one. */
+const count = (n: any, max: number) => Number.isInteger(n) && n >= 1 && n <= max ? n : 0;
+
+/** Only the product's own options, each a valid choice (anything else is dropped, so it falls back to the first). */
+function cleanSel(pid: string, sel: any){
+  const out: Record<string, number> = {};
+  for (const o of P[pid].opts) { const v = sel && sel[o.n]; if (Number.isInteger(v) && v >= 0 && v < o.vals.length) out[o.n] = v; }
+  return out;
+}
+
 /** One bag item's identity: the same product, options and initials are one line. */
 const dlKey = (dl: any) => dl ? JSON.stringify([dl.pid, Object.keys(dl.sel || {}).sort().map(k => [k, dl.sel[k]]), dl.mono || '']) : '';
 
 export async function action({request, context}: ActionFunctionArgs) {
   const {cart, storefront} = context as any;
+  if (!sameOrigin(request)) return json({error: 'forbidden'}, {status: 403});
   const body: any = await request.json().catch(() => ({}));
   const ids = cart.getCartId() ? [cart.getCartId()] : [];
   let error = '';
@@ -37,9 +50,10 @@ export async function action({request, context}: ActionFunctionArgs) {
   };
 
   if (body.op === 'add') {
-    const {pid, qty = 1} = body;
+    const pid = String(body.pid || ''), qty = count(body.qty ?? 1, 20);
+    if (!Object.hasOwn(P, pid) || !Object.hasOwn(SHOPIFY, pid) || !qty) return json({error: 'invalid', bag: await getBag(cart)}, {status: 400});
     // Monogramming is not offered yet.
-    const sel = {...(body.sel || {}), ...(MONOGRAM_SOON && body.sel && body.sel.Monogram != null ? {Monogram: 0} : {})};
+    const sel = {...cleanSel(pid, body.sel), ...(MONOGRAM_SOON && body.sel && body.sel.Monogram != null ? {Monogram: 0} : {})};
     const live = await getLive(storefront);
     const v = variantOf(live, pid, sel);
     if (!v || !v.ok) return json({error: 'sold out', bag: await getBag(cart)}, {status: 409});
@@ -47,7 +61,7 @@ export async function action({request, context}: ActionFunctionArgs) {
     const dl = {pid, sel, mono: initials};
     const before = await getBag(cart);
     const same = before.lines.find(l => dlKey(l.dl) === dlKey(dl));
-    if (same) await setQty(before, same.id, same.qty + qty);
+    if (same) await setQty(before, same.id, Math.min(99, same.qty + qty));
     else {
       const attributes = [{key: '_dl', value: JSON.stringify(dl)}, ...(sel.Monogram === 1 ? [{key: 'Monogram', value: initials || '—'}] : [])];
       const line = {merchandiseId: v.id, quantity: qty, attributes};
@@ -61,7 +75,9 @@ export async function action({request, context}: ActionFunctionArgs) {
       }
     }
   } else if (body.op === 'qty' && cart.getCartId()) {
-    await setQty(await getBag(cart), String(body.line), Math.max(0, Math.min(99, +body.qty || 0)));
+    const q = Number.isInteger(body.qty) ? Math.max(0, Math.min(99, body.qty)) : -1;
+    if (q < 0) return json({error: 'invalid', bag: await getBag(cart)}, {status: 400});
+    await setQty(await getBag(cart), String(body.line), q);
   }
 
   const bag = await getBag(cart);
