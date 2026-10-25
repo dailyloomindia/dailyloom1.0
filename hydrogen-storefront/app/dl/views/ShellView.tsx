@@ -412,7 +412,7 @@ export function ShellView({vals, children}: {vals: any; children: ReactNode}) {
       {vals.fabric ? (
         <>
         {"\n  "}
-        <div ref={vals.trackRef} onPointerDown={vals.onTrackDown} title="Scroll" style={{position: "fixed", right: "8px", top: "70px", bottom: "14px", width: "30px", zIndex: "60", cursor: "grab", touchAction: "none"}}>
+        <div ref={vals.trackRef} onPointerDown={vals.onTrackDown} title="Scroll" style={{position: "fixed", right: "8px", top: "70px", bottom: "14px", width: "30px", zIndex: "60", cursor: "grab", touchAction: "none", opacity: "0", transition: "opacity .5s"}}>
           {"\n    "}
           <div style={{position: "absolute", left: "50%", top: "8px", bottom: "0", width: "1px", background: "repeating-linear-gradient(to bottom, rgba(126,82,50,.4) 0 4px, transparent 4px 8px)"}} />
           {"\n    "}
