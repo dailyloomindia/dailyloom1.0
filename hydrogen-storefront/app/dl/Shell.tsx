@@ -70,7 +70,8 @@ export class ShellLogic extends Component<ShellProps, any> {
     this.setState({acct, ...(!this.props.route.cat && CATS.some((c: any) => c.k === s.cat) ? {cat: s.cat} : {})});
     this.onResize = () => { const m = innerWidth < 768; if (m !== this.state.mobile) { this.setState({mobile:m}); this.applySb(); } };
     window.addEventListener('resize', this.onResize); this.onResize();
-    window.addEventListener('scroll', this.onScroll, {passive:true});
+    window.addEventListener('scroll', this.onScrolled, {passive:true});
+    window.addEventListener('mousemove', this.onMouse, {passive:true});
     window.addEventListener('resize', this.onScroll);
     this.applySb(); this.observe(); this.onScroll(); this.snap();
     // The server-rendered page starts behind the curtain (see root.tsx); hand it to the animation.
@@ -80,7 +81,7 @@ export class ShellLogic extends Component<ShellProps, any> {
       c.animate([{transform:'translateY(0)'},{transform:DOWN}], {duration:1000, delay:450, easing:EASE, fill:'backwards'});
     }
   }
-  componentWillUnmount(){ window.removeEventListener('scroll', this.onScroll); window.removeEventListener('resize', this.onScroll); window.removeEventListener('resize', this.onResize); this.io && this.io.disconnect(); }
+  componentWillUnmount(){ window.removeEventListener('scroll', this.onScrolled); window.removeEventListener('mousemove', this.onMouse); window.removeEventListener('resize', this.onScroll); window.removeEventListener('resize', this.onResize); this.io && this.io.disconnect(); }
   snap(){ const {bag} = this.state; this._prev = {view:this.view(), cat:this.cat(), pid:this.pid(), key:this.props.locKey, bag, sb:PROPS.scrollbar}; }
   componentDidUpdate(){
     const ps = this._prev || {}, s = this.state;
@@ -128,6 +129,14 @@ export class ShellLogic extends Component<ShellProps, any> {
       if (el.style.opacity === '0' && r.top < innerHeight && r.bottom > 0) { el.style.opacity = '1'; el.style.transform = 'none'; }
     }), 2000);
   }
+  /** The fabric scrollbar shows while the page moves (or the pointer is at the right edge, or it is held) and fades once it stops. */
+  showSb(){
+    const tr = this.trackRef.current; if (!tr) return;
+    tr.style.opacity = '1';
+    clearTimeout(this.sbT); this.sbT = setTimeout(() => { if (!this.sbHeld && !this.sbNear) tr.style.opacity = '0'; }, 1000);
+  }
+  onScrolled = () => { this.showSb(); this.onScroll(); };
+  onMouse = (e: MouseEvent) => { const near = e.clientX > innerWidth - 60; if (near !== !!this.sbNear) { this.sbNear = near; this.showSb(); } };
   onScroll = () => {
     if (this.raf) return;
     this.raf = requestAnimationFrame(() => {
@@ -163,9 +172,9 @@ export class ShellLogic extends Component<ShellProps, any> {
   };
   onTrackDown = (e: any) => {
     const tr = this.trackRef.current; if (!tr) return;
-    tr.setPointerCapture && tr.setPointerCapture(e.pointerId); tr.style.cursor = 'grabbing';
+    tr.setPointerCapture && tr.setPointerCapture(e.pointerId); tr.style.cursor = 'grabbing'; this.sbHeld = true; this.showSb();
     const move = (ev: any) => { const r = tr.getBoundingClientRect(); const p = Math.min(1, Math.max(0, (ev.clientY - r.top) / r.height)); window.scrollTo(0, p * (document.documentElement.scrollHeight - innerHeight)); };
-    const up = () => { tr.style.cursor = 'grab'; tr.removeEventListener('pointermove', move); tr.removeEventListener('pointerup', up); };
+    const up = () => { tr.style.cursor = 'grab'; this.sbHeld = false; this.showSb(); tr.removeEventListener('pointermove', move); tr.removeEventListener('pointerup', up); };
     move(e); tr.addEventListener('pointermove', move); tr.addEventListener('pointerup', up);
   };
   /** Move to another view: curtain down, navigate to its route, curtain up once it has rendered. */

@@ -249,29 +249,6 @@ a:hover{color:#221E18}
       <p style="margin:0;font-size:17px;line-height:1.65;font-weight:300;color:#5F574B">Every Daily Loom piece begins as yarn on a loom. We keep the materials simple, cotton, natural latex and bamboo, so what reaches your home is comfortable from the first night and stays that way.</p>
     </div>
   </section>
-  <section data-screen-label="Home · Reviews" style="padding:clamp(80px,10vw,140px) clamp(20px,5vw,80px)">
-    <div data-reveal="0" style="display:flex;flex-direction:column;align-items:center;text-align:center;gap:16px;margin-bottom:clamp(44px,5vw,72px)">
-      <span style="display:inline-flex;padding:7px 12px 6px;background-color:#E9DCC3;background-image:repeating-linear-gradient(90deg, rgba(126,82,50,.14) 0 1px, transparent 1px 2.5px);outline:1px dashed rgba(126,82,50,.5);outline-offset:-3px;font-size:11px;letter-spacing:.24em;text-transform:uppercase;color:#6B4528">Reviews</span>
-      <h2 style="margin:0;font-family:'Marcellus',serif;font-weight:400;font-size:clamp(40px,5vw,76px);line-height:1.02;letter-spacing:-.01em">Kind words.</h2>
-      <div style="display:flex;flex-wrap:wrap;justify-content:center;align-items:center;gap:10px 18px;font-size:15px;color:#5F574B">
-        <span style="color:#7E5232;letter-spacing:.12em">★★★★★</span>
-        <span>{{ revSummary }}</span>
-        <a href="{{ revUrl }}" target="_blank" rel="noopener" style="color:#7E5232;background-image:repeating-linear-gradient(90deg, #7E5232 0 5px, transparent 5px 8px);background-repeat:no-repeat;background-position:0 100%;background-size:100% 1.5px;padding-bottom:3px">Read all on Google →</a>
-      </div>
-    </div>
-    <div style="display:flex;flex-wrap:wrap;gap:clamp(20px,2.4vw,32px);max-width:1240px;margin:0 auto">
-      <sc-for list="{{ reviews }}" as="r" hint-placeholder-count="3">
-        <figure data-reveal="{{ r.delay }}" style="flex:1 1 280px;min-width:0;margin:0;display:flex;flex-direction:column;gap:18px;padding:clamp(26px,3vw,40px);background:rgba(244,239,230,.62)">
-          <span style="color:#7E5232;font-size:14px;letter-spacing:.14em">{{ r.stars }}</span>
-          <blockquote style="margin:0;font-family:'Marcellus',serif;font-size:clamp(20px,1.7vw,24px);line-height:1.4;color:{{ r.textColor }};text-wrap:pretty">{{ r.text }}</blockquote>
-          <figcaption style="margin-top:auto;display:flex;flex-direction:column;gap:4px;padding-top:16px;border-top:1.5px dashed rgba(126,82,50,.28)">
-            <span style="font-size:15px;color:#221E18">{{ r.name }}</span>
-            <span style="font-size:13px;color:#5F574B">{{ r.meta }}</span>
-          </figcaption>
-        </figure>
-      </sc-for>
-    </div>
-  </section>
 </main>
 </sc-if>
 
@@ -1129,7 +1106,7 @@ a:hover{color:#221E18}
 
 <!-- FABRIC BOLT SCROLLBAR -->
 <sc-if value="{{ fabric }}" hint-placeholder-val="{{ true }}">
-  <div ref="{{ trackRef }}" onPointerDown="{{ onTrackDown }}" title="Scroll" style="position:fixed;right:8px;top:70px;bottom:14px;width:30px;z-index:60;cursor:grab;touch-action:none">
+  <div ref="{{ trackRef }}" onPointerDown="{{ onTrackDown }}" title="Scroll" style="position:fixed;right:8px;top:70px;bottom:14px;width:30px;z-index:60;cursor:grab;touch-action:none;opacity:0;transition:opacity .5s">
     <div style="position:absolute;left:50%;top:8px;bottom:0;width:1px;background:repeating-linear-gradient(to bottom, rgba(126,82,50,.4) 0 4px, transparent 4px 8px)"></div>
     <div ref="{{ clothRef }}" style="position:absolute;top:8px;left:6px;right:6px;height:0;overflow:hidden;background-color:#EFE3CC;background-image:linear-gradient(90deg, rgba(60,42,24,.32), rgba(255,255,255,.35) 32%, rgba(255,255,255,0) 60%, rgba(60,42,24,.36)),url(./assets/satin.jpg);background-size:100% 100%,240px auto;background-position:0 0,40% 0;background-blend-mode:normal,multiply;box-shadow:0 3px 10px rgba(34,30,24,.22)">
       <div style="position:absolute;left:0;top:0;bottom:0;width:2px;background:repeating-linear-gradient(0deg, #B57C4A 0 3px, #E3B98A 3px 5px)"></div>
