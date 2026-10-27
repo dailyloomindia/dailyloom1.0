@@ -1,7 +1,7 @@
 // Full-screen photo viewer for the buy page, opened by tapping the gallery photo. Phones: pinch or
 // double-tap to zoom, drag to look around, swipe to the next photo. Desktop: click to zoom, move the
-// mouse to look around, scroll to zoom further. Built from v4 pieces (the gallery's round buttons,
-// counter and caption on the page's linen ground).
+// mouse to look around, scroll to zoom further. Built from v4 pieces (the gallery's round buttons
+// and caption on the page's linen ground).
 import {useEffect, useRef, useState} from 'react';
 
 type Photo = {url: string; alt: string};
@@ -124,7 +124,6 @@ export function Zoom({photos, index, caption, onIndex, onClose}: {photos: Photo[
       <div style={{position: 'absolute', left: '18px', top: '18px', padding: '9px 14px 8px', backgroundColor: 'rgba(244,239,230,.94)', backgroundImage: 'repeating-linear-gradient(90deg, rgba(126,82,50,.1) 0 1px, transparent 1px 2.5px)', outline: '1px dashed rgba(126,82,50,.5)', outlineOffset: '-4px', fontSize: '12px', letterSpacing: '.08em', color: '#221E18', pointerEvents: 'none'}}>{caption}</div>
       {n > 1 ? (
         <div style={{position: 'absolute', right: '18px', bottom: '18px', display: 'flex', alignItems: 'center', gap: '10px'}}>
-          <span style={{fontSize: '12px', letterSpacing: '.12em', color: '#221E18', background: 'rgba(244,239,230,.94)', padding: '8px 12px', borderRadius: '999px', boxShadow: '0 0 0 1px rgba(34,30,24,.12)'}}>{index + 1} / {n}</span>
           <button onClick={() => go(-1)} aria-label="Previous image" style={btn} className="scpd">‹</button>
           <button onClick={() => go(1)} aria-label="Next image" style={btn} className="scpe">›</button>
         </div>
