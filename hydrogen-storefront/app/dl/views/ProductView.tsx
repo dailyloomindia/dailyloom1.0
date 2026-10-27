@@ -64,7 +64,8 @@ export function ProductView({vals}: {vals: any}) {
                       {"\n              "}
                       {g?.hasUrl ? (
                         <>
-                        <div role="img" aria-label={g?.alt} style={css(`width:100%;height:100%;background-image:${S(g?.bg)};background-size:cover;background-position:center`)} />
+                        <div aria-hidden="true" style={css(`position:absolute;inset:-8%;background-image:${S(g?.bg)};background-size:cover;background-position:center;filter:blur(30px) saturate(1.05);opacity:.85`)} />
+                        <div role="img" aria-label={g?.alt} style={css(`position:relative;width:100%;height:100%;background-image:${S(g?.bg)};background-size:contain;background-repeat:no-repeat;background-position:center`)} />
                         </>
                       ) : null}
                       {"\n              "}
@@ -92,6 +93,8 @@ export function ProductView({vals}: {vals: any}) {
                     {"\n          "}
                   </Fragment>
                 ))}
+                {"\n          "}
+                <button onClick={vals.gZoom} aria-label="Zoom image" style={{position: "absolute", inset: "0", width: "100%", height: "100%", padding: "0", border: "0", background: "transparent", cursor: "zoom-in"}} />
                 {"\n          "}
                 <div style={{position: "absolute", left: "18px", bottom: "18px", padding: "9px 14px 8px", backgroundColor: "rgba(244,239,230,.94)", backgroundImage: "repeating-linear-gradient(90deg, rgba(126,82,50,.1) 0 1px, transparent 1px 2.5px)", outline: "1px dashed rgba(126,82,50,.5)", outlineOffset: "-4px", fontSize: "12px", letterSpacing: ".08em", color: "#221E18"}}>
                   {I(vals.gCaption)}

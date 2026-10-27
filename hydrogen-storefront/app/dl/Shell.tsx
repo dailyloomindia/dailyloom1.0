@@ -26,7 +26,7 @@ const EASE = 'cubic-bezier(.76,0,.24,1)';
 const UP = 'translateY(calc(-100% - 48px))', DOWN = 'translateY(calc(100% + 48px))';
 /** Where Notify me requests are emailed: contact@dailyloom.in, through formsubmit.co's private alias (the address itself stays out of the page). */
 const NOTIFY_FORM = 'https://formsubmit.co/ajax/adcee9d3c4a7b990ec98a36757ccf8d5';
-const RESET = {nf:null, notifyErr:'', barHidden:false, menuOpen:false, gi:null, notified:false, qty:1, added:false, pinMsg:'', acc:'Details', cl:0, mono:'', ritOpen:false, bagOpen:false};
+const RESET = {zoom:false, nf:null, notifyErr:'', barHidden:false, menuOpen:false, gi:null, notified:false, qty:1, added:false, pinMsg:'', acc:'Details', cl:0, mono:'', ritOpen:false, bagOpen:false};
 
 /** The option preset a collection card opens a product with. */
 const presetFor = (pid: string) => (CATS.flatMap((c: any) => c.items).find((x: any) => x.pid === pid) || {}).sel;
