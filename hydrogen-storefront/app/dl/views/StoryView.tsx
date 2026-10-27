@@ -38,10 +38,8 @@ export function StoryView({vals}: {vals: any}) {
         {"\n\n  "}
         <section id="st-overview" style={{position: "relative", height: "calc(100vh - 108px)", minHeight: "560px", background: "#2A251E", overflow: "hidden"}}>
           {"\n    "}
-          <div aria-hidden="true" style={css(`position:absolute;inset:-8%;display:${S(vals.stHeroBlurDisp)};background-image:${S(vals.stHeroBlur)};background-size:cover;background-position:center;filter:blur(30px) saturate(1.05);opacity:.85`)} />
-          {"\n    "}
           <div style={{position: "absolute", inset: "0"}}>
-            <image-slot id={vals.stHeroSlot} src={vals.stHeroSrc} shape="rect" fit={vals.stHeroFit} placeholder={vals.stHeroPh} />
+            <image-slot id={vals.stHeroSlot} src={vals.stHeroSrc} shape="rect" placeholder={vals.stHeroPh} />
           </div>
           {"\n    "}
           <div style={{position: "absolute", inset: "0", pointerEvents: "none", background: "linear-gradient(to top, rgba(22,19,15,.8) 0%, rgba(22,19,15,.3) 45%, rgba(22,19,15,0) 72%)"}} />

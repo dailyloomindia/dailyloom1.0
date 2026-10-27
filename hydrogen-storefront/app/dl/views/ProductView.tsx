@@ -105,10 +105,6 @@ export function ProductView({vals}: {vals: any}) {
                   {"\n            "}
                   <div style={{position: "absolute", right: "18px", bottom: "18px", display: "flex", alignItems: "center", gap: "10px"}}>
                     {"\n              "}
-                    <span style={{fontSize: "12px", letterSpacing: ".12em", color: "#221E18", background: "rgba(244,239,230,.94)", padding: "8px 12px", borderRadius: "999px"}}>
-                      {I(vals.gCount)}
-                    </span>
-                    {"\n              "}
                     <button onClick={vals.gPrev} aria-label="Previous image" style={{width: "40px", height: "40px", borderRadius: "50%", border: "0", background: "rgba(244,239,230,.94)", cursor: "pointer", fontSize: "18px", color: "#221E18", transition: "background .3s,transform .3s"}} className="scpd">
                       {"‹"}
                     </button>
