@@ -4,6 +4,7 @@ import {Analytics} from '@shopify/hydrogen';
 import {json, redirect, type HeadersFunction, type LoaderFunctionArgs} from '@shopify/remix-oxygen';
 import {PROPS, firstPhoto, photosOf, useShell, type ShellLogic} from '~/dl/Shell';
 import {ProductView} from '~/dl/views/ProductView';
+import {Zoom} from '~/dl/Zoom';
 import {CATS, P, RECS, SRC, fmt} from '~/dl/data/catalog';
 import {DELIV} from '~/dl/data/product-data';
 import {CAT_BY_HANDLE, productFor} from '~/dl/routing';
@@ -80,7 +81,7 @@ function pdpVals(sh: ShellLogic, pid: string, p: any, sel: any){
     ctaRef: sh.ctaRef, stagePos: (mobile || s.stacked) ? 'relative' : 'sticky', stageTop: (mobile || s.stacked) ? '0px' : '80px', stageH: mobile ? 'min(118vw, 640px)' : s.stacked ? 'min(80vw, 720px)' : 'calc(100vh - 300px)',
     gAll: all.map((m: any) => ({...m, bg: m.url ? 'url("' + m.url + '")' : 'none', hasUrl: !!m.url, noUrl: !m.url, op: m.i === cur.i ? 1 : 0, tf: m.i === cur.i ? 'scale(1)' : 'scale(1.035)'})),
     gThumbs: vis.map((m: any) => ({alt:m.alt, url:m.url, bg: m.url ? 'url("' + m.url + '")' : 'none', hasUrl: !!m.url, tint:m.tint, op: m.i === cur.i ? 1 : .55, ring: m.i === cur.i ? '1px solid #221E18' : '1px solid rgba(34,30,24,0)', pick: () => sh.setState({gi:m.i})})),
-    gMulti: vis.length > 1, gCount: vis.length ? (vi + 1) + ' / ' + vis.length : '', gPrev: step(-1), gNext: step(1), gCaption: summary || p.name,
+    gMulti: vis.length > 1, gCount: vis.length ? (vi + 1) + ' / ' + vis.length : '', gPrev: step(-1), gNext: step(1), gZoom: () => sh.setState({zoom:true}), gCaption: summary || p.name,
     // Sold out: the request goes to the shop; signed-in customers are not asked for their email.
     notifyAsk: !sh.props.signedIn, notifyLede: sh.props.signedIn ? 'We will write to you the day it is back.' : 'Leave your email and we will write the day it is back.',
     notifyEmail: s.notifyEmail || '', onNotifyEmail: (e: any) => sh.setState({notifyEmail: e.target.value, notified:false, notifyErr:''}),
@@ -119,9 +120,14 @@ function productVals(sh: ShellLogic, pid: string){
 export default function Product() {
   const {pid} = useLoaderData<typeof loader>();
   const {sh, base} = useShell();
-  const product = analyticsProduct(sh.props.live, pid, sh.defSel(pid, sh.selOf(pid)));
+  const sel = sh.defSel(pid, sh.selOf(pid)), product = analyticsProduct(sh.props.live, pid, sel);
+  const vals = productVals(sh, pid);
+  // The photos the gallery shows for this selection, for the full-screen viewer.
+  const photos = sh.state.zoom ? sh.visible(pid, sel).filter((m: any) => m.url) : [];
+  const zi = Math.max(0, photos.findIndex((m: any) => m.i === sh.state.gi));
   return <>
-    <ProductView vals={{...base, ...productVals(sh, pid)}} />
+    <ProductView vals={{...base, ...vals}} />
+    {photos.length ? <Zoom photos={photos} index={zi} caption={vals.gCaption} onIndex={i => sh.setState({gi: photos[i].i})} onClose={() => sh.setState({zoom:false})} /> : null}
     {product ? <Analytics.ProductView data={{products: [product]}} /> : null}
   </>;
 }

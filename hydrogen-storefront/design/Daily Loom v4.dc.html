@@ -263,7 +263,8 @@ a:hover{color:#221E18}
   </div>
 
   <section id="st-overview" style="position:relative;height:calc(100vh - 108px);min-height:560px;background:#2A251E;overflow:hidden">
-    <div style="position:absolute;inset:0"><image-slot id="{{ stHeroSlot }}" src="{{ stHeroSrc }}" shape="rect" placeholder="{{ stHeroPh }}"></image-slot></div>
+    <div aria-hidden="true" style="position:absolute;inset:-8%;display:{{ stHeroBlurDisp }};background-image:{{ stHeroBlur }};background-size:cover;background-position:center;filter:blur(30px) saturate(1.05);opacity:.85"></div>
+    <div style="position:absolute;inset:0"><image-slot id="{{ stHeroSlot }}" src="{{ stHeroSrc }}" shape="rect" fit="{{ stHeroFit }}" placeholder="{{ stHeroPh }}"></image-slot></div>
     <div style="position:absolute;inset:0;pointer-events:none;background:linear-gradient(to top, rgba(22,19,15,.8) 0%, rgba(22,19,15,.3) 45%, rgba(22,19,15,0) 72%)"></div>
     <div data-reveal="100" style="position:absolute;left:clamp(20px,5vw,80px);right:clamp(20px,5vw,80px);bottom:clamp(40px,8vh,88px);display:flex;flex-direction:column;gap:18px;pointer-events:none;max-width:900px">
       <span style="display:inline-flex;align-self:flex-start;padding:7px 12px 6px;background-color:#2C2820;background-image:repeating-linear-gradient(90deg, rgba(237,230,216,.09) 0 1px, transparent 1px 2.5px);outline:1px dashed rgba(200,146,94,.7);outline-offset:-3px;font-size:11px;letter-spacing:.24em;text-transform:uppercase;color:#E3C9A6">{{ stTitle }}</span>
@@ -537,7 +538,7 @@ a:hover{color:#221E18}
         <sc-if value="{{ pReady }}" hint-placeholder-val="{{ true }}">
           <sc-for list="{{ gAll }}" as="g" hint-placeholder-count="1">
             <div style="position:absolute;inset:0;opacity:{{ g.op }};transform:{{ g.tf }};transition:opacity .8s cubic-bezier(.2,.7,.2,1),transform 1.6s cubic-bezier(.2,.7,.2,1);pointer-events:none">
-              <sc-if value="{{ g.hasUrl }}" hint-placeholder-val="{{ false }}"><div role="img" aria-label="{{ g.alt }}" style="width:100%;height:100%;background-image:{{ g.bg }};background-size:cover;background-position:center"></div></sc-if>
+              <sc-if value="{{ g.hasUrl }}" hint-placeholder-val="{{ false }}"><div aria-hidden="true" style="position:absolute;inset:-8%;background-image:{{ g.bg }};background-size:cover;background-position:center;filter:blur(30px) saturate(1.05);opacity:.85"></div><div role="img" aria-label="{{ g.alt }}" style="position:relative;width:100%;height:100%;background-image:{{ g.bg }};background-size:contain;background-repeat:no-repeat;background-position:center"></div></sc-if>
               <sc-if value="{{ g.noUrl }}" hint-placeholder-val="{{ false }}">
                 <div style="position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:14px;text-align:center;padding:32px;box-sizing:border-box;background-color:{{ g.tint }};background-image:repeating-linear-gradient(0deg, rgba(255,255,255,.07) 0 1px, transparent 1px 3px),repeating-linear-gradient(90deg, rgba(0,0,0,.05) 0 1px, transparent 1px 3px)">
                   <img src="./assets/logo-mark.png" alt="" style="width:52px;height:auto;opacity:.7">
@@ -547,6 +548,7 @@ a:hover{color:#221E18}
               </sc-if>
             </div>
           </sc-for>
+          <button onClick="{{ gZoom }}" aria-label="Zoom image" style="position:absolute;inset:0;width:100%;height:100%;padding:0;border:0;background:transparent;cursor:zoom-in"></button>
           <div style="position:absolute;left:18px;bottom:18px;padding:9px 14px 8px;background-color:rgba(244,239,230,.94);background-image:repeating-linear-gradient(90deg, rgba(126,82,50,.1) 0 1px, transparent 1px 2.5px);outline:1px dashed rgba(126,82,50,.5);outline-offset:-4px;font-size:12px;letter-spacing:.08em;color:#221E18">{{ gCaption }}</div>
           <sc-if value="{{ gMulti }}" hint-placeholder-val="{{ true }}">
             <div style="position:absolute;right:18px;bottom:18px;display:flex;align-items:center;gap:10px">
@@ -1516,7 +1518,7 @@ class Component extends DCLogic {
       ctaRef: this.ctaRef, stagePos: (mobile || s.stacked) ? 'relative' : 'sticky', stageTop: (mobile || s.stacked) ? '0px' : '80px', stageH: mobile ? 'min(118vw, 640px)' : s.stacked ? 'min(80vw, 720px)' : 'calc(100vh - 300px)',
       gAll: all.map(m => ({...m, bg: m.url ? 'url("' + m.url + '")' : 'none', hasUrl: !!m.url, noUrl: !m.url, op: m.i === cur.i ? 1 : 0, tf: m.i === cur.i ? 'scale(1)' : 'scale(1.035)'})),
       gThumbs: vis.map(m => ({alt:m.alt, url:m.url, bg: m.url ? 'url("' + m.url + '")' : 'none', hasUrl: !!m.url, tint:m.tint, op: m.i === cur.i ? 1 : .55, ring: m.i === cur.i ? '1px solid #221E18' : '1px solid rgba(34,30,24,0)', pick: () => this.setState({gi:m.i})})),
-      gMulti: vis.length > 1, gCount: vis.length ? (vi + 1) + ' / ' + vis.length : '', gPrev: step(-1), gNext: step(1), gCaption: summary || p.name,
+      gMulti: vis.length > 1, gCount: vis.length ? (vi + 1) + ' / ' + vis.length : '', gPrev: step(-1), gNext: step(1), gZoom: () => this.setState({zoom:true}), gCaption: summary || p.name,
       notifyEmail: s.notifyEmail || '', onNotifyEmail: e => this.setState({notifyEmail: e.target.value, notified:false}),
       notifyMe: () => { if (/\S+@\S+\.\S+/.test(s.notifyEmail || '')) this.setState({notified:true}); }, notifyLabel: s.notified ? 'Noted ✓' : 'Notify me',
       barTf: showBar ? 'translate(-50%, 0)' : 'translate(-50%, 140%)', barOp: showBar ? 1 : 0, barPe: showBar ? 'auto' : 'none',
@@ -1580,7 +1582,7 @@ class Component extends DCLogic {
       towelTypes: TT.map((t, i) => ({label:t.v, d:t.d, color: i === s.tType ? '#221E18' : '#857A6A', pick: () => this.setState({tType:i})})),
       towelColours: TL.map((c, i) => ({label:c.v, hex:c.hex, ring: i === tci ? '0 0 0 2px #F4EFE6, 0 0 0 3.5px #221E18' : 'inset 0 0 0 1px rgba(34,30,24,.16)', pick: () => this.setState({tCol:i})})),
       towelPrice: 'From ' + fmt(this.priceOf(tPid, {Type:s.tType, Colour:tci})),
-      stTitle: cat.name, stHandle: cat.k, stTagline: st.tagline, stIntro: st.intro, stIntroAccent: st.accent, stHeroSlot:`story-${cat.k}-hero`, stHeroSrc: SRC[`story-${cat.k}-hero`] || '', stHeroPh:`${cat.name} · full-bleed story hero`,
+      stTitle: cat.name, stHandle: cat.k, stTagline: st.tagline, stIntro: st.intro, stIntroAccent: st.accent, stHeroSlot:`story-${cat.k}-hero`, stHeroSrc: SRC[`story-${cat.k}-hero`] || '', stHeroPh:`${cat.name} · full-bleed story hero`, stHeroFit: s.mobile ? 'contain' : 'cover', stHeroBlurDisp: s.mobile ? 'block' : 'none', stHeroBlur: s.mobile && SRC[`story-${cat.k}-hero`] ? `url(${SRC[`story-${cat.k}-hero`]})` : 'none',
       stLinks: [['Overview','st-overview'],['Why Daily Loom','st-why'],['Closer look','st-closer'],['Compare','st-compare']].map(([label, id]) => ({label, go: () => this.scrollToId(id)})),
       stBuyScroll: () => this.scrollToId('st-buy'),
       stFrom: (() => { const typed = cat.items.filter(x => !x.soon && x.sel && x.sel.Type != null); if (typed.length) return 'Bath towels from ' + fmt(Math.min(...typed.map(x => this.priceOf(x.pid, this.defSel(x.pid, x.sel))))); const live = cat.items.filter(x => !x.soon); const ps = live.map(x => this.priceOf(x.pid, this.defSel(x.pid, x.sel))); const single = live.length === 1 && P[live[0].pid].opts.every(o => o.vals.length === 1); return ps.length ? (single ? '' : 'From ') + fmt(Math.min(...ps)) : ''; })(),
