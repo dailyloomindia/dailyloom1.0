@@ -53,7 +53,7 @@ export const PRODUCT_SEO: Record<string, {title: string; description: string}> =
   },
   'cotton-towel': {
     title: '650 GSM Cotton Bath Towel, Hand Towel & Face Towel',
-    description: 'Pure virgin Indian cotton terry bath, hand and face towels, cut, stitched and hemmed in our workshop. Dense, absorbent and soft from the first use.',
+    description: 'Pure virgin Indian cotton terry bath towels, and hand and face towels in pairs, cut, stitched and hemmed in our workshop. Dense, absorbent and soft from the first use.',
   },
   'cotton-towel-set': {
     title: '3-Piece Cotton Towel Set: Bath, Hand & Face Towel (Gift Set)',
