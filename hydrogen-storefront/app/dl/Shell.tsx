@@ -267,8 +267,18 @@ export class ShellLogic extends Component<ShellProps, any> {
   checkPin = () => {
     const pin = this.state.pin;
     if (!/^[1-9]\d{5}$/.test(pin)) return this.setState({pinMsg:'Please enter a valid 6-digit pincode.'});
-    const d = new Date(); d.setDate(d.getDate() + 3 + (+pin[0] % 3));
-    this.setState({pinMsg:`Estimated delivery by ${d.toLocaleDateString('en-IN', {weekday:'short', day:'numeric', month:'short'})} to ${pin}.`});
+    // Shiprocket's couriers for this pincode (POST /pincode), from our warehouse, plus a day to dispatch.
+    this.setState({pinMsg:'Checking delivery…'});
+    fetch('/pincode', {method: 'POST', headers: {'Content-Type': 'application/json'}, body: JSON.stringify({pin})})
+      .then(r => r.json()).catch(() => ({error: 'unavailable'}))
+      .then((r: any) => {
+        if (this.state.pin !== pin) return;
+        if (r.ok && r.days) {
+          const d = new Date(); d.setDate(d.getDate() + r.days);
+          this.setState({pinMsg:`Estimated delivery by ${d.toLocaleDateString('en-IN', {weekday:'short', day:'numeric', month:'short'})} to ${pin}.`});
+        } else if (r.ok === false) this.setState({pinMsg:`We don't deliver to ${pin} yet. Write to contact@dailyloom.in and we will help.`});
+        else this.setState({pinMsg:'Orders are dispatched within 24 hours and most arrive within 3–7 working days.'});
+      });
   };
   /** Template values shared by every view (the header, menu, footer, bag, scrollbar and photo masks). */
   /**
