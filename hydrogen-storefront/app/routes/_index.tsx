@@ -21,8 +21,8 @@ function homeVals(sh: ShellLogic){
   const tcn = TCS[s.tc].n;
   const tPid = s.tMat ? 'bamboo-towel' : 'cotton-towel';
   const TL = s.tMat ? TOWEL_B : TOWEL_C, tci = Math.min(s.tCol, TL.length - 1);
-  // Bamboo comes as a hand towel only.
-  const TTm = s.tMat ? TT.filter((t: any) => t.v === 'Hand') : TT, tti = s.tMat ? 0 : s.tType;
+  // Bamboo comes as a bath towel only.
+  const TTm = s.tMat ? TT.filter((t: any) => t.v === 'Bath') : TT, tti = s.tMat ? 0 : s.tType;
   const cat = (k: string) => catDeal(live, k), towel = fromDeal(live, tPid);
   const duvet = cat('duvets'), cover = cat('covers'), sheet = cat('sheets'), pillow = cat('pillows');
   // Cotton face and hand towels are sold as a pair.
