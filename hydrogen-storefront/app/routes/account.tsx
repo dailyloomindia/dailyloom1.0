@@ -1,7 +1,7 @@
 // Account: sign in (Shopify customer accounts: an email code or Google), orders and order detail.
 import {useLoaderData} from '@remix-run/react';
 import type {LoaderFunctionArgs} from '@shopify/remix-oxygen';
-import {useShell, type ShellLogic} from '~/dl/Shell';
+import {useShell, valLabel, type ShellLogic} from '~/dl/Shell';
 import {AccountView} from '~/dl/views/AccountView';
 import {P, fmt} from '~/dl/data/catalog';
 import {getAccount, type AccountData} from '~/dl/shop/customer.server';
@@ -33,7 +33,7 @@ function acctVals(sh: ShellLogic, acc: AccountData | null){
       if (!p) return {name:it.name, qty:it.qty, price: fmt(it.total), unit: it.total, tint:'#E2D6C2', bg: img, opts: it.variant && it.variant !== 'Default Title' ? it.variant : 'One size'};
       const sel = sh.defSel(it.pid, it.sel), mono = it.mono, col = p.opts.find((x: any) => x.swatch); const m = sh.media(it.pid).find((x: any) => x.url);
       return {name:p.name, qty:it.qty, price: fmt(it.total), unit: it.total, tint: col ? col.vals[sel[col.n]].hex : '#E2D6C2', bg: it.image ? img : m ? 'url("' + m.url + '")' : 'none',
-        opts: p.opts.filter((x: any) => x.vals.length > 1 || x.swatch).filter((x: any) => x.n !== 'Monogram' || sel.Monogram === 1).map((x: any) => x.n === 'Monogram' ? 'Monogram ' + mono : x.vals[sel[x.n]].v).join(' · ') || 'One size'}; });
+        opts: p.opts.filter((x: any) => x.vals.length > 1 || x.swatch).filter((x: any) => x.n !== 'Monogram' || sel.Monogram === 1).map((x: any) => x.n === 'Monogram' ? 'Monogram ' + mono : valLabel(x.vals[sel[x.n]])).join(' · ') || 'One size'}; });
     const total = o.total, count = items.reduce((t2: number, i: any) => t2 + i.qty, 0);
     const del = o.delivered != null, left = del ? Math.ceil((o.delivered + 7) - 0) : 0, sent = (a.ret || {})[o.no];
     const can = del && left > 0 && !sent, closed = del && left <= 0 && !sent;

@@ -14,6 +14,9 @@ import {HOME_HERO, storyHero, storyHeroMobile, warm} from './preload';
 import {ShellView} from './views/ShellView';
 
 /** The design's tweak values, as the v4 file was finalised. */
+/** An option value as the bag, captions and orders name it: a value sold as a pair says so ("Face pair"). */
+export const valLabel = (v: any) => /^Pair\b/.test(v.d || '') ? v.v + ' pair' : v.v;
+
 export const PROPS: {
   motion: 'refined' | 'reduced';
   scrollbar: 'fabric' | 'native';
@@ -383,7 +386,7 @@ function bagItem(l: BagLine){
   const total = l.total + l.kids.reduce((a, k) => a + k.total, 0), dl = l.dl, p = dl && P[dl.pid];
   if (!p) return {key:l.id, same:l.id, image:l.image || '', name:l.title, desc:l.variant === 'Default Title' ? '' : l.variant, chip:'#E5DCCB', qty:l.qty, total};
   const sel = dl.sel || {}, mono = dl.mono || '';
-  const desc = p.opts.filter((o: any) => !(o.n === 'Monogram' && sel.Monogram !== 1)).map((o: any) => o.n === 'Monogram' ? 'Monogram ' + (mono || '—') : o.vals[sel[o.n] ?? 0].v).join(' · ');
+  const desc = p.opts.filter((o: any) => !(o.n === 'Monogram' && sel.Monogram !== 1)).map((o: any) => o.n === 'Monogram' ? 'Monogram ' + (mono || '—') : valLabel(o.vals[sel[o.n] ?? 0])).join(' · ');
   const col = p.opts.find((o: any) => o.swatch);
   return {key:l.id, same:dl.pid + JSON.stringify(sel) + mono, pid: dl.pid, sel, image:l.image || '', name:p.name, desc, chip: col ? col.vals[sel[col.n] ?? 0].hex : '#E5DCCB', qty:l.qty, total};
 }

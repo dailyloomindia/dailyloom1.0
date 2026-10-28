@@ -2,7 +2,7 @@
 import {useLoaderData} from '@remix-run/react';
 import {Analytics} from '@shopify/hydrogen';
 import {json, redirect, type HeadersFunction, type LoaderFunctionArgs} from '@shopify/remix-oxygen';
-import {PROPS, firstPhoto, photosOf, useShell, type ShellLogic} from '~/dl/Shell';
+import {PROPS, firstPhoto, photosOf, useShell, valLabel, type ShellLogic} from '~/dl/Shell';
 import {ProductView} from '~/dl/views/ProductView';
 import {Zoom} from '~/dl/Zoom';
 import {CATS, P, RECS, SRC, fmt} from '~/dl/data/catalog';
@@ -74,7 +74,7 @@ function pdpVals(sh: ShellLogic, pid: string, p: any, sel: any){
           bg: on ? 'rgba(244,239,230,.92)' : 'transparent', bd: on ? '#221E18' : 'rgba(34,30,24,.18)', outline: on ? '1px dashed rgba(126,82,50,.5)' : '1px dashed rgba(126,82,50,0)', fg: off ? '#9A8F7E' : '#221E18', subColor: off ? '#9A8F7E' : '#5F574B',
           ring: on ? '0 0 0 2px #F4EFE6, 0 0 0 3.5px #221E18' : 'inset 0 0 0 1px rgba(34,30,24,.16)', pick: nf ? nf.go : () => sh.pickOpt(pid, o.n, k)}; })};
   });
-  const summary = p.opts.filter((o: any) => o.n !== 'Monogram' || sel.Monogram === 1).map((o: any) => o.n === 'Monogram' ? 'Monogram' : o.vals[sel[o.n] ?? 0].v).join(' · ');
+  const summary = p.opts.filter((o: any) => o.n !== 'Monogram' || sel.Monogram === 1).map((o: any) => o.n === 'Monogram' ? 'Monogram' : valLabel(o.vals[sel[o.n] ?? 0])).join(' · ');
   const mobile = !!s.mobile, showBar = !!s.ctaOut && !loading && !s.barHidden;
   return {
     opts, pLoading: loading, pReady: !loading, pAvail: avail, pSoldOut: !avail, pHasCompare: was > 0, pCompare: was ? fmt(was * s.qty) : '', pOff: was ? Math.round((was - now) / was * 100) + '% off' : '',

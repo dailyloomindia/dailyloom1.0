@@ -63,7 +63,7 @@ export const TC_COVER: any = [{v:'300 TC',d:'Soft and airy',p:0}];
 export const PC_MONO: any = [{v:'None',p:0},{v:'Add initials',d:'₹150 per pillow cover, two covers',p:300}];
 export const TT: any = [{v:'Face',d:'30 × 30 cm',p:0},{v:'Hand',d:'40 × 60 cm',p:450},{v:'Bath',d:'75 × 150 cm',p:1250}];
 export const MONO: any = [{v:'None',p:0},{v:'Add initials',d:'₹100',p:100}];
-export const TT_C: any = [{v:'Face',d:'30 × 30 cm · 650 gsm',p:0},{v:'Hand',d:'40 × 60 cm · 625 gsm · 150 g',p:450},{v:'Bath',d:'75 × 150 cm · 650 gsm · 725 g',p:1250}];
+export const TT_C: any = [{v:'Face',d:'Pair · 30 × 30 cm · 650 gsm',p:0},{v:'Hand',d:'Pair · 40 × 60 cm · 625 gsm · 150 g each',p:450},{v:'Bath',d:'75 × 150 cm · 650 gsm · 725 g',p:1250}];
 export const IMG = (f: string) => WEB_IMG[f] || '/assets/img/' + f;
 // Mock of Shopify product media. altText tags (split by "|") tie an image to option values; empty = shown for every selection.
 export const SHOP_MEDIA: any = {
@@ -98,7 +98,7 @@ export const P: any = {
     details:'One solid piece of 100% natural latex from Indian plantations, contoured to maintain the natural C-shaped curve of the cervical spine, keeping the neck, head and back aligned, with pin-core ventilation. Slim 4 inch (10 cm) height. Protective inner fabric and knitted outer cover with zip. Soft: your head sinks in, and it springs back when you rise. A fresh natural latex scent for the first few days, which fades.', care:'Wash the knitted cover only. Keep the latex core out of direct sunlight and air it in shade.'},
   'cotton-towel': {cat:'towels', name:'Cotton Towel', short:'650 GSM pure virgin Indian cotton terry, cut, stitched and hemmed in our workshop. Dense, absorbent and soft from the first use.', base:690,
     opts:[{n:'Type', vals:TT_C},{n:'Colour', swatch:true, vals:TOWEL_C},{n:'Monogram', vals:MONO}],
-    details:'100% pure virgin cotton, ringspun terry. Face and bath towels 650 gsm, hand towel 625 gsm. Bath towel weighs 725 g, hand towel 150 g. Woven border at each end.', care:'Wash with whites only, in warm water (about 40°C) with a mild liquid detergent. No fabric softener or chlorine bleach. Shake out, tumble dry low and remove as soon as dry.'},
+    details:'100% pure virgin cotton, ringspun terry. Face and hand towels come as a pair. Face and bath towels 650 gsm, hand towels 625 gsm. Bath towel weighs 725 g, each hand towel 150 g. Woven border at each end.', care:'Wash with whites only, in warm water (about 40°C) with a mild liquid detergent. No fabric softener or chlorine bleach. Shake out, tumble dry low and remove as soon as dry.'},
   'cotton-towel-set': {cat:'towels', name:'Cotton Towel Set', short:'One bath, one hand and one face towel in 650 GSM pure white cotton. Made for gifting.', base:3390,
     opts:[{n:'Colour', swatch:true, vals:TOWEL_C},{n:'Monogram', vals:[{v:'None',p:0},{v:'Add initials',d:'₹100 per towel, three towels',p:300}]}],
     details:'One bath towel (75 × 150 cm), one hand towel (40 × 60 cm) and one face towel (30 × 30 cm). 100% pure virgin cotton, ringspun terry, with a woven border at each end.', care:'Wash with whites only, in warm water (about 40°C) with a mild liquid detergent. No fabric softener or chlorine bleach. Shake out, tumble dry low and remove as soon as dry.'},
