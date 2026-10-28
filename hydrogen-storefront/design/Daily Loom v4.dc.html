@@ -1138,7 +1138,7 @@ a:hover{color:#221E18}
 const fmt = n => '₹' + n.toLocaleString('en-IN');
 const LINEN = [{v:'Dark taupe',hex:'#6E6158'},{v:'Charcoal grey',hex:'#4A4A4C'}];
 const TOWEL_C = [{v:'White',hex:'#F6F4EF'}];
-const TOWEL_B = [{v:'Sand brown',hex:'#B39A7C'},{v:'Ash grey',hex:'#B7B5B0'},{v:'Dark grey',hex:'#4A4C4E'},{v:'Dark blue',hex:'#26314A'}];
+const TOWEL_B = [{v:'Sand brown',hex:'#9C8774'},{v:'Ash grey',hex:'#B9BAB5'},{v:'Dark grey',hex:'#706B69'},{v:'Dark blue',hex:'#626E85'},{v:'Dark brown',hex:'#665347'}];
 const TOWEL_IMGS = [{id:'home-towels',mat:0,col:0,src:'./assets/img/towels-white.jpg',ph:'Cotton towels · white · 2400 × 1800'},{id:'home-towels-bamboo-green',mat:1,col:-1,src:'./assets/img/towel-bamboo-green.jpg',ph:'Bamboo towels · 2400 × 1800'}];
 const TC = [{v:'300 TC',d:'Soft and airy',p:0},{v:'400 TC',d:'Smoother, deeper sheen',p:900}];
 const TC_COVER = [{v:'300 TC',d:'Soft and airy',p:0}];
@@ -1176,7 +1176,7 @@ const SHOP_MEDIA = {
   'contour-pillow':[['pillow-contour-card.png',''],['story-pillows-why-1.png','']],
   'cotton-towel':[['towel-cotton-single.png',''],['story-towels-weight-v2.png','Bath'],[null,'Hand'],[null,'Face'],['towel-terry-macro.png','']],
   'cotton-towel-set':[['towel-set-card.png',''],['towels-cotton-stack.png',''],['towel-terry-macro.png','']],
-  'bamboo-towel':[[null,'Sand brown'],[null,'Ash grey'],[null,'Dark grey'],[null,'Dark blue'],['towel-bamboo-single.png',''],['towel-waffle-macro.png','']]
+  'bamboo-towel':[[null,'Sand brown'],[null,'Ash grey'],[null,'Dark grey'],[null,'Dark blue'],[null,'Dark brown'],['towel-bamboo-single.png',''],['towel-waffle-macro.png','']]
 };
 const P = {
   'winter-duvet': {cat:'duvets', name:'Winter Duvet', short:'A peach skin fabric shell, box-stitched so the fill stays even through the coldest months.', base:8900,
@@ -1204,15 +1204,15 @@ const P = {
     opts:[{n:'Colour', swatch:true, vals:TOWEL_C},{n:'Monogram', vals:[{v:'None',p:0},{v:'Add initials',d:'₹100 per towel, three towels',p:300}]}],
     details:'One bath towel (75 × 150 cm), one hand towel (40 × 60 cm) and one face towel (30 × 30 cm). 100% pure virgin cotton, ringspun terry, with a woven border at each end.', care:'Wash with whites only, in warm water (about 40°C) with a mild liquid detergent. No fabric softener or chlorine bleach. Shake out, tumble dry low and remove as soon as dry.'},
   'bamboo-towel': {cat:'towels', name:'Bamboo Towel', short:'A bamboo reverse waffle weave. Light in the hand, soft on the skin and quick to dry.', base:890,
-    opts:[{n:'Type', vals:TT},{n:'Colour', swatch:true, vals:TOWEL_B},{n:'Monogram', vals:MONO}],
-    details:'Bamboo reverse waffle weave with a flat woven border. Bath towel weighs 500 g.', care:'Wash separately to protect the waffle weave from snagging. Mild liquid detergent, no fabric softener. Line dry in shade.'}
+    opts:[{n:'Type', vals:[{v:'Hand',d:'40 × 60 cm',p:450}]},{n:'Colour', swatch:true, vals:TOWEL_B},{n:'Monogram', vals:MONO}],
+    details:'Bamboo reverse waffle weave with a flat woven border.', care:'Wash separately to protect the waffle weave from snagging. Mild liquid detergent, no fabric softener. Line dry in shade.'}
 };
 const CATS = [
   {k:'duvets', name:'Duvets', items:[{pid:'winter-duvet'},{soon:true, name:'Summer Comforter'}]},
   {k:'covers', name:'Duvet Covers', items:[{pid:'duvet-cover',sel:{'Thread count':0},label:'300 TC · soft and airy'},{pid:'bed-set',badge:'Complete the bed',label:'Cover, sheet and two pillow covers'}]},
   {k:'sheets', name:'Bedsheets', items:[{pid:'bedsheet',sel:{'Thread count':0},label:'300 TC · soft and airy'},{pid:'bed-set',badge:'Complete the bed',label:'Cover, sheet and two pillow covers'}]},
   {k:'pillows', name:'Pillows', items:[{pid:'latex-pillow', label:'Classic · an even, all-round feel'},{pid:'contour-pillow', label:'Contour · keeps the neck in its natural curve'}]},
-  {k:'towels', name:'Towels', items:[{pid:'cotton-towel', badge:'Signature', sel:{Type:2}, label:'Pure white · face, hand or bath'},{pid:'cotton-towel-set', label:'Bath, hand and face · the complete set'},{pid:'bamboo-towel', sel:{Type:2}, label:'Four colours · face, hand or bath'}]}
+  {k:'towels', name:'Towels', items:[{pid:'cotton-towel', badge:'Signature', sel:{Type:2}, label:'Pure white · face, hand or bath'},{pid:'cotton-towel-set', label:'Bath, hand and face · the complete set'},{pid:'bamboo-towel', sel:{Type:0}, label:'Five colours · hand towel'}]}
 ];
 const TCPTS = (noun) => [
   {t:'300 TC', b:`Soft and airy, with a light satin sheen. Cool on warm nights.`, src:'./assets/img/tc-300.jpg', pat:'dl-percale', z:8, label:'300 TC · dark taupe percale'},
@@ -1261,7 +1261,7 @@ const STORY = {
          {tag:'650 GSM', key:'story-towels-weight', t:'You can feel the weight.', b:'650 GSM means 650 grams of pure virgin cotton in every square metre. The bath towel weighs 725 g, thick and dense in the hand. Its deep loops take in water quickly and grow softer with every wash.'},
          {tag:'Two fibres', key:'story-towels-why-1', t:'Cotton or bamboo.', b:'', cmp:{
             cols:[{name:'650 GSM white cotton', badge:'Signature', img:'./assets/img/towel-terry-macro.png', imgLabel:'Dense, upright loops', sw:[{hex:'#F7F5F0',label:'Pure white'}], swNames:'Pure white'},
-                  {name:'Textured bamboo', badge:'', img:'./assets/img/towel-waffle-macro.png', imgLabel:'A grid of sunken squares', sw:[{hex:'#B39A7C',label:'Sand brown'},{hex:'#B7B5B0',label:'Ash grey'},{hex:'#4A4C4E',label:'Dark grey'},{hex:'#26314A',label:'Dark blue'}], swNames:'Sand brown · Ash grey · Dark grey · Dark blue'}],
+                  {name:'Textured bamboo', badge:'', img:'./assets/img/towel-waffle-macro.png', imgLabel:'A grid of sunken squares', sw:[{hex:'#9C8774',label:'Sand brown'},{hex:'#B9BAB5',label:'Ash grey'},{hex:'#706B69',label:'Dark grey'},{hex:'#626E85',label:'Dark blue'},{hex:'#665347',label:'Dark brown'}], swNames:'Sand brown · Ash grey · Dark grey · Dark blue · Dark brown'}],
             rows:[['Look','Timeless and pristine. The signature look of an elite spa or five-star hotel suite.','Earthy and textured. A minimalist reverse-waffle weave.'],
                   ['Feel','Thick, dense, cloud-like softness, warm against the skin.','Silky, fluid and light, with a drape that sits closer to the skin.'],
                   ['Best for','The long bath and the slow morning.','Humid coastal homes, the gym and travel. It dries quickly and packs light.']]}}],

@@ -20,12 +20,13 @@ export const SHOPIFY: Record<string, (v: Record<string, string>) => ShopPick | n
   'contour-pillow': () => ({handle: 'natural-latex-contour-pillow', values: []}),
   'cotton-towel': v => ({handle: TOWEL_TYPE[v.Type], values: [v.Colour]}),
   'cotton-towel-set': () => ({handle: 'cotton-towel-set', values: []}),
-  // Bamboo Towel is not in the store yet: shown as sold out.
+  // Its colours are the Shopify product's Colour values, named exactly as on the site.
+  'bamboo-towel': v => ({handle: 'bamboo-towel', values: [v.Colour]}),
 };
 
 /** Every Shopify product the site reads. */
 export const SHOP_HANDLES = ['winter-duvet', 'duvet-cover', '300tc-cotton-percale-bed-sheet-set', 'the-complete-bed', 'pure-natural-latex-pillow',
-  'natural-latex-contour-pillow', 'cotton-face-towe-set', 'cotton-hand-towel', 'cotton-bath-towel', 'cotton-towel-set'];
+  'natural-latex-contour-pillow', 'cotton-face-towe-set', 'cotton-hand-towel', 'cotton-bath-towel', 'cotton-towel-set', 'bamboo-towel'];
 
 /**
  * The monogram is charged as an add-on line nested under its product, from the Shopify
@@ -38,6 +39,7 @@ export const SHOP_HANDLES = ['winter-duvet', 'duvet-cover', '300tc-cotton-percal
 export const COLOUR_FILES: Record<string, [RegExp, string][]> = {
   'duvet-cover': [[/^dvt-cvr-cg-/i, 'Charcoal grey'], [/^dvt-darktp-/i, 'Dark taupe']],
   'bedsheet': [[/^(bedhset|bedsheet)-dark-gray-/i, 'Charcoal grey'], [/^bdsht-dt-/i, 'Dark taupe']],
+  'bamboo-towel': [[/^bmb-sand-/i, 'Sand brown'], [/^bmb-ash-/i, 'Ash grey'], [/^bmb-grey-/i, 'Dark grey'], [/^bmb-blue-/i, 'Dark blue'], [/^bmb-brown-/i, 'Dark brown']],
 };
 
 export const MONOGRAM_HANDLE = 'monogram';
