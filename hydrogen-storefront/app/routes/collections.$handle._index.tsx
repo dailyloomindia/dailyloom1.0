@@ -7,7 +7,7 @@ import {StoryView} from '~/dl/views/StoryView';
 import {CATS, P, RECS, SRC, fmt} from '~/dl/data/catalog';
 import {STORY} from '~/dl/data/story.server';
 import {CAT_BY_HANDLE} from '~/dl/routing';
-import {preloadHeader, storyHero} from '~/dl/preload';
+import {DESKTOP_MEDIA, MOBILE_MEDIA, preloadHeader, storyHero, storyHeroMobile} from '~/dl/preload';
 import {choices, dealOf, dealVals, fromDeal, inStore, minDeal} from '~/dl/shop/live';
 import {breadcrumbs, seo} from '~/dl/seo/meta';
 import {CAT_SEO} from '~/dl/seo/keywords';
@@ -22,7 +22,7 @@ export async function loader({params, context}: LoaderFunctionArgs) {
   if (!k) throw new Response('Not found', {status: 404});
   // The Shopify collection, for Shopify analytics' collection views.
   const {collection} = await (context as any).storefront.query(COLLECTION_QUERY, {variables: {handle: params.handle}, cache: (context as any).storefront.CacheLong()}).catch(() => ({collection: null}));
-  return json({k, st: STORY[k], collection}, {headers: {Link: preloadHeader([storyHero(k)])}});
+  return json({k, st: STORY[k], collection}, {headers: {Link: preloadHeader([[storyHeroMobile(k), MOBILE_MEDIA], [storyHero(k), DESKTOP_MEDIA]])}});
 }
 
 export const meta = ({data, params}: any) => {
@@ -46,7 +46,7 @@ function storyVals(sh: ShellLogic, k: string, st: any){
     return {badge: soon ? '' : it.badge || '', hasBadge: !soon && !!it.badge, soon, notSoon:!soon, title: name, label: it.soon ? (it.soonLabel || 'A lighter weight for warmer nights') : (it.label || pp.short), price: soon ? '' : ((it.sel && it.sel.Type != null && P[it.pid].opts[0].n === 'Type') ? P[it.pid].opts[0].vals[it.sel.Type].v + ' towel · ' : (P[it.pid].opts.every((o: any) => choices(o) <= 1) ? '' : 'From ')) + fmt(d!.now), deal: d ? dealVals(d, fmt) : {has:false}, delay: i * 120, nf: soon ? sh.notifyFor(name, `the ${name} arrives`) : null, slotId:`col-${cat.k}-${i}`, src: SRC[`col-${cat.k}-${i}`] || '', ph:`${name}${it.label ? ' · ' + it.label.split(' · ')[0] : ''} · product image`, buy: soon ? null : () => sh.openProduct(it.pid, it.sel), ...(() => { const so = !soon && pp.opts.find((o: any) => o.n === 'Size'); return so && so.vals.length > 1 ? {hasSizes:true, sizes: so.vals.map((v: any) => `${v.v} ${fmt(sh.priceOf(it.pid, {...sh.defSel(it.pid, it.sel), Size: so.vals.indexOf(v)}))}`).join('  ·  ')} : {hasSizes:false, sizes:''}; })()};
   });
   return {
-    stTitle: cat.name, stHandle: cat.k, stTagline: st.tagline, stIntro: st.intro, stIntroAccent: st.accent, stHeroSlot:`story-${cat.k}-hero`, stHeroSrc: SRC[`story-${cat.k}-hero`] || '', stHeroPh:`${cat.name} · full-bleed story hero`,
+    stTitle: cat.name, stHandle: cat.k, stTagline: st.tagline, stIntro: st.intro, stIntroAccent: st.accent, stHeroSlot:`story-${cat.k}-hero`, stHeroSrc: s.mobile ? storyHeroMobile(cat.k) : storyHero(cat.k), stHeroPh:`${cat.name} · full-bleed story hero`,
     stLinks: [['Overview','st-overview'],['Why Daily Loom','st-why'],['Closer look','st-closer'],['Compare','st-compare']].map(([label, id]) => ({label, go: () => sh.scrollToId(id)})),
     stBuyScroll: () => sh.scrollToId('st-buy'),
     ...(() => { const typed = cat.items.filter((x: any) => !isSoon(x) && x.sel && x.sel.Type != null); if (typed.length) { const d = minDeal(typed.map((x: any) => dealOf(sh.props.live, x.pid, sh.defSel(x.pid, x.sel)))); return {stFrom: 'Bath towels from ' + fmt(d.now), stDeal: dealVals(d, fmt)}; } const sold = cat.items.filter((x: any) => !isSoon(x)); if (!sold.length) return {stFrom: '', stDeal: {has:false}}; const d = minDeal(sold.map((x: any) => fromDeal(live, x.pid))); const single = sold.length === 1 && P[sold[0].pid].opts.every((o: any) => choices(o) <= 1); return {stFrom: (single ? '' : 'From ') + fmt(d.now), stDeal: dealVals(d, fmt)}; })(),

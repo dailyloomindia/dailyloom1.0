@@ -10,7 +10,7 @@ import {CATS, P, SHOP_MEDIA, IMG, fmt} from './data/catalog';
 import {availableOf, combos, mediaOf, priceOf, type Live} from './shop/live';
 import type {Bag, BagLine} from './shop/cart.server';
 import {parseRoute, urlFor, type Route, type View} from './routing';
-import {HOME_HERO, storyHero, warm} from './preload';
+import {HOME_HERO, storyHero, storyHeroMobile, warm} from './preload';
 import {ShellView} from './views/ShellView';
 
 /** The design's tweak values, as the v4 file was finalised. */
@@ -191,7 +191,7 @@ export class ShellLogic extends Component<ShellProps, any> {
     if (PROPS.motion === 'reduced' || !c || !c.animate) return void apply();
     if (this.busy) return; this.busy = true;
     // The next page's first photo downloads while the curtain comes down.
-    warm(view === 'home' ? (this.state.mobile ? HOME_HERO.mobile : HOME_HERO.desktop) : view === 'story' ? storyHero(cat) : view === 'product' ? firstPhoto(this.props.live, pid, sel) : '');
+    warm(view === 'home' ? (this.state.mobile ? HOME_HERO.mobile : HOME_HERO.desktop) : view === 'story' ? (this.state.mobile ? storyHeroMobile(cat) : storyHero(cat)) : view === 'product' ? firstPhoto(this.props.live, pid, sel) : '');
     let done = false, a1: any;
     const reveal = () => setTimeout(() => {
       const a = c.animate([{transform:'translateY(0)'},{transform:DOWN}], {duration:760, easing:EASE, fill:'forwards'});
