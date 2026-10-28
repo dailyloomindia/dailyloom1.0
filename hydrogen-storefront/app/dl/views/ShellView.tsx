@@ -231,6 +231,18 @@ export function ShellView({vals, children}: {vals: any; children: ReactNode}) {
             <a href="/policies/privacy-policy" style={{color: "#B8AE9E", transition: "color .3s"}} className="scpk">
               {"Privacy policy"}
             </a>
+            {" · "}
+            <a href="/policies/terms-of-service" style={{color: "#B8AE9E", transition: "color .3s"}} className="scpk">
+              {"Terms"}
+            </a>
+            {" · "}
+            <a href="/policies/refund-policy" style={{color: "#B8AE9E", transition: "color .3s"}} className="scpk">
+              {"Refund policy"}
+            </a>
+            {" · "}
+            <a href="/policies/shipping-policy" style={{color: "#B8AE9E", transition: "color .3s"}} className="scpk">
+              {"Shipping policy"}
+            </a>
           </span>
           {"\n    "}
           <span>
