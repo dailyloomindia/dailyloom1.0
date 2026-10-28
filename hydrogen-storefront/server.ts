@@ -82,4 +82,6 @@ interface Env {
   PUBLIC_CHECKOUT_DOMAIN: string;
   PUBLIC_GA_MEASUREMENT_ID?: string;
   PUBLIC_GOOGLE_SITE_VERIFICATION?: string;
+  SHIPROCKET_EMAIL?: string;
+  SHIPROCKET_PASSWORD?: string;
 }

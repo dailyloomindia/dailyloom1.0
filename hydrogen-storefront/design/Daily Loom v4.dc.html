@@ -1151,7 +1151,7 @@ const HELP_RETURNS = [
   ['Return window','7 days from the date of delivery.'],
   ['What we accept','Returns are accepted only when the product itself arrives damaged. Damage to the packaging alone is not covered.'],
   ['Unboxing video','Every claim and refund is processed only with a video recording of the parcel being unboxed. Start recording before the parcel is opened, and show it clearly from all sides.'],
-  ['How to claim','Email contact@dailyloom.in within 7 days of delivery with your order number and the unboxing video.'],
+  ['How to claim','Email returns@dailyloom.in within 7 days of delivery with your order number and the unboxing video. Attach the video, or share it as a Google Drive or WhatsApp link.'],
   ['Monogrammed pieces',"Monogrammed towels and pillow covers can be returned only if damage is proven in the unboxing video."]
 ];
 const CARE_GUIDE = [
@@ -1434,8 +1434,8 @@ class Component extends DCLogic {
         retText: sent ? 'You told us on ' + new Date(sent).toLocaleDateString('en-IN', {day:'numeric', month:'short'}) + ' that the video is on its way. We review every request and reply by email. Pickup is arranged only once a return is accepted.'
           : can ? 'Closes in ' + left + (left === 1 ? ' day' : ' days') + ', on ' + dt(o.delivered + 7) + '. Returns are accepted only if a product arrives damaged; packaging alone is not covered.'
           : closed ? 'Returns can be requested for 7 days after delivery. This window closed on ' + dt(o.delivered + 7) + '.' : 'Once delivered, you have 7 days to request a return if anything arrives damaged.',
-        retSteps: [{n:'1', t:'Your unboxing video', b:'A recording of the parcel being opened, showing it clearly from all sides.'}, {n:'2', t:'Email it to us', b:'Send it to contact@dailyloom.in with order number ' + o.no + '.'}, {n:'3', t:'We reply by email', b:'Once your return is accepted, we confirm by email and our delivery partner arranges the pickup.'}],
-        mailto: 'mailto:contact@dailyloom.in?subject=' + encodeURIComponent('Return request · Order ' + o.no) + '&body=' + encodeURIComponent('Order number: ' + o.no + '\nProduct(s) affected:\nWhat is damaged:\n\nUnboxing video attached.'),
+        retSteps: [{n:'1', t:'Your unboxing video', b:'A recording of the parcel being opened, showing it clearly from all sides.'}, {n:'2', t:'Email it to us', b:'Send it to returns@dailyloom.in with order number ' + o.no + '. Attach the video, or share it as a Google Drive or WhatsApp link.'}, {n:'3', t:'We reply by email', b:'Once your return is accepted, we confirm by email and our delivery partner arranges the pickup.'}],
+        mailto: 'mailto:returns@dailyloom.in?subject=' + encodeURIComponent('Return request · Order ' + o.no) + '&body=' + encodeURIComponent('Order number: ' + o.no + '\nProduct(s) affected:\nWhat is damaged:\n\nUnboxing video: attached, or a Google Drive or WhatsApp link:'),
         facts: [{k:'Delivery address', v:ADDR}, {k:'Payment', v:o.pay}],
         open: () => this.go({view:'account', acScreen:'order', acOrder:oi})};
     });

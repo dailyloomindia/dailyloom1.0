@@ -5,7 +5,7 @@ export const HELP_RETURNS: any = [
   ['Return window','7 days from the date of delivery.'],
   ['What we accept','Returns are accepted only when the product itself arrives damaged. Damage to the packaging alone is not covered.'],
   ['Unboxing video','Every claim and refund is processed only with a video recording of the parcel being unboxed. Start recording before the parcel is opened, and show it clearly from all sides.'],
-  ['How to claim','Email contact@dailyloom.in within 7 days of delivery with your order number and the unboxing video.'],
+  ['How to claim','Email returns@dailyloom.in within 7 days of delivery with your order number and the unboxing video. Attach the video, or share it as a Google Drive or WhatsApp link.'],
   ['Monogrammed pieces',"Monogrammed towels and pillow covers can be returned only if damage is proven in the unboxing video."]
 ];
 export const CARE_GUIDE: any = [
