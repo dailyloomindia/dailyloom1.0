@@ -2,7 +2,7 @@
 // design's option indices ({Size: 1, Colour: 0, Monogram: 1}); see ./map for how each maps
 // onto a Shopify variant.
 import {CATS, P} from '../data/catalog';
-import {MONOGRAM_HANDLE, MONOGRAM_PIECES, SHOPIFY} from './map';
+import {COLOUR_FILES, MONOGRAM_HANDLE, MONOGRAM_PIECES, SHOPIFY} from './map';
 
 export type LiveVariant = {id: string; title: string; sku: string; ok: boolean; price: number; cmp: number; values: string[]; image: string};
 export type Live = {products: Record<string, {id: string; title: string; vendor: string; type: string; updatedAt?: string; images: {url: string; alt: string}[]; variants: LiveVariant[]}>};
@@ -146,6 +146,15 @@ export function mediaOf(live: Live | null, pid: string): [string, string][] | nu
       }
       out.push([im.url, [...new Set(tags)].join('|')]);
     }
+  }
+  // A photo named for a colour (see COLOUR_FILES) shows only for that colour, ordered by its number.
+  const rules = COLOUR_FILES[pid];
+  if (rules) {
+    const file = (url: string) => decodeURIComponent(url.split('?')[0].split('/').pop() || '');
+    const num = (url: string) => +((file(url).match(/(\d+)\.\w+$/) || [])[1] || 0);
+    const own = (url: string) => rules.find(([re]) => re.test(file(url)));
+    out.forEach(e => { const r = own(e[0]); if (r) e[1] = r[1]; });
+    out.sort((a, b) => (own(a[0]) ? 0 : 1) - (own(b[0]) ? 0 : 1) || (own(a[0]) && own(b[0]) ? num(a[0]) - num(b[0]) : 0));
   }
   return out.length ? out : null;
 }

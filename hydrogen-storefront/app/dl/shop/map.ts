@@ -31,6 +31,15 @@ export const SHOP_HANDLES = ['winter-duvet', 'duvet-cover', '300tc-cotton-percal
  * The monogram is charged as an add-on line nested under its product, from the Shopify
  * product with this handle: one variant per price per piece (₹100 per towel, ₹150 per pillow cover).
  */
+/**
+ * Photos that belong to one colour, by how their file name in Shopify starts: each shows only while that
+ * colour is chosen, in the order of the number after the name (dvt-cvr-cg-1, dvt-cvr-cg-2 …).
+ */
+export const COLOUR_FILES: Record<string, [RegExp, string][]> = {
+  'duvet-cover': [[/^dvt-cvr-cg-/i, 'Charcoal grey'], [/^dvt-darktp-/i, 'Dark taupe']],
+  'bedsheet': [[/^(bedhset|bedsheet)-dark-gray-/i, 'Charcoal grey'], [/^bdsht-dt-/i, 'Dark taupe']],
+};
+
 export const MONOGRAM_HANDLE = 'monogram';
 /** How many pieces each product's monogram is embroidered on, as the design prices it. */
 export const MONOGRAM_PIECES: Record<string, number> = {'cotton-towel': 1, 'bamboo-towel': 1, 'cotton-towel-set': 3, 'bedsheet': 2, 'bed-set': 2};
