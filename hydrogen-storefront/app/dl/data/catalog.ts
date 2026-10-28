@@ -57,7 +57,7 @@ export const WEB_IMG: Record<string, string> = {
 export const fmt = (n: number) => '₹' + n.toLocaleString('en-IN');
 export const LINEN: any = [{v:'Dark taupe',hex:'#6E6158'},{v:'Charcoal grey',hex:'#4A4A4C'}];
 export const TOWEL_C: any = [{v:'White',hex:'#F6F4EF'}];
-export const TOWEL_B: any = [{v:'Sand brown',hex:'#9C8774'},{v:'Ash grey',hex:'#B9BAB5'},{v:'Dark grey',hex:'#706B69'},{v:'Dark blue',hex:'#626E85'},{v:'Dark brown',hex:'#665347'}];
+export const TOWEL_B: any = [{v:'Sand brown',hex:'#9C8774'},{v:'Ash grey',hex:'#B9BAB5'},{v:'Lilac grey',hex:'#8F8791'},{v:'Dark blue',hex:'#626E85'},{v:'Dark brown',hex:'#665347'}];
 export const TC: any = [{v:'300 TC',d:'Soft and airy',p:0},{v:'400 TC',d:'Smoother, deeper sheen',p:900}];
 export const TC_COVER: any = [{v:'300 TC',d:'Soft and airy',p:0}];
 export const PC_MONO: any = [{v:'None',p:0},{v:'Add initials',d:'₹150 per pillow cover, two covers',p:300}];
@@ -75,7 +75,7 @@ export const SHOP_MEDIA: any = {
   'contour-pillow':[['pillow-contour-card.png',''],['story-pillows-why-1.png','']],
   'cotton-towel':[['towel-cotton-single.png',''],['story-towels-weight-v2.png','Bath'],[null,'Hand'],[null,'Face'],['towel-terry-macro.png','']],
   'cotton-towel-set':[['towel-set-card.png',''],['towels-cotton-stack.png',''],['towel-terry-macro.png','']],
-  'bamboo-towel':[[null,'Sand brown'],[null,'Ash grey'],[null,'Dark grey'],[null,'Dark blue'],[null,'Dark brown'],['towel-bamboo-single.png',''],['towel-waffle-macro.png','']]
+  'bamboo-towel':[[null,'Sand brown'],[null,'Ash grey'],[null,'Lilac grey'],[null,'Dark blue'],[null,'Dark brown'],['towel-bamboo-single.png',''],['towel-waffle-macro.png','']]
 };
 export const P: any = {
   'winter-duvet': {cat:'duvets', name:'Winter Duvet', short:'A peach skin fabric shell, box-stitched so the fill stays even through the coldest months.', base:8900,
@@ -102,9 +102,9 @@ export const P: any = {
   'cotton-towel-set': {cat:'towels', name:'Cotton Towel Set', short:'One bath, one hand and one face towel in 650 GSM pure white cotton. Made for gifting.', base:3390,
     opts:[{n:'Colour', swatch:true, vals:TOWEL_C},{n:'Monogram', vals:[{v:'None',p:0},{v:'Add initials',d:'₹100 per towel, three towels',p:300}]}],
     details:'One bath towel (75 × 150 cm), one hand towel (40 × 60 cm) and one face towel (30 × 30 cm). 100% pure virgin cotton, ringspun terry, with a woven border at each end.', care:'Wash with whites only, in warm water (about 40°C) with a mild liquid detergent. No fabric softener or chlorine bleach. Shake out, tumble dry low and remove as soon as dry.'},
-  'bamboo-towel': {cat:'towels', name:'Bamboo Towel', short:'A bamboo reverse waffle weave. Light in the hand, soft on the skin and quick to dry.', base:890,
+  'bamboo-towel': {cat:'towels', name:'Bamboo Towel', short:'Pure bamboo, woven into a sculpted texture. Silky on the skin, light in the hand and dry again in no time.', base:890,
     opts:[{n:'Type', vals:[{v:'Bath',d:'75 × 150 cm',p:1250}]},{n:'Colour', swatch:true, vals:TOWEL_B},{n:'Monogram', vals:MONO}],
-    details:'Bamboo reverse waffle weave with a flat woven border.', care:'Wash separately to protect the waffle weave from snagging. Mild liquid detergent, no fabric softener. Line dry in shade.'}
+    details:'100% bamboo terry in a sculpted, textured weave, with a woven border at each end. 75 × 150 cm.', care:'Wash separately to protect the textured weave from snagging. Mild liquid detergent, no fabric softener. Line dry in shade.'}
 };
 export const CATS: any = [
   {k:'duvets', name:'Duvets', items:[{pid:'winter-duvet'},{soon:true, name:'Summer Comforter'}]},
