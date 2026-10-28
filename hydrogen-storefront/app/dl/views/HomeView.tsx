@@ -417,7 +417,7 @@ export function HomeView({vals}: {vals: any}) {
             </div>
             {"\n      "}
             <p data-reveal="120" style={{margin: "0", maxWidth: "380px", fontSize: "18px", lineHeight: "1.6", fontWeight: "300", color: "#5F574B"}}>
-              {"Bath, hand and face towels in pure white cotton terry, and in bamboo reverse waffle in dark grey, dark green and dark blue."}
+              {"Bath, hand and face towels in pure white cotton terry, and bamboo bath towels in sand brown, ash grey, lilac grey, dark blue and dark brown."}
             </p>
             {"\n    "}
           </div>

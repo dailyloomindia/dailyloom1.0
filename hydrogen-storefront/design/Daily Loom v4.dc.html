@@ -195,7 +195,7 @@ a:hover{color:#221E18}
         <span style="display:inline-flex;align-self:flex-start;padding:7px 12px 6px;background-color:#E9DCC3;background-image:repeating-linear-gradient(90deg, rgba(126,82,50,.14) 0 1px, transparent 1px 2.5px);outline:1px dashed rgba(126,82,50,.5);outline-offset:-3px;font-size:11px;letter-spacing:.24em;text-transform:uppercase;color:#6B4528">Towels</span>
         <h2 style="margin:0;font-family:'Marcellus',serif;font-weight:400;font-size:clamp(40px,5vw,76px);line-height:1.02;letter-spacing:-.01em">Full width. Full length.</h2>
       </div>
-      <p data-reveal="120" style="margin:0;max-width:380px;font-size:18px;line-height:1.6;font-weight:300;color:#5F574B">Bath, hand and face towels in pure white cotton terry, and in bamboo reverse waffle in dark grey, dark green and dark blue.</p>
+      <p data-reveal="120" style="margin:0;max-width:380px;font-size:18px;line-height:1.6;font-weight:300;color:#5F574B">Bath, hand and face towels in pure white cotton terry, and bamboo bath towels in sand brown, ash grey, lilac grey, dark blue and dark brown.</p>
     </div>
     <div style="display:flex;flex-direction:column;gap:clamp(40px,5vw,72px)">
       <div data-reveal="0" style="width:100%;position:relative;height:clamp(420px,52vw,760px);-webkit-mask-image:{{ mEdge }};mask-image:{{ mEdge }};-webkit-mask-composite:source-in;mask-composite:intersect;mix-blend-mode:{{ pBlend }};outline:{{ pFrame }};outline-offset:8px">
@@ -1138,7 +1138,7 @@ a:hover{color:#221E18}
 const fmt = n => '₹' + n.toLocaleString('en-IN');
 const LINEN = [{v:'Dark taupe',hex:'#6E6158'},{v:'Charcoal grey',hex:'#4A4A4C'}];
 const TOWEL_C = [{v:'White',hex:'#F6F4EF'}];
-const TOWEL_B = [{v:'Sand brown',hex:'#9C8774'},{v:'Ash grey',hex:'#B9BAB5'},{v:'Dark grey',hex:'#706B69'},{v:'Dark blue',hex:'#626E85'},{v:'Dark brown',hex:'#665347'}];
+const TOWEL_B = [{v:'Sand brown',hex:'#9C8774'},{v:'Ash grey',hex:'#B9BAB5'},{v:'Lilac grey',hex:'#8F8791'},{v:'Dark blue',hex:'#626E85'},{v:'Dark brown',hex:'#665347'}];
 const TOWEL_IMGS = [{id:'home-towels',mat:0,col:0,src:'./assets/img/towels-white.jpg',ph:'Cotton towels · white · 2400 × 1800'},{id:'home-towels-bamboo-green',mat:1,col:-1,src:'./assets/img/towel-bamboo-green.jpg',ph:'Bamboo towels · 2400 × 1800'}];
 const TC = [{v:'300 TC',d:'Soft and airy',p:0},{v:'400 TC',d:'Smoother, deeper sheen',p:900}];
 const TC_COVER = [{v:'300 TC',d:'Soft and airy',p:0}];
@@ -1159,7 +1159,7 @@ const CARE_GUIDE = [
   {cat:'covers', t:'Duvet Covers & Bedsheets', products:'Duvet Cover · Bedsheet Set · The Complete Bed', items:[['First washes','Dark tones are best washed on their own for the first few washes.'],['Washing','Then wash with like colours in cold water. Close the snap buttons on the duvet cover first.'],['Drying','Line dry in shade.'],['Ironing','Iron warm while slightly damp for a smooth finish.']]},
   {cat:'pillows', t:'Pillows', products:'Natural Latex Pillow · Natural Latex Contour Pillow', items:[['The cover','Unzip and wash the knitted cover only.'],['The latex core','Never wash the latex core. Keep it out of direct sunlight, and air it in shade when needed.']]},
   {cat:'towels', t:'Cotton Towels', products:'Cotton Towel · Cotton Towel Set', items:[['Whites only','Never with colours, denim or dark clothing, to prevent colour bleeding, greying and dark lint.'],['Warm water, about 40°C','With a mild liquid detergent. No fabric softener, which coats the loops and reduces absorbency.'],['No chlorine bleach','Use an oxygen-based brightener or a splash of white vinegar in the rinse.'],['Tumble dry low','Shake it out first, dry on low to medium heat, and remove as soon as it is dry.'],['Store loosely','Stack in a dry, ventilated cupboard. Packing tightly flattens the loops.']]},
-  {cat:'towels', t:'Bamboo Towels', products:'Bamboo Towel', items:[['Wash separately','Protects the waffle weave from snagging.'],['Mild liquid detergent','No fabric softener.'],['Line dry in shade','Avoid direct sunlight.']]}
+  {cat:'towels', t:'Bamboo Towels', products:'Bamboo Towel', items:[['Wash separately','Protects the textured weave from snagging.'],['Mild liquid detergent','No fabric softener.'],['Line dry in shade','Avoid direct sunlight.']]}
 ];
 const REVIEWS = [
   // Paste Google reviews here: {name:'', place:'', product:'', stars:5, text:''}
@@ -1176,7 +1176,7 @@ const SHOP_MEDIA = {
   'contour-pillow':[['pillow-contour-card.png',''],['story-pillows-why-1.png','']],
   'cotton-towel':[['towel-cotton-single.png',''],['story-towels-weight-v2.png','Bath'],[null,'Hand'],[null,'Face'],['towel-terry-macro.png','']],
   'cotton-towel-set':[['towel-set-card.png',''],['towels-cotton-stack.png',''],['towel-terry-macro.png','']],
-  'bamboo-towel':[[null,'Sand brown'],[null,'Ash grey'],[null,'Dark grey'],[null,'Dark blue'],[null,'Dark brown'],['towel-bamboo-single.png',''],['towel-waffle-macro.png','']]
+  'bamboo-towel':[[null,'Sand brown'],[null,'Ash grey'],[null,'Lilac grey'],[null,'Dark blue'],[null,'Dark brown'],['towel-bamboo-single.png',''],['towel-waffle-macro.png','']]
 };
 const P = {
   'winter-duvet': {cat:'duvets', name:'Winter Duvet', short:'A peach skin fabric shell, box-stitched so the fill stays even through the coldest months.', base:8900,
@@ -1203,9 +1203,9 @@ const P = {
   'cotton-towel-set': {cat:'towels', name:'Cotton Towel Set', short:'One bath, one hand and one face towel in 650 GSM pure white cotton. Made for gifting.', base:3390,
     opts:[{n:'Colour', swatch:true, vals:TOWEL_C},{n:'Monogram', vals:[{v:'None',p:0},{v:'Add initials',d:'₹100 per towel, three towels',p:300}]}],
     details:'One bath towel (75 × 150 cm), one hand towel (40 × 60 cm) and one face towel (30 × 30 cm). 100% pure virgin cotton, ringspun terry, with a woven border at each end.', care:'Wash with whites only, in warm water (about 40°C) with a mild liquid detergent. No fabric softener or chlorine bleach. Shake out, tumble dry low and remove as soon as dry.'},
-  'bamboo-towel': {cat:'towels', name:'Bamboo Towel', short:'A bamboo reverse waffle weave. Light in the hand, soft on the skin and quick to dry.', base:890,
+  'bamboo-towel': {cat:'towels', name:'Bamboo Towel', short:'Pure bamboo, woven into a sculpted texture. Silky on the skin, light in the hand and dry again in no time.', base:890,
     opts:[{n:'Type', vals:[{v:'Bath',d:'75 × 150 cm',p:1250}]},{n:'Colour', swatch:true, vals:TOWEL_B},{n:'Monogram', vals:MONO}],
-    details:'Bamboo reverse waffle weave with a flat woven border.', care:'Wash separately to protect the waffle weave from snagging. Mild liquid detergent, no fabric softener. Line dry in shade.'}
+    details:'100% bamboo terry in a sculpted, textured weave, with a woven border at each end. 75 × 150 cm.', care:'Wash separately to protect the textured weave from snagging. Mild liquid detergent, no fabric softener. Line dry in shade.'}
 };
 const CATS = [
   {k:'duvets', name:'Duvets', items:[{pid:'winter-duvet'},{soon:true, name:'Summer Comforter'}]},
@@ -1261,13 +1261,13 @@ const STORY = {
          {tag:'650 GSM', key:'story-towels-weight', t:'You can feel the weight.', b:'650 GSM means 650 grams of pure virgin cotton in every square metre. The bath towel weighs 725 g, thick and dense in the hand. Its deep loops take in water quickly and grow softer with every wash.'},
          {tag:'Two fibres', key:'story-towels-why-1', t:'Cotton or bamboo.', b:'', cmp:{
             cols:[{name:'650 GSM white cotton', badge:'Signature', img:'./assets/img/towel-terry-macro.png', imgLabel:'Dense, upright loops', sw:[{hex:'#F7F5F0',label:'Pure white'}], swNames:'Pure white'},
-                  {name:'Textured bamboo', badge:'', img:'./assets/img/towel-waffle-macro.png', imgLabel:'A grid of sunken squares', sw:[{hex:'#9C8774',label:'Sand brown'},{hex:'#B9BAB5',label:'Ash grey'},{hex:'#706B69',label:'Dark grey'},{hex:'#626E85',label:'Dark blue'},{hex:'#665347',label:'Dark brown'}], swNames:'Sand brown · Ash grey · Dark grey · Dark blue · Dark brown'}],
-            rows:[['Look','Timeless and pristine. The signature look of an elite spa or five-star hotel suite.','Earthy and textured. A minimalist reverse-waffle weave.'],
+                  {name:'Textured bamboo', badge:'', img:'https://cdn.shopify.com/s/files/1/0787/0883/4541/files/bamboo-sandbrown-2.jpg?v=1793231145', imgLabel:'Sculpted squares of soft loops', sw:[{hex:'#9C8774',label:'Sand brown'},{hex:'#B9BAB5',label:'Ash grey'},{hex:'#8F8791',label:'Lilac grey'},{hex:'#626E85',label:'Dark blue'},{hex:'#665347',label:'Dark brown'}], swNames:'Sand brown · Ash grey · Lilac grey · Dark blue · Dark brown'}],
+            rows:[['Look','Timeless and pristine. The signature look of an elite spa or five-star hotel suite.','Earthy and textured. A sculpted weave of soft bamboo loops.'],
                   ['Feel','Thick, dense, cloud-like softness, warm against the skin.','Silky, fluid and light, with a drape that sits closer to the skin.'],
                   ['Best for','The long bath and the slow morning.','Humid coastal homes, the gym and travel. It dries quickly and packs light.']]}}],
     closer:{title:'Feel the weave.', lede:'Tap each to see the texture up close.', base:'#C9BFAE', points:[
       {t:'Cotton terry', b:'Dense, upright loops.', src:'./assets/img/towel-terry-macro.png', pat:'dl-terry', z:5, label:'Cotton terry · magnified'},
-      {t:'Bamboo waffle', b:'A grid of small sunken squares.', src:'./assets/img/towel-waffle-macro.png', pat:'dl-percale', z:7, label:'Bamboo reverse waffle · magnified'}]},
+      {t:'Bamboo weave', b:'Raised squares of soft, silky loops.', src:'https://cdn.shopify.com/s/files/1/0787/0883/4541/files/bamboo-darkblue-2.jpg?v=1793231146', pat:'dl-percale', z:7, label:'Bamboo weave · magnified'}]},
     compare:[['Fit','Covers you from chest to below the knee','','Bath 75 × 150 cm · Hand 40 × 60 cm · Face 30 × 30 cm'],['Fibre','Pure virgin Indian cotton, or pure bamboo. Nothing blended in','',''],['Finish','Stays smooth and lint-free, wash after wash','',''],['Personal','Monogramming with your initials','','Coming soon']],
     care:'', ritual:{title:'The art of towel care', lede:'Three rules keep the white cotton towel bright and plush for years.', key:[['Whites only, warm water','About 40°C, never with colours or dark clothing.'],['No softener, no chlorine','Both dull the loops. Use an oxygen brightener if needed.'],['Tumble dry low','Shake out first and remove as soon as it is dry.']], groups:[
       {t:'Washing', items:[['Whites only','Never with colours, denim or dark clothing. Prevents colour bleeding, greying and dark lint.'],['Warm water, about 40°C','Lifts body oils and detergent without shrinking the fibres.'],['Mild liquid detergent, no softener','Softener coats the loops, reducing absorbency and stiffening them over time.'],['No chlorine bleach','Use an oxygen-based brightener or a splash of white vinegar in the rinse.']]},
