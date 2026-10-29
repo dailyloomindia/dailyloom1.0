@@ -292,7 +292,7 @@ export function HomeView({vals}: {vals: any}) {
                   </span>
                   </>
                 ) : null}
-                {" · 300 and 400 TC"}
+                {" · 300 TC"}
               </div>
               {"\n        "}
               <button onClick={vals.storyCovers} style={{alignSelf: "flex-start", background: "none", border: "0", padding: "4px 0", cursor: "pointer", fontSize: "15px", color: "#7E5232", backgroundImage: "repeating-linear-gradient(90deg, #7E5232 0 5px, transparent 5px 8px)", backgroundRepeat: "no-repeat", backgroundPosition: "0 100%", backgroundSize: "0% 1.5px", transition: "background-size .6s cubic-bezier(.2,.7,.2,1)"}} className="scp5">

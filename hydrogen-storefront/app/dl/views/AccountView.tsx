@@ -318,6 +318,10 @@ export function AccountView({vals}: {vals: any}) {
                 <a href="mailto:contact@dailyloom.in" style={{color: "#7E5232"}}>
                   {"contact@dailyloom.in"}
                 </a>
+                {" or "}
+                <a href="https://wa.me/919220442722" target="_blank" rel="noopener" style={{color: "#7E5232"}}>
+                  {"WhatsApp us"}
+                </a>
               </span>
               {"\n      "}
             </aside>

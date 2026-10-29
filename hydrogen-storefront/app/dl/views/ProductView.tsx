@@ -421,13 +421,17 @@ export function ProductView({vals}: {vals: any}) {
                   <div style={{display: "flex", flexDirection: "column", gap: "6px", fontSize: "13px", lineHeight: "1.5", color: "#5F574B"}}>
                     {"\n            "}
                     <span>
-                      {"Tracked delivery across India · Secure checkout with UPI, cards and net banking"}
+                      {"Complimentary delivery, dispatched within 48 hours · Secure checkout with UPI, cards and net banking"}
                     </span>
                     {"\n            "}
                     <span>
                       {"Need help choosing? Write to "}
                       <a href="mailto:contact@dailyloom.in" style={{color: "#7E5232"}}>
                         {"contact@dailyloom.in"}
+                      </a>
+                      {" or "}
+                      <a href="https://wa.me/919220442722" target="_blank" rel="noopener" style={{color: "#7E5232"}}>
+                        {"WhatsApp us"}
                       </a>
                     </span>
                     {"\n          "}
