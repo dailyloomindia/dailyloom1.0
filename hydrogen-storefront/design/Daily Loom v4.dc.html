@@ -725,17 +725,17 @@ a:hover{color:#221E18}
   </section>
 </main>
 
-<div style="position:fixed;left:50%;bottom:{{ barBottom }};z-index:55;width:{{ barW }};transform:{{ barTf }};opacity:{{ barOp }};pointer-events:{{ barPe }};transition:transform .6s cubic-bezier(.2,.8,.2,1),opacity .4s;display:flex;align-items:center;gap:16px;padding:10px 10px 10px 12px;box-sizing:border-box;border-radius:999px;background-color:rgba(244,239,230,.9);background-image:repeating-linear-gradient(0deg, rgba(126,82,50,.05) 0 1px, transparent 1px 3px),repeating-linear-gradient(90deg, rgba(85,87,63,.05) 0 1px, transparent 1px 3px);backdrop-filter:saturate(1.4) blur(18px);-webkit-backdrop-filter:saturate(1.4) blur(18px);outline:1px dashed rgba(126,82,50,.4);outline-offset:-5px;box-shadow:0 14px 40px rgba(34,30,24,.16)">
-  <div style="flex:none;width:44px;height:44px;border-radius:50%;overflow:hidden;display:{{ barThumbDisp }};background-color:{{ barTint }}">
+<div style="position:fixed;left:50%;bottom:{{ barBottom }};z-index:55;width:{{ barW }};transform:{{ barTf }};opacity:{{ barOp }};pointer-events:{{ barPe }};transition:transform .6s cubic-bezier(.2,.8,.2,1),opacity .4s;display:flex;align-items:center;gap:{{ barGap }};padding:{{ barPad }};box-sizing:border-box;border-radius:999px;background-color:rgba(244,239,230,.9);background-image:repeating-linear-gradient(0deg, rgba(126,82,50,.05) 0 1px, transparent 1px 3px),repeating-linear-gradient(90deg, rgba(85,87,63,.05) 0 1px, transparent 1px 3px);backdrop-filter:saturate(1.4) blur(18px);-webkit-backdrop-filter:saturate(1.4) blur(18px);outline:1px dashed rgba(126,82,50,.4);outline-offset:-5px;box-shadow:0 14px 40px rgba(34,30,24,.16)">
+  <div style="flex:none;width:{{ barThumb }};height:{{ barThumb }};border-radius:50%;overflow:hidden;display:{{ barThumbDisp }};background-color:{{ barTint }}">
     <sc-if value="{{ barHasImg }}" hint-placeholder-val="{{ false }}"><div style="width:100%;height:100%;background-image:{{ barBg }};background-size:cover;background-position:center"></div></sc-if>
   </div>
   <div style="flex:1;min-width:0;display:flex;flex-direction:column;gap:2px">
-    <span style="font-family:'Marcellus',serif;font-size:18px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis">{{ pName }}</span>
+    <span style="font-family:'Marcellus',serif;font-size:{{ barNameSize }};line-height:1.2;white-space:nowrap;overflow:hidden;text-overflow:ellipsis">{{ pName }}</span>
     <span style="font-size:12px;color:#5F574B;white-space:nowrap;overflow:hidden;text-overflow:ellipsis">{{ barSub }}</span>
   </div>
   <span style="flex:none;font-size:16px;display:{{ barPriceDisp }}">{{ pPrice }}</span>
-  <button onClick="{{ barAction }}" style="flex:none;background-color:#221E18;background-image:repeating-linear-gradient(135deg, rgba(255,255,255,.07) 0 1px, transparent 1px 3px),linear-gradient(180deg, rgba(255,255,255,.1), rgba(0,0,0,.18));color:#F4EFE6;border:0;border-radius:999px;outline:1px dashed rgba(244,239,230,.42);outline-offset:-5px;letter-spacing:.05em;cursor:pointer;transition:background-color .5s,outline-offset .4s,transform .3s;padding:0 22px;height:46px;font-size:14px" style-hover="background-color:#7E5232">{{ barLabel }}</button>
-  <button onClick="{{ barClose }}" aria-label="Close" style="flex:none;width:36px;height:36px;margin-left:-6px;border-radius:50%;border:0;background:rgba(34,30,24,.06);cursor:pointer;font-size:17px;line-height:1;color:#221E18;transition:background .3s" style-hover="background:rgba(34,30,24,.12)">×</button>
+  <button onClick="{{ barAction }}" style="flex:none;background-color:#221E18;background-image:repeating-linear-gradient(135deg, rgba(255,255,255,.07) 0 1px, transparent 1px 3px),linear-gradient(180deg, rgba(255,255,255,.1), rgba(0,0,0,.18));color:#F4EFE6;border:0;border-radius:999px;outline:1px dashed rgba(244,239,230,.42);outline-offset:-5px;letter-spacing:.05em;cursor:pointer;transition:background-color .5s,outline-offset .4s,transform .3s;padding:{{ barBtnPad }};height:{{ barBtnH }};font-size:{{ barBtnFont }};white-space:nowrap" style-hover="background-color:#7E5232">{{ barLabel }}</button>
+  <button onClick="{{ barClose }}" aria-label="Close" style="flex:none;width:{{ barClose_ }};height:{{ barClose_ }};margin-left:-6px;border-radius:50%;border:0;background:rgba(34,30,24,.06);cursor:pointer;font-size:17px;line-height:1;color:#221E18;transition:background .3s" style-hover="background:rgba(34,30,24,.12)">×</button>
 </div>
 </sc-if>
 
@@ -1203,7 +1203,7 @@ const P = {
   'cotton-towel-set': {cat:'towels', name:'Cotton Towel Set', short:'One bath, one hand and one face towel in 650 GSM pure white cotton. Made for gifting.', base:3390,
     opts:[{n:'Colour', swatch:true, vals:TOWEL_C},{n:'Monogram', vals:[{v:'None',p:0},{v:'Add initials',d:'₹100 per towel, three towels',p:300}]}],
     details:'One bath towel (75 × 150 cm), one hand towel (40 × 60 cm) and one face towel (30 × 30 cm). 100% pure virgin cotton, ringspun terry, with a woven border at each end.', care:'Wash with whites only, in warm water (about 40°C) with a mild liquid detergent. No fabric softener or chlorine bleach. Shake out, tumble dry low and remove as soon as dry.'},
-  'bamboo-towel': {cat:'towels', name:'Bamboo Towel', short:'Pure bamboo, woven into a sculpted texture. Silky on the skin, light in the hand and dry again in no time.', base:890,
+  'bamboo-towel': {cat:'towels', name:'Bamboo Towel', short:'Pure bamboo, woven into a sculpted texture. Soft, absorbent and light in the hand, and quick to dry.', base:890,
     opts:[{n:'Type', vals:[{v:'Bath',d:'75 × 150 cm',p:1250}]},{n:'Colour', swatch:true, vals:TOWEL_B},{n:'Monogram', vals:MONO}],
     details:'100% bamboo terry in a sculpted, textured weave, with a woven border at each end. 75 × 150 cm.', care:'Wash separately to protect the textured weave from snagging. Mild liquid detergent, no fabric softener. Line dry in shade.'}
 };
@@ -1263,7 +1263,7 @@ const STORY = {
             cols:[{name:'650 GSM white cotton', badge:'Signature', img:'./assets/img/towel-terry-macro.png', imgLabel:'Dense, upright loops', sw:[{hex:'#F7F5F0',label:'Pure white'}], swNames:'Pure white'},
                   {name:'Textured bamboo', badge:'', img:'https://cdn.shopify.com/s/files/1/0787/0883/4541/files/bamboo-sandbrown-2.jpg?v=1793231145', imgLabel:'Sculpted squares of soft loops', sw:[{hex:'#9C8774',label:'Sand brown'},{hex:'#B9BAB5',label:'Ash grey'},{hex:'#8F8791',label:'Lilac grey'},{hex:'#626E85',label:'Dark blue'},{hex:'#665347',label:'Dark brown'}], swNames:'Sand brown · Ash grey · Lilac grey · Dark blue · Dark brown'}],
             rows:[['Look','Timeless and pristine. The signature look of an elite spa or five-star hotel suite.','Earthy and textured. A sculpted weave of soft bamboo loops.'],
-                  ['Feel','Thick, dense, cloud-like softness, warm against the skin.','Silky, fluid and light, with a drape that sits closer to the skin.'],
+                  ['Feel','Thick, dense, cloud-like softness, warm against the skin.','Soft and light, with a textured hand that dries quickly.'],
                   ['Best for','The long bath and the slow morning.','Humid coastal homes, the gym and travel. It dries quickly and packs light.']]}}],
     closer:{title:'Feel the weave.', lede:'Tap each to see the texture up close.', base:'#C9BFAE', points:[
       {t:'Cotton terry', b:'Dense, upright loops.', src:'./assets/img/towel-terry-macro.png', pat:'dl-terry', z:5, label:'Cotton terry · magnified'},
@@ -1521,7 +1521,7 @@ class Component extends DCLogic {
       notifyMe: () => { if (/\S+@\S+\.\S+/.test(s.notifyEmail || '')) this.setState({notified:true}); }, notifyLabel: s.notified ? 'Noted ✓' : 'Notify me',
       barTf: showBar ? 'translate(-50%, 0)' : 'translate(-50%, 140%)', barOp: showBar ? 1 : 0, barPe: showBar ? 'auto' : 'none',
       barImg: cur.url || '', barBg: cur.url ? 'url("' + cur.url + '")' : 'none', barHasImg: !!cur.url, barTint: cur.tint || '#E2D6C2', barSummary: summary,
-      barClose: () => this.setState({barHidden:true}), barW: mobile ? 'calc(100vw - 20px)' : 'min(980px,calc(100vw - 96px))', barBottom: mobile ? '10px' : '16px', barThumbDisp: mobile ? 'none' : 'block', barPriceDisp: mobile ? 'none' : 'inline', barSub: mobile ? fmt(this.priceOf(pid, sel) * s.qty) : summary, barLabel: avail ? (s.added ? 'Added ✓' : 'Add to bag') : 'Notify me',
+      barClose: () => this.setState({barHidden:true}), barW: mobile ? 'calc(100vw - 20px)' : 'min(980px,calc(100vw - 96px))', barBottom: mobile ? '10px' : '16px', barThumbDisp: 'block', barGap: mobile ? '10px' : '16px', barPad: mobile ? '7px 8px 7px 8px' : '10px 10px 10px 12px', barThumb: mobile ? '40px' : '44px', barNameSize: mobile ? '15px' : '18px', barBtnH: mobile ? '40px' : '46px', barBtnPad: mobile ? '0 16px' : '0 22px', barBtnFont: mobile ? '13px' : '14px', barClose_: mobile ? '30px' : '36px', barPriceDisp: mobile ? 'none' : 'inline', barSub: mobile ? fmt(this.priceOf(pid, sel) * s.qty) : summary, barLabel: avail ? (s.added ? 'Added ✓' : 'Add to bag') : 'Notify me',
       barAction: avail ? this.addToBag : () => { const c = this.ctaRef.current; if (c) window.scrollTo({top: c.getBoundingClientRect().top + scrollY - 140, behavior:'smooth'}); }
     };
   }

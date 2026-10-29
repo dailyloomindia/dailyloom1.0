@@ -50,7 +50,7 @@ export const STORY: any = {
             cols:[{name:'650 GSM white cotton', badge:'Signature', img:'https://cdn.shopify.com/s/files/1/0787/0883/4541/files/web-towel-terry-macro.png?v=1792532707', imgLabel:'Dense, upright loops', sw:[{hex:'#F7F5F0',label:'Pure white'}], swNames:'Pure white'},
                   {name:'Textured bamboo', badge:'', img:'https://cdn.shopify.com/s/files/1/0787/0883/4541/files/bamboo-sandbrown-2.jpg?v=1793231145', imgLabel:'Sculpted squares of soft loops', sw:[{hex:'#9C8774',label:'Sand brown'},{hex:'#B9BAB5',label:'Ash grey'},{hex:'#8F8791',label:'Lilac grey'},{hex:'#626E85',label:'Dark blue'},{hex:'#665347',label:'Dark brown'}], swNames:'Sand brown · Ash grey · Lilac grey · Dark blue · Dark brown'}],
             rows:[['Look','Timeless and pristine. The signature look of an elite spa or five-star hotel suite.','Earthy and textured. A sculpted weave of soft bamboo loops.'],
-                  ['Feel','Thick, dense, cloud-like softness, warm against the skin.','Silky, fluid and light, with a drape that sits closer to the skin.'],
+                  ['Feel','Thick, dense, cloud-like softness, warm against the skin.','Soft and light, with a textured hand that dries quickly.'],
                   ['Best for','The long bath and the slow morning.','Humid coastal homes, the gym and travel. It dries quickly and packs light.']]}}],
     closer:{title:'Feel the weave.', lede:'Tap each to see the texture up close.', base:'#C9BFAE', points:[
       {t:'Cotton terry', b:'Dense, upright loops.', src:'https://cdn.shopify.com/s/files/1/0787/0883/4541/files/web-towel-terry-macro.png?v=1792532707', pat:'dl-terry', z:5, label:'Cotton terry · magnified'},

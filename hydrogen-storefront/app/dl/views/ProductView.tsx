@@ -586,9 +586,9 @@ export function ProductView({vals}: {vals: any}) {
           {"\n  "}
         </section>
       </main>
-      <div style={css(`position:fixed;left:50%;bottom:${S(vals.barBottom)};z-index:55;width:${S(vals.barW)};transform:${S(vals.barTf)};opacity:${S(vals.barOp)};pointer-events:${S(vals.barPe)};transition:transform .6s cubic-bezier(.2,.8,.2,1),opacity .4s;display:flex;align-items:center;gap:16px;padding:10px 10px 10px 12px;box-sizing:border-box;border-radius:999px;background-color:rgba(244,239,230,.9);background-image:repeating-linear-gradient(0deg, rgba(126,82,50,.05) 0 1px, transparent 1px 3px),repeating-linear-gradient(90deg, rgba(85,87,63,.05) 0 1px, transparent 1px 3px);backdrop-filter:saturate(1.4) blur(18px);-webkit-backdrop-filter:saturate(1.4) blur(18px);outline:1px dashed rgba(126,82,50,.4);outline-offset:-5px;box-shadow:0 14px 40px rgba(34,30,24,.16)`)}>
+      <div style={css(`position:fixed;left:50%;bottom:${S(vals.barBottom)};z-index:55;width:${S(vals.barW)};transform:${S(vals.barTf)};opacity:${S(vals.barOp)};pointer-events:${S(vals.barPe)};transition:transform .6s cubic-bezier(.2,.8,.2,1),opacity .4s;display:flex;align-items:center;gap:${S(vals.barGap)};padding:${S(vals.barPad)};box-sizing:border-box;border-radius:999px;background-color:rgba(244,239,230,.9);background-image:repeating-linear-gradient(0deg, rgba(126,82,50,.05) 0 1px, transparent 1px 3px),repeating-linear-gradient(90deg, rgba(85,87,63,.05) 0 1px, transparent 1px 3px);backdrop-filter:saturate(1.4) blur(18px);-webkit-backdrop-filter:saturate(1.4) blur(18px);outline:1px dashed rgba(126,82,50,.4);outline-offset:-5px;box-shadow:0 14px 40px rgba(34,30,24,.16)`)}>
         {"\n  "}
-        <div style={css(`flex:none;width:44px;height:44px;border-radius:50%;overflow:hidden;display:${S(vals.barThumbDisp)};background-color:${S(vals.barTint)}`)}>
+        <div style={css(`flex:none;width:${S(vals.barThumb)};height:${S(vals.barThumb)};border-radius:50%;overflow:hidden;display:${S(vals.barThumbDisp)};background-color:${S(vals.barTint)}`)}>
           {"\n    "}
           {vals.barHasImg ? (
             <>
@@ -600,7 +600,7 @@ export function ProductView({vals}: {vals: any}) {
         {"\n  "}
         <div style={{flex: "1", minWidth: "0", display: "flex", flexDirection: "column", gap: "2px"}}>
           {"\n    "}
-          <span style={{fontFamily: "'Marcellus',serif", fontSize: "18px", whiteSpace: "nowrap", overflow: "hidden", textOverflow: "ellipsis"}}>
+          <span style={css(`font-family:'Marcellus',serif;font-size:${S(vals.barNameSize)};line-height:1.2;white-space:nowrap;overflow:hidden;text-overflow:ellipsis`)}>
             {I(vals.pName)}
           </span>
           {"\n    "}
@@ -614,11 +614,11 @@ export function ProductView({vals}: {vals: any}) {
           {I(vals.pPrice)}
         </span>
         {"\n  "}
-        <button onClick={vals.barAction} style={{flex: "none", backgroundColor: "#221E18", backgroundImage: "repeating-linear-gradient(135deg, rgba(255,255,255,.07) 0 1px, transparent 1px 3px),linear-gradient(180deg, rgba(255,255,255,.1), rgba(0,0,0,.18))", color: "#F4EFE6", border: "0", borderRadius: "999px", outline: "1px dashed rgba(244,239,230,.42)", outlineOffset: "-5px", letterSpacing: ".05em", cursor: "pointer", transition: "background-color .5s,outline-offset .4s,transform .3s", padding: "0 22px", height: "46px", fontSize: "14px"}} className="scpa">
+        <button onClick={vals.barAction} style={css(`flex:none;background-color:#221E18;background-image:repeating-linear-gradient(135deg, rgba(255,255,255,.07) 0 1px, transparent 1px 3px),linear-gradient(180deg, rgba(255,255,255,.1), rgba(0,0,0,.18));color:#F4EFE6;border:0;border-radius:999px;outline:1px dashed rgba(244,239,230,.42);outline-offset:-5px;letter-spacing:.05em;cursor:pointer;transition:background-color .5s,outline-offset .4s,transform .3s;padding:${S(vals.barBtnPad)};height:${S(vals.barBtnH)};font-size:${S(vals.barBtnFont)};white-space:nowrap`)} className="scpa">
           {I(vals.barLabel)}
         </button>
         {"\n  "}
-        <button onClick={vals.barClose} aria-label="Close" style={{flex: "none", width: "36px", height: "36px", marginLeft: "-6px", borderRadius: "50%", border: "0", background: "rgba(34,30,24,.06)", cursor: "pointer", fontSize: "17px", lineHeight: "1", color: "#221E18", transition: "background .3s"}} className="scpj">
+        <button onClick={vals.barClose} aria-label="Close" style={css(`flex:none;width:${S(vals.barClose_)};height:${S(vals.barClose_)};margin-left:-6px;border-radius:50%;border:0;background:rgba(34,30,24,.06);cursor:pointer;font-size:17px;line-height:1;color:#221E18;transition:background .3s`)} className="scpj">
           {"×"}
         </button>
       </div>

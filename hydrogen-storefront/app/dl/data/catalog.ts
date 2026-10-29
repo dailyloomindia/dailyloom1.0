@@ -102,7 +102,7 @@ export const P: any = {
   'cotton-towel-set': {cat:'towels', name:'Cotton Towel Set', short:'One bath, one hand and one face towel in 650 GSM pure white cotton. Made for gifting.', base:3390,
     opts:[{n:'Colour', swatch:true, vals:TOWEL_C},{n:'Monogram', vals:[{v:'None',p:0},{v:'Add initials',d:'₹100 per towel, three towels',p:300}]}],
     details:'One bath towel (75 × 150 cm), one hand towel (40 × 60 cm) and one face towel (30 × 30 cm). 100% pure virgin cotton, ringspun terry, with a woven border at each end.', care:'Wash with whites only, in warm water (about 40°C) with a mild liquid detergent. No fabric softener or chlorine bleach. Shake out, tumble dry low and remove as soon as dry.'},
-  'bamboo-towel': {cat:'towels', name:'Bamboo Towel', short:'Pure bamboo, woven into a sculpted texture. Silky on the skin, light in the hand and dry again in no time.', base:890,
+  'bamboo-towel': {cat:'towels', name:'Bamboo Towel', short:'Pure bamboo, woven into a sculpted texture. Soft, absorbent and light in the hand, and quick to dry.', base:890,
     opts:[{n:'Type', vals:[{v:'Bath',d:'75 × 150 cm',p:1250}]},{n:'Colour', swatch:true, vals:TOWEL_B},{n:'Monogram', vals:MONO}],
     details:'100% bamboo terry in a sculpted, textured weave, with a woven border at each end. 75 × 150 cm.', care:'Wash separately to protect the textured weave from snagging. Mild liquid detergent, no fabric softener. Line dry in shade.'}
 };

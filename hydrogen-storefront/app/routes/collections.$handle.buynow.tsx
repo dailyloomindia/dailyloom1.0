@@ -95,7 +95,7 @@ function pdpVals(sh: ShellLogic, pid: string, p: any, sel: any){
     notifyLabel: s.notifying ? 'Sending…' : s.notified ? 'Noted ✓' : 'Notify me', notifyHasErr: !!s.notifyErr, notifyErr: s.notifyErr || '',
     barTf: showBar ? 'translate(-50%, 0)' : 'translate(-50%, 140%)', barOp: showBar ? 1 : 0, barPe: showBar ? 'auto' : 'none',
     barImg: cur.url || '', barBg: cur.url ? 'url("' + cur.url + '")' : 'none', barHasImg: !!cur.url, barTint: cur.tint || '#E2D6C2', barSummary: summary,
-    barClose: () => sh.setState({barHidden:true}), barW: mobile ? 'calc(100vw - 20px)' : 'min(980px,calc(100vw - 96px))', barBottom: mobile ? '10px' : '16px', barThumbDisp: mobile ? 'none' : 'block', barPriceDisp: mobile ? 'none' : 'inline', barSub: mobile ? fmt(sh.priceOf(pid, sel) * s.qty) : summary, barLabel: avail ? (s.added ? 'Added ✓' : 'Add to bag') : 'Notify me',
+    barClose: () => sh.setState({barHidden:true}), barW: mobile ? 'calc(100vw - 20px)' : 'min(980px,calc(100vw - 96px))', barBottom: mobile ? '10px' : '16px', barThumbDisp: 'block', barGap: mobile ? '10px' : '16px', barPad: mobile ? '7px 8px 7px 8px' : '10px 10px 10px 12px', barThumb: mobile ? '40px' : '44px', barNameSize: mobile ? '15px' : '18px', barBtnH: mobile ? '40px' : '46px', barBtnPad: mobile ? '0 16px' : '0 22px', barBtnFont: mobile ? '13px' : '14px', barClose_: mobile ? '30px' : '36px', barPriceDisp: mobile ? 'none' : 'inline', barSub: mobile ? fmt(sh.priceOf(pid, sel) * s.qty) : summary, barLabel: avail ? (s.added ? 'Added ✓' : 'Add to bag') : 'Notify me',
     barAction: avail ? sh.addToBag : () => { const c = sh.ctaRef.current; if (c) window.scrollTo({top: c.getBoundingClientRect().top + scrollY - 140, behavior:'smooth'}); }
   };
 }
