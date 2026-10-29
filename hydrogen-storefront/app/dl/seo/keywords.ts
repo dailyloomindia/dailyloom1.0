@@ -5,7 +5,7 @@
 export const CAT_SEO: Record<string, {title: string; description: string}> = {
   duvets: {
     title: 'Winter Duvet, Comforter & Razai for Single and King Bed',
-    description: 'A warm, light winter duvet (razai / comforter) with a peach skin shell, box-stitched so the fill stays even. Single and king size. Tracked delivery across India.',
+    description: 'A warm, light winter duvet (razai / comforter) with a peach skin shell, box-stitched so the fill stays even. Single and king size. Complimentary delivery across India.',
   },
   covers: {
     title: '300 TC Cotton Percale Duvet Cover, King Size',
@@ -63,5 +63,5 @@ export const PRODUCT_SEO: Record<string, {title: string; description: string}> =
 
 export const HOME_SEO = {
   title: 'Daily Loom | Pure Cotton Bedsheets, Winter Duvets, Latex Pillows & Towels',
-  description: 'Shop 100% virgin Indian cotton bedsheets and duvet covers, winter duvets (razai), natural latex pillows and 650 GSM cotton towels. Tracked delivery across India.',
+  description: 'Shop 100% virgin Indian cotton bedsheets and duvet covers, winter duvets (razai), natural latex pillows and 650 GSM cotton towels. Complimentary delivery across India.',
 };

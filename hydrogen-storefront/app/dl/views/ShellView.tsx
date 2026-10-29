@@ -124,10 +124,10 @@ export function ShellView({vals, children}: {vals: any; children: ReactNode}) {
           {"\n    "}
           <div style={{flex: "1 1 220px", minWidth: "0", display: "flex", flexDirection: "column", gap: "8px"}}>
             <span style={{fontFamily: "'Marcellus',serif", fontSize: "22px"}}>
-              {"Tracked delivery"}
+              {"Complimentary delivery"}
             </span>
             <span style={{fontSize: "15px", lineHeight: "1.55", fontWeight: "300", color: "#5F574B"}}>
-              {"Across India, with an estimate for your pincode before you order."}
+              {"Dispatched within 48 hours and tracked across India, with an estimate for your pincode before you order."}
             </span>
           </div>
           {"\n    "}
@@ -358,7 +358,7 @@ export function ShellView({vals, children}: {vals: any; children: ReactNode}) {
             </div>
             {"\n      "}
             <span style={{fontSize: "13px", color: "#5F574B"}}>
-              {"Delivery and payment are completed at secure checkout."}
+              {"Complimentary delivery, dispatched within 48 hours. Payment is completed at secure checkout."}
             </span>
             {"\n      "}
             <button onClick={vals.checkout} style={{height: "56px", borderRadius: "999px", border: "0", backgroundColor: "#221E18", backgroundImage: "repeating-linear-gradient(135deg, rgba(255,255,255,.07) 0 1px, transparent 1px 3px),linear-gradient(180deg, rgba(255,255,255,.1), rgba(0,0,0,.18))", outline: "1px dashed rgba(244,239,230,.42)", outlineOffset: "-5px", color: "#F4EFE6", fontSize: "15px", letterSpacing: ".05em", cursor: "pointer", transition: "background-color .4s,transform .3s"}} className="scpa scpi">

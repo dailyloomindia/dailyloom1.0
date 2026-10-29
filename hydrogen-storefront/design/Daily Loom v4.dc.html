@@ -155,7 +155,7 @@ a:hover{color:#221E18}
       <div style="display:flex;flex-direction:column;gap:12px;max-width:440px">
         <span style="display:inline-flex;align-self:flex-start;padding:7px 12px 6px;background-color:#E9DCC3;background-image:repeating-linear-gradient(90deg, rgba(126,82,50,.14) 0 1px, transparent 1px 2.5px);outline:1px dashed rgba(126,82,50,.5);outline-offset:-3px;font-size:11px;letter-spacing:.24em;text-transform:uppercase;color:#6B4528">Duvet Covers</span>
         <h3 style="margin:0;font-family:'Marcellus',serif;font-weight:400;font-size:clamp(28px,2.6vw,38px);line-height:1.1">Covers that soften with every wash.</h3>
-        <div style="font-size:15px;color:#5F574B">From {{ coverFrom }}<sc-if value="{{ coverDeal.has }}" hint-placeholder-val="{{ false }}"><span style="margin-left:10px;color:#857A6A;text-decoration:line-through">{{ coverDeal.cmp }}</span><span style="margin-left:10px;font-size:13px;letter-spacing:.04em;color:#7E5232">{{ coverDeal.off }}</span></sc-if> · 300 and 400 TC</div>
+        <div style="font-size:15px;color:#5F574B">From {{ coverFrom }}<sc-if value="{{ coverDeal.has }}" hint-placeholder-val="{{ false }}"><span style="margin-left:10px;color:#857A6A;text-decoration:line-through">{{ coverDeal.cmp }}</span><span style="margin-left:10px;font-size:13px;letter-spacing:.04em;color:#7E5232">{{ coverDeal.off }}</span></sc-if> · 300 TC</div>
         <button onClick="{{ storyCovers }}" style="align-self:flex-start;background:none;border:0;padding:4px 0;cursor:pointer;font-size:15px;color:#7E5232;background-image:repeating-linear-gradient(90deg, #7E5232 0 5px, transparent 5px 8px);background-repeat:no-repeat;background-position:0 100%;background-size:0% 1.5px;transition:background-size .6s cubic-bezier(.2,.7,.2,1)" style-hover="background-size:100% 1.5px">Discover →</button>
       </div>
     </div>
@@ -656,8 +656,8 @@ a:hover{color:#221E18}
             </div>
           </sc-if>
           <div style="display:flex;flex-direction:column;gap:6px;font-size:13px;line-height:1.5;color:#5F574B">
-            <span>Tracked delivery across India · Secure checkout with UPI, cards and net banking</span>
-            <span>Need help choosing? Write to <a href="mailto:contact@dailyloom.in" style="color:#7E5232">contact@dailyloom.in</a></span>
+            <span>Complimentary delivery, dispatched within 48 hours · Secure checkout with UPI, cards and net banking</span>
+            <span>Need help choosing? Write to <a href="mailto:contact@dailyloom.in" style="color:#7E5232">contact@dailyloom.in</a> or <a href="https://wa.me/919220442722" target="_blank" rel="noopener" style="color:#7E5232">WhatsApp us</a></span>
           </div>
           <sc-if value="{{ devNotes }}" hint-placeholder-val="{{ false }}"><span style="align-self:flex-start;font-size:11px;letter-spacing:.06em;color:#7E5232;background:#FBF6EC;border:1px dashed #C8925E;border-radius:4px;padding:6px 8px">CartForm LinesAdd · merchandiseId = selected variant.id · monogram as line attribute</span></sc-if>
         </div>
@@ -803,10 +803,11 @@ a:hover{color:#221E18}
     <div data-reveal="0" style="flex:5 1 320px;min-width:0;display:flex;flex-direction:column;gap:20px">
       <span style="display:inline-flex;align-self:flex-start;padding:7px 12px 6px;background-color:#2C2820;background-image:repeating-linear-gradient(90deg, rgba(237,230,216,.09) 0 1px, transparent 1px 2.5px);outline:1px dashed rgba(200,146,94,.7);outline-offset:-3px;font-size:11px;letter-spacing:.24em;text-transform:uppercase;color:#E3C9A6">Contact</span>
       <h2 style="margin:0;font-family:'Marcellus',serif;font-weight:400;font-size:clamp(40px,4.6vw,68px);line-height:1.02;letter-spacing:-.01em;color:#F4EFE6">Write to us.</h2>
-      <p style="margin:0;font-size:17px;line-height:1.6;font-weight:300;color:#B8AE9E;max-width:420px">For orders, returns, monogramming or help choosing, email us with your order number if you have one.</p>
+      <p style="margin:0;font-size:17px;line-height:1.6;font-weight:300;color:#B8AE9E;max-width:420px">For orders, returns, monogramming or help choosing, email or WhatsApp us with your order number if you have one.</p>
     </div>
     <div data-reveal="120" style="flex:6 1 340px;min-width:0;display:flex;flex-direction:column">
       <a href="mailto:contact@dailyloom.in" style="display:flex;justify-content:space-between;align-items:baseline;gap:16px;padding:22px 0;border-top:1.5px dashed rgba(200,146,94,.35);color:#F4EFE6" style-hover="color:#E3C9A6"><span style="font-size:13px;letter-spacing:.14em;text-transform:uppercase;color:#C8925E">Email</span><span style="font-family:'Marcellus',serif;font-size:clamp(22px,2.4vw,32px)">contact@dailyloom.in</span></a>
+      <a href="https://wa.me/919220442722" target="_blank" rel="noopener" style="display:flex;justify-content:space-between;align-items:baseline;gap:16px;padding:22px 0;border-top:1.5px dashed rgba(200,146,94,.35);color:#F4EFE6" style-hover="color:#E3C9A6"><span style="font-size:13px;letter-spacing:.14em;text-transform:uppercase;color:#C8925E">WhatsApp</span><span style="font-family:'Marcellus',serif;font-size:clamp(22px,2.4vw,32px)">+91 92204 42722</span></a>
       <a href="https://www.instagram.com/dailyloom.in" target="_blank" rel="noopener" style="display:flex;justify-content:space-between;align-items:baseline;gap:16px;padding:22px 0;border-top:1.5px dashed rgba(200,146,94,.35);border-bottom:1.5px dashed rgba(200,146,94,.35);color:#F4EFE6" style-hover="color:#E3C9A6"><span style="font-size:13px;letter-spacing:.14em;text-transform:uppercase;color:#C8925E">Instagram</span><span style="font-family:'Marcellus',serif;font-size:clamp(22px,2.4vw,32px)">@dailyloom.in</span></a>
     </div>
   </section>
@@ -906,7 +907,7 @@ a:hover{color:#221E18}
             </div>
           </sc-for>
         </div>
-        <span style="font-size:13px;line-height:1.55;color:#554D42">Questions about an order? Write to <a href="mailto:contact@dailyloom.in" style="color:#7E5232">contact@dailyloom.in</a></span>
+        <span style="font-size:13px;line-height:1.55;color:#554D42">Questions about an order? Write to <a href="mailto:contact@dailyloom.in" style="color:#7E5232">contact@dailyloom.in</a> or <a href="https://wa.me/919220442722" target="_blank" rel="noopener" style="color:#7E5232">WhatsApp us</a></span>
       </aside>
     </div>
   </sc-if>
@@ -1009,7 +1010,7 @@ a:hover{color:#221E18}
 <!-- SERVICES + FOOTER -->
 <section style="padding:0 clamp(20px,5vw,80px) clamp(64px,8vw,110px)">
   <div style="display:flex;flex-wrap:wrap;gap:32px;border-top:1.5px dashed rgba(126,82,50,.3);padding-top:40px">
-    <div style="flex:1 1 220px;min-width:0;display:flex;flex-direction:column;gap:8px"><span style="font-family:'Marcellus',serif;font-size:22px">Tracked delivery</span><span style="font-size:15px;line-height:1.55;font-weight:300;color:#5F574B">Across India, with an estimate for your pincode before you order.</span></div>
+    <div style="flex:1 1 220px;min-width:0;display:flex;flex-direction:column;gap:8px"><span style="font-family:'Marcellus',serif;font-size:22px">Complimentary delivery</span><span style="font-size:15px;line-height:1.55;font-weight:300;color:#5F574B">Dispatched within 48 hours and tracked across India, with an estimate for your pincode before you order.</span></div>
     <div style="flex:1 1 220px;min-width:0;display:flex;flex-direction:column;gap:8px"><span style="font-family:'Marcellus',serif;font-size:22px">Secure checkout</span><span style="font-size:15px;line-height:1.55;font-weight:300;color:#5F574B">UPI, cards and net banking, processed through our payment partner.</span></div>
     <div style="flex:1 1 220px;min-width:0;display:flex;flex-direction:column;gap:8px"><span style="font-family:'Marcellus',serif;font-size:22px">Care, included</span><span style="font-size:15px;line-height:1.55;font-weight:300;color:#5F574B">Washing and storage guidance for every piece, so it lasts for years.</span></div>
   </div>
@@ -1080,7 +1081,7 @@ a:hover{color:#221E18}
   <sc-if value="{{ hasBag }}" hint-placeholder-val="{{ false }}">
     <div style="padding:24px 28px 28px;border-top:1.5px dashed rgba(126,82,50,.25);display:flex;flex-direction:column;gap:14px">
       <div style="display:flex;justify-content:space-between;font-size:17px"><span>Subtotal</span><span>{{ subtotal }}</span></div>
-      <span style="font-size:13px;color:#5F574B">Delivery and payment are completed at secure checkout.</span>
+      <span style="font-size:13px;color:#5F574B">Complimentary delivery, dispatched within 48 hours. Payment is completed at secure checkout.</span>
       <button onClick="{{ checkout }}" style="height:56px;border-radius:999px;border:0;background-color:#221E18;background-image:repeating-linear-gradient(135deg, rgba(255,255,255,.07) 0 1px, transparent 1px 3px),linear-gradient(180deg, rgba(255,255,255,.1), rgba(0,0,0,.18));outline:1px dashed rgba(244,239,230,.42);outline-offset:-5px;color:#F4EFE6;font-size:15px;letter-spacing:.05em;cursor:pointer;transition:background-color .4s,transform .3s" style-hover="background-color:#7E5232" style-active="transform:scale(.98)">{{ checkoutLabel }}</button>
       <sc-if value="{{ devNotes }}" hint-placeholder-val="{{ false }}"><span style="align-self:flex-start;font-size:11px;letter-spacing:.06em;color:#7E5232;background:#FBF6EC;border:1px dashed #C8925E;border-radius:4px;padding:6px 8px">Redirect to cart.checkoutUrl · Shopify Checkout + payment gateway</span></sc-if>
     </div>
@@ -1146,7 +1147,7 @@ const PC_MONO = [{v:'None',p:0},{v:'Add initials',d:'₹150 per pillow cover, tw
 const TT = [{v:'Face',d:'30 × 30 cm',p:0},{v:'Hand',d:'40 × 60 cm',p:450},{v:'Bath',d:'75 × 150 cm',p:1250}];
 const MONO = [{v:'None',p:0},{v:'Add initials',d:'₹100',p:100}];
 const TT_C = [{v:'Face',d:'Pair · 30 × 30 cm · 650 gsm',p:0},{v:'Hand',d:'Pair · 40 × 60 cm · 625 gsm · 150 g each',p:450},{v:'Bath',d:'75 × 150 cm · 650 gsm · 725 g',p:1250}];
-const DELIV = 'Tracked delivery across India. Enter your pincode above for an estimated date. Returns are accepted within 7 days of delivery if the product arrives damaged, with an unboxing video. See our returns policy in Help.';
+const DELIV = 'Complimentary delivery across India, dispatched within 48 hours. Enter your pincode above for an estimated date. Returns are accepted within 7 days of delivery if the product arrives damaged, with an unboxing video. See our returns policy in Help.';
 const HELP_RETURNS = [
   ['Return window','7 days from the date of delivery.'],
   ['What we accept','Returns are accepted only when the product itself arrives damaged. Damage to the packaging alone is not covered.'],
@@ -1230,7 +1231,7 @@ const STORY = {
       {t:'The stitching', b:'Box stitches divide the duvet into even squares, so warmth reaches from edge to edge.', pat:'dl-jacquard', z:1.6, label:'Box-stitch pattern', src:'./assets/img/duvet-stitch.png'},
       {t:'The fill', b:'Spread evenly across every pocket for warmth without a heavy weight on you.', pat:'dl-knit', z:5, label:'Fill · close-up', src:'./assets/img/duvet-fill.png'}]},
     compare:[['Fill','Virgin fibre sheet','Recycled fibre, often made from PET bottles'],['Loft','Naturally fluffy, from virgin fibre','Loose recycled fibre pressed to look like a sheet'],['Weight','Feather-light. Easy to push aside, even for children','Heavy. Takes effort to move while half asleep'],['Warmth','Warm from loft, not weight','Relies on the idea that heavier means warmer'],['Stitching','Thread-stitched, locking fill and shell together','Ultrasonic seams, heat-bonded'],['Length','Extra length, so feet stay tucked in all night','Cut short to save cost, leaving adults adjusting their legs to stay covered']],
-    care:'Dry in shade. Dry cleaning is recommended. Store it in the bag it arrives in.', buyLede:'Two layers, in single, double and king.'},
+    care:'Dry in shade. Dry cleaning is recommended. Store it in the bag it arrives in.', buyLede:'Two layers, in single and king.'},
   covers: {tagline:'Pure cotton, from the first thread.', intro:'Many cotton covers are made from recycled cotton.', accent:'Ours begin with 100% virgin Indian cotton, woven into a close percale that feels soft from the first night and softer with every wash.', standard:true, noCloser:true,
     why:[{tag:'Satin finish', t:'A sheen from the weave itself.', b:'Each thread crosses over and under the next, so the surface lies smooth and catches the light. There is no coating, so nothing washes away.'},
          {tag:'Details', t:'Snap buttons, quietly placed.', b:'A row of snap buttons closes the cover in moments and lies flat at the foot of the bed. Cut 92 × 102 inch, it fits double and king duvets, including our Winter Duvet.'},

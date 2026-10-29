@@ -171,7 +171,7 @@ export function HelpView({vals}: {vals: any}) {
             </h2>
             {"\n      "}
             <p style={{margin: "0", fontSize: "17px", lineHeight: "1.6", fontWeight: "300", color: "#B8AE9E", maxWidth: "420px"}}>
-              {"For orders, returns, monogramming or help choosing, email us with your order number if you have one."}
+              {"For orders, returns, monogramming or help choosing, email or WhatsApp us with your order number if you have one."}
             </p>
             {"\n    "}
           </div>
@@ -184,6 +184,15 @@ export function HelpView({vals}: {vals: any}) {
               </span>
               <span style={{fontFamily: "'Marcellus',serif", fontSize: "clamp(22px,2.4vw,32px)"}}>
                 {"contact@dailyloom.in"}
+              </span>
+            </a>
+            {"\n      "}
+            <a href="https://wa.me/919220442722" target="_blank" rel="noopener" style={{display: "flex", justifyContent: "space-between", alignItems: "baseline", gap: "16px", padding: "22px 0", borderTop: "1.5px dashed rgba(200,146,94,.35)", color: "#F4EFE6"}} className="scpk">
+              <span style={{fontSize: "13px", letterSpacing: ".14em", textTransform: "uppercase", color: "#C8925E"}}>
+                {"WhatsApp"}
+              </span>
+              <span style={{fontFamily: "'Marcellus',serif", fontSize: "clamp(22px,2.4vw,32px)"}}>
+                {"+91 92204 42722"}
               </span>
             </a>
             {"\n      "}

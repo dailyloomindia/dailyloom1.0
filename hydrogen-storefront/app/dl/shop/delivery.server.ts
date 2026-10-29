@@ -5,8 +5,8 @@
 const API = 'https://apiv2.shiprocket.in/v1/external';
 /** The warehouse parcels are picked up from. */
 export const PICKUP_PIN = '250002';
-/** Days from payment to handing the parcel to the courier (orders are dispatched within 24 hours). */
-export const DISPATCH_DAYS = 1;
+/** Days from payment to handing the parcel to the courier: within 48 hours, which also covers festival weeks. */
+export const DISPATCH_DAYS = 2;
 /** Parcel weight (kg) used for the check; serviceability does not change with weight for our parcels. */
 const WEIGHT_KG = 1;
 
