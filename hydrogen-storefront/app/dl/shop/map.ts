@@ -39,6 +39,7 @@ export const SHOP_HANDLES = ['winter-duvet', 'duvet-cover', '300tc-cotton-percal
 export const COLOUR_FILES: Record<string, [RegExp, string][]> = {
   'duvet-cover': [[/^dvt-cvr-cg-/i, 'Charcoal grey'], [/^dvt-darktp-/i, 'Dark taupe']],
   'bedsheet': [[/^(bedhset|bedsheet)-dark-gray-/i, 'Charcoal grey'], [/^bdsht-dt-/i, 'Dark taupe']],
+  'bed-set': [[/^bed-?set-cg-/i, 'Charcoal grey'], [/^bed-?set-dt-/i, 'Dark taupe']],
   'bamboo-towel': [[/^bamboo-sand-?brown-/i, 'Sand brown'], [/^bamboo-ash-?gr[ae]y-/i, 'Ash grey'], [/^bamboo-(lilac|dark-?gr[ae]y)/i, 'Lilac grey'], [/^bamboo-dark-?blue-/i, 'Dark blue'], [/^bamboo-dark-?brown-/i, 'Dark brown']],
 };
 
