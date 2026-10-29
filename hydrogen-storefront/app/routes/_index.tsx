@@ -30,7 +30,7 @@ function homeVals(sh: ShellLogic){
   const pairD = (t: any) => !s.tMat && t.v !== 'Bath' ? 'Pair · ' + t.d : t.d;
   return {
     heroBottom: s.mobile ? '30%' : '0', heroMobDisp: s.mobile ? 'block' : 'none', heroDeskDisp: s.mobile ? 'none' : 'block',
-    storyDuvets: () => sh.goStory('duvets'), storyCovers: () => sh.goStory('covers'), storySheets: () => sh.goStory('sheets'), storyPillows: () => sh.goStory('pillows'), storyTowels: () => sh.goStory('towels'),
+    storyDuvets: () => sh.goStory('duvets'), storyCovers: () => sh.goStory('covers'), storySheets: () => sh.goStory('sheets'), storyPillows: () => sh.goStory('pillows'), storyTowels: () => sh.go({view:'story', cat:'towels', ...(s.tMat ? {stCol: {...s.stCol, 'bamboo-towel': tci}} : {})}),
     openDuvet: () => sh.openProduct('winter-duvet'),
     nfSummer: sh.notifyFor('Summer Comforter', 'the Summer Comforter arrives'),
     nfTc: sh.notifyFor('Duvet covers and bedsheets in 400, 600 and 800 TC', 'our 400, 600 and 800 TC covers and sheets arrive'),

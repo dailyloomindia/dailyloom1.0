@@ -695,6 +695,21 @@ export function StoryView({vals}: {vals: any}) {
                       </span>
                       </>
                     ) : null}
+                    {"\n            "}
+                    {it?.hasCols ? (
+                      <>
+                      <div style={{display: "flex", flexWrap: "wrap", alignItems: "center", gap: "12px", marginTop: "8px"}}>
+                        {L(it?.cols).map((c, i1) => (
+                          <Fragment key={i1}>
+                            <button onClick={c?.pick} aria-label={c?.label} title={c?.label} style={css(`width:24px;height:24px;padding:0;border-radius:50%;border:0;cursor:pointer;background-color:${S(c?.hex)};background-image:repeating-linear-gradient(45deg, rgba(255,255,255,.18) 0 1px, transparent 1px 3px),repeating-linear-gradient(-45deg, rgba(0,0,0,.08) 0 1px, transparent 1px 3px);box-shadow:${S(c?.ring)};transition:box-shadow .35s,transform .35s`)} className="scp9" />
+                          </Fragment>
+                        ))}
+                        <span style={{fontSize: "14px", color: "#5F574B"}}>
+                          {I(it?.colName)}
+                        </span>
+                      </div>
+                      </>
+                    ) : null}
                     {"\n          "}
                   </div>
                   {"\n          "}
