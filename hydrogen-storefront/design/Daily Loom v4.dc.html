@@ -1400,7 +1400,7 @@ class Component extends DCLogic {
     a1 = c.animate([{transform:UP},{transform:'translateY(0)'}], {duration:560, easing:EASE, fill:'forwards'});
     a1.finished.then(mid, mid); setTimeout(mid, 620);
   }
-  openHelp(id){ if (this.state.view === 'help') return this.scrollToId(id); this.helpJump = id; this.go({view:'help'}); }
+  openHelp(id){ if (this.state.view === 'help') { this.setState({menuOpen:false}); return this.scrollToId(id); } this.helpJump = id; this.go({view:'help'}); }
   setAcct(patch){ this.setState(s => { const acct = {...s.acct, ...patch}; try { localStorage.setItem('dl2-acct', JSON.stringify(acct)); } catch(e) {} return {acct}; }); }
   acScreen(k){ this.setState({acScreen:k, acErr:''}); window.scrollTo(0, 0); }
   acctVals(){
