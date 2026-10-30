@@ -275,8 +275,8 @@ export class ShellLogic extends Component<ShellProps, any> {
         if (this.state.pin !== pin) return;
         if (r.ok && r.days) {
           const d = new Date(); d.setDate(d.getDate() + r.days);
-          this.setState({pinMsg:`Estimated delivery by ${d.toLocaleDateString('en-IN', {weekday:'short', day:'numeric', month:'short'})} to ${pin}.`});
-        } else if (r.ok === false) this.setState({pinMsg:`We don't deliver to ${pin} yet. Write to contact@dailyloom.in and we will help.`});
+          this.setState({pinMsg:`Estimated delivery by ${d.toLocaleDateString('en-IN', {weekday:'short', day:'numeric', month:'short'})} to ${r.place ? r.place + ' · ' : ''}${pin}.`});
+        } else if (r.ok === false) this.setState({pinMsg:`We don't deliver to ${r.place ? r.place + ' · ' : ''}${pin} yet. Write to contact@dailyloom.in and we will help.`});
         else this.setState({pinMsg:'Complimentary delivery, dispatched within 48 hours. Most orders arrive within 3–7 working days.'});
       });
   };
