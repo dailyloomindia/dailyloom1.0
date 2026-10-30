@@ -12,6 +12,6 @@ export async function action({request, context}: ActionFunctionArgs) {
     return json(await deliveryFor((context as any).env, pin));
   } catch (e: any) {
     console.error('pincode check:', e && e.message);
-    return json({error: 'unavailable', reason: String((e && e.message) || e).slice(0, 80)}, {status: 503});
+    return json({error: 'unavailable'}, {status: 503});
   }
 }
