@@ -658,7 +658,6 @@ a:hover{color:#221E18}
           </sc-if>
           <div style="display:flex;flex-direction:column;gap:6px;font-size:13px;line-height:1.5;color:#5F574B">
             <span>Complimentary delivery, dispatched within 48 hours · Secure checkout with UPI, cards and net banking</span>
-            <sc-if value="{{ festiveDelay }}" hint-placeholder-val="{{ false }}"><span style="color:#7E5232">Due to the festive season, we are experiencing a delay in shipping pillows.</span></sc-if>
             <span>Need help choosing? Write to <a href="mailto:contact@dailyloom.in" style="color:#7E5232">contact@dailyloom.in</a> or <a href="https://wa.me/919220442722" target="_blank" rel="noopener" style="color:#7E5232">WhatsApp us</a></span>
           </div>
           <sc-if value="{{ devNotes }}" hint-placeholder-val="{{ false }}"><span style="align-self:flex-start;font-size:11px;letter-spacing:.06em;color:#7E5232;background:#FBF6EC;border:1px dashed #C8925E;border-radius:4px;padding:6px 8px">CartForm LinesAdd · merchandiseId = selected variant.id · monogram as line attribute</span></sc-if>
@@ -671,6 +670,7 @@ a:hover{color:#221E18}
             <button onClick="{{ checkPin }}" style="background:none;border:0;cursor:pointer;font-size:14px;color:#7E5232;padding:0 2px">Check</button>
           </div>
           <sc-if value="{{ hasPinMsg }}" hint-placeholder-val="{{ false }}"><div style="font-size:14px;line-height:1.5;color:#221E18">{{ pinMsg }}</div></sc-if>
+          <sc-if value="{{ pinFestive }}" hint-placeholder-val="{{ false }}"><div style="font-size:14px;line-height:1.5;color:#7E5232">Due to the festive season, we are experiencing a delay in shipping {{ festiveWhat }}.</div></sc-if>
           <sc-if value="{{ devNotes }}" hint-placeholder-val="{{ false }}"><span style="align-self:flex-start;font-size:11px;letter-spacing:.06em;color:#7E5232;background:#FBF6EC;border:1px dashed #C8925E;border-radius:4px;padding:6px 8px">Logistics API · serviceability + EDD by pincode</span></sc-if>
         </div>
 
@@ -1056,6 +1056,15 @@ a:hover{color:#221E18}
     <button onClick="{{ closeBag }}" aria-label="Close" style="width:40px;height:40px;border-radius:50%;border:0;background:rgba(34,30,24,.06);cursor:pointer;font-size:18px;transition:background .3s" style-hover="background:rgba(34,30,24,.12)">×</button>
   </div>
   <div style="flex:1;overflow-y:auto;padding:8px 28px">
+    <div style="margin:16px 0 4px;background-color:#24211D;background-image:repeating-linear-gradient(0deg, rgba(255,255,255,.035) 0 1px, transparent 1px 3px),repeating-linear-gradient(90deg, rgba(0,0,0,.18) 0 1px, transparent 1px 2px)">
+      <div style="margin:5px;outline:1px dashed rgba(200,146,94,.7);padding:12px 14px;display:flex;align-items:center;gap:12px">
+        <img src="./assets/logo-mark.png" alt="" style="height:20px;width:auto;flex:none;filter:sepia(1) saturate(1.6) brightness(1.15)">
+        <span style="display:flex;flex-direction:column;gap:2px;min-width:0">
+          <span style="font-family:'Marcellus',serif;font-size:13px;letter-spacing:.14em;color:#E3C9A6">THE FIRST THREAD</span>
+          <span style="font-size:12.5px;color:#C8925E">5% off your first order, applied at checkout</span>
+        </span>
+      </div>
+    </div>
     <sc-if value="{{ bagEmpty }}" hint-placeholder-val="{{ true }}">
       <div style="padding:64px 0;display:flex;flex-direction:column;gap:18px;align-items:flex-start">
         <span style="font-family:'Marcellus',serif;font-size:30px;line-height:1.1">Your bag is empty.</span>
@@ -1083,6 +1092,10 @@ a:hover{color:#221E18}
   <sc-if value="{{ hasBag }}" hint-placeholder-val="{{ false }}">
     <div style="padding:24px 28px 28px;border-top:1.5px dashed rgba(126,82,50,.25);display:flex;flex-direction:column;gap:14px">
       <div style="display:flex;justify-content:space-between;font-size:17px"><span>Subtotal</span><span>{{ subtotal }}</span></div>
+      <div style="display:flex;flex-direction:column;gap:10px">
+        <div style="display:flex;justify-content:space-between;font-size:14px;color:#7E5232"><span>The First Thread</span><span>{{ firstThread }}</span></div>
+        <span style="font-size:12.5px;color:#857A6A">Confirmed with your mobile number at checkout.</span>
+      </div>
       <span style="font-size:13px;color:#5F574B">Complimentary delivery, dispatched within 48 hours. Payment is completed at secure checkout.</span>
       <button onClick="{{ checkout }}" style="height:56px;border-radius:999px;border:0;background-color:#221E18;background-image:repeating-linear-gradient(135deg, rgba(255,255,255,.07) 0 1px, transparent 1px 3px),linear-gradient(180deg, rgba(255,255,255,.1), rgba(0,0,0,.18));outline:1px dashed rgba(244,239,230,.42);outline-offset:-5px;color:#F4EFE6;font-size:15px;letter-spacing:.05em;cursor:pointer;transition:background-color .4s,transform .3s" style-hover="background-color:#7E5232" style-active="transform:scale(.98)">{{ checkoutLabel }}</button>
       <sc-if value="{{ devNotes }}" hint-placeholder-val="{{ false }}"><span style="align-self:flex-start;font-size:11px;letter-spacing:.06em;color:#7E5232;background:#FBF6EC;border:1px dashed #C8925E;border-radius:4px;padding:6px 8px">Redirect to cart.checkoutUrl · Shopify Checkout + payment gateway</span></sc-if>
@@ -1521,8 +1534,10 @@ class Component extends DCLogic {
       gThumbs: vis.map(m => ({alt:m.alt, url:m.url, bg: m.url ? 'url("' + m.url + '")' : 'none', hasUrl: !!m.url, tint:m.tint, op: m.i === cur.i ? 1 : .55, ring: m.i === cur.i ? '1px solid #221E18' : '1px solid rgba(34,30,24,0)', pick: () => this.setState({gi:m.i})})),
       gMulti: vis.length > 1, gCount: vis.length ? (vi + 1) + ' / ' + vis.length : '', gPrev: step(-1), gNext: step(1), gZoom: () => this.setState({zoom:true}), gCaption: summary || p.name,
       notifyEmail: s.notifyEmail || '', onNotifyEmail: e => this.setState({notifyEmail: e.target.value, notified:false}),
-      // Festive-season shipping delay on pillows, shown until the end of 11 Nov 2026 (India time).
-      festiveDelay: p.cat === 'pillows' && Date.now() < Date.parse('2026-11-12T00:00:00+05:30'),
+      // Festive-season shipping delay on pillows and face towels (cotton towel, Type: Face), shown with a
+      // delivery estimate from the pincode check, until the end of 11 Nov 2026 (India time).
+      festiveWhat: p.cat === 'pillows' ? 'pillows' : 'face towels',
+      pinFestive: (p.cat === 'pillows' || (pid === 'cotton-towel' && (sel.Type ?? 0) === 0)) && /^(Estimated|Complimentary) delivery/.test(s.pinMsg || '') && Date.now() < Date.parse('2026-11-12T00:00:00+05:30'),
       notifyMe: () => { if (/\S+@\S+\.\S+/.test(s.notifyEmail || '')) this.setState({notified:true}); }, notifyLabel: s.notified ? 'Noted ✓' : 'Notify me',
       barTf: showBar ? 'translate(-50%, 0)' : 'translate(-50%, 140%)', barOp: showBar ? 1 : 0, barPe: showBar ? 'auto' : 'none',
       barImg: cur.url || '', barBg: cur.url ? 'url("' + cur.url + '")' : 'none', barHasImg: !!cur.url, barTint: cur.tint || '#E2D6C2', barSummary: summary,
@@ -1620,6 +1635,8 @@ class Component extends DCLogic {
       addToBag: this.addToBag, addLabel: s.added ? 'Added to bag ✓' : 'Add to bag', addBg: s.added ? '#55573F' : '#221E18',
       pin: s.pin, onPin: e => this.setState({pin: e.target.value.replace(/\D/g, '').slice(0, 6), pinMsg:''}), onPinKey: e => { if (e.key === 'Enter') this.checkPin(); }, checkPin: this.checkPin, pinMsg: s.pinMsg, hasPinMsg: !!s.pinMsg,
       hasBag: bagCount > 0, bagCount, bagEmpty: bagCount === 0, subtotal: fmt(subtotal),
+      // The First Thread: 5% off a first order, as Shopify takes it off at checkout.
+      firstThread: '−' + fmt(Math.round(subtotal * 0.05)),
       bagItems: s.bag.map((b, i) => ({name:P[b.pid] ? P[b.pid].name : b.pid, desc:b.desc, chip:b.chip, qty:b.qty, line:fmt(b.unit * b.qty), inc: () => this.bagQty(i, 1), dec: () => this.bagQty(i, -1), remove: () => this.bagQty(i, -b.qty)})),
       openBag: () => this.setState({bagOpen:true, checkingOut:false}), closeBag: () => this.setState({bagOpen:false}), closeBagHome: () => this.go({view:'home'}),
       bagX: s.bagOpen ? 'translateX(0)' : 'translateX(104%)', bagOverlayOp: s.bagOpen ? 1 : 0, bagPe: s.bagOpen ? 'auto' : 'none',

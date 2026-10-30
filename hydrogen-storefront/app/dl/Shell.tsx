@@ -342,6 +342,8 @@ export class ShellLogic extends Component<ShellProps, any> {
       menuIcon1: s.menuOpen ? 'M3 2l14 10' : 'M1 4h18', menuIcon2: s.menuOpen ? 'M3 12L17 2' : 'M1 10h18',
       helpLinks: [['Returns','help-returns'],['Care guide','help-care'],['Contact','help-contact']].map(([label, id]) => ({label, go: () => this.openHelp(id)})),
       hasBag: bagCount > 0, bagCount, bagEmpty: bagCount === 0, subtotal: fmt(subtotal),
+      // The First Thread: 5% off a first order, as Shopify takes it off at checkout.
+      firstThread: '−' + fmt(Math.round(subtotal * 0.05)),
       // Each bag item shows the first photo its buy page shows for that selection (else Shopify's photo of it).
       bagItems: s.bag.map((b: any, i: number) => ({photo: (u => u ? `url("${u}")` : 'none')((b.pid && ((this.visible(b.pid, b.sel || {})[0] || {}).url)) || b.image), name:b.name, desc:b.desc, chip:b.chip, qty:b.qty, line:fmt(b.total), inc: () => this.bagQty(i, 1), dec: () => this.bagQty(i, -1), remove: () => this.bagQty(i, -b.qty)})),
       openBag: () => this.setState({bagOpen:true, bagByHand:true, checkingOut:false}), closeBag: () => this.setState({bagOpen:false}), closeBagHome: () => this.go({view:'home'}),

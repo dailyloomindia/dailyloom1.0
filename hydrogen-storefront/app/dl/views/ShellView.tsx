@@ -270,6 +270,28 @@ export function ShellView({vals, children}: {vals: any; children: ReactNode}) {
         {"\n  "}
         <div style={{flex: "1", overflowY: "auto", padding: "8px 28px"}}>
           {"\n    "}
+          <div style={{margin: "16px 0 4px", backgroundColor: "#24211D", backgroundImage: "repeating-linear-gradient(0deg, rgba(255,255,255,.035) 0 1px, transparent 1px 3px),repeating-linear-gradient(90deg, rgba(0,0,0,.18) 0 1px, transparent 1px 2px)"}}>
+            {"\n      "}
+            <div style={{margin: "5px", outline: "1px dashed rgba(200,146,94,.7)", padding: "12px 14px", display: "flex", alignItems: "center", gap: "12px"}}>
+              {"\n        "}
+              <img src="/assets/logo-mark.png" alt="" style={{height: "20px", width: "auto", flex: "none", filter: "sepia(1) saturate(1.6) brightness(1.15)"}} />
+              {"\n        "}
+              <span style={{display: "flex", flexDirection: "column", gap: "2px", minWidth: "0"}}>
+                {"\n          "}
+                <span style={{fontFamily: "'Marcellus',serif", fontSize: "13px", letterSpacing: ".14em", color: "#E3C9A6"}}>
+                  {"THE FIRST THREAD"}
+                </span>
+                {"\n          "}
+                <span style={{fontSize: "12.5px", color: "#C8925E"}}>
+                  {"5% off your first order, applied at checkout"}
+                </span>
+                {"\n        "}
+              </span>
+              {"\n      "}
+            </div>
+            {"\n    "}
+          </div>
+          {"\n    "}
           {vals.bagEmpty ? (
             <>
             {"\n      "}
@@ -355,6 +377,23 @@ export function ShellView({vals, children}: {vals: any; children: ReactNode}) {
               <span>
                 {I(vals.subtotal)}
               </span>
+            </div>
+            {"\n      "}
+            <div style={{display: "flex", flexDirection: "column", gap: "10px"}}>
+              {"\n        "}
+              <div style={{display: "flex", justifyContent: "space-between", fontSize: "14px", color: "#7E5232"}}>
+                <span>
+                  {"The First Thread"}
+                </span>
+                <span>
+                  {I(vals.firstThread)}
+                </span>
+              </div>
+              {"\n        "}
+              <span style={{fontSize: "12.5px", color: "#857A6A"}}>
+                {"Confirmed with your mobile number at checkout."}
+              </span>
+              {"\n      "}
             </div>
             {"\n      "}
             <span style={{fontSize: "13px", color: "#5F574B"}}>
