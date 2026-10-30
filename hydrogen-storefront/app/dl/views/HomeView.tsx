@@ -265,7 +265,7 @@ export function HomeView({vals}: {vals: any}) {
             <div onClick={vals.storyCovers} style={css(`height:clamp(480px,54vw,760px);position:relative;overflow:hidden;cursor:pointer;-webkit-mask-image:${S(vals.mEdgeSoft)};mask-image:${S(vals.mEdgeSoft)};-webkit-mask-composite:source-in;mask-composite:intersect;mix-blend-mode:${S(vals.pBlend)};outline:${S(vals.pFrame)};outline-offset:8px`)}>
               {"\n        "}
               <div style={{position: "absolute", inset: "0", transition: "transform 1.6s cubic-bezier(.2,.7,.2,1)"}} className="scp7">
-                <image-slot id="home-covers" shape="rect" src="https://cdn.shopify.com/s/files/1/0787/0883/4541/files/web-story-covers-why-1.png?v=1792532717" placeholder="Duvet cover · 1800 × 2400 (3:4) · turned-down corner" />
+                <image-slot id="home-covers" shape="rect" src="https://cdn.shopify.com/s/files/1/0787/0883/4541/files/web-story-covers-why-1.png?v=1793286275" placeholder="Duvet cover · 1800 × 2400 (3:4) · turned-down corner" />
               </div>
               {"\n      "}
             </div>
