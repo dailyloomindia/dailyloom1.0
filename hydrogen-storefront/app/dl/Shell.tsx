@@ -211,7 +211,7 @@ export class ShellLogic extends Component<ShellProps, any> {
     a1 = c.animate([{transform:UP},{transform:'translateY(0)'}], {duration:560, easing:EASE, fill:'forwards'});
     a1.finished.then(mid, mid); setTimeout(mid, 620);
   }
-  openHelp(id: string){ if (this.view() === 'help') return this.scrollToId(id); this.helpJump = id; this.go({view:'help'}); }
+  openHelp(id: string){ if (this.view() === 'help') { this.setState({menuOpen:false}); return this.scrollToId(id); } this.helpJump = id; this.go({view:'help'}); }
   setAcct(patch: any){ this.setState((s: any) => { const acct = {...s.acct, ...patch}; try { localStorage.setItem('dl2-acct', JSON.stringify(acct)); } catch(e) {} return {acct}; }); }
   acScreen(k: string){ this.setState({acScreen:k, acErr:''}); window.scrollTo(0, 0); }
   goStory(k: string){ this.go({view:'story', cat:k}); }
