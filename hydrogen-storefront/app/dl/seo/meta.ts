@@ -31,11 +31,21 @@ export const breadcrumbs = (trail: [string, string][]) => ({
 export const ORGANIZATION = {
   '@context': 'https://schema.org', '@type': 'Organization', name: SITE, url: ORIGIN, logo: ORIGIN + '/icon-192.png',
   email: 'contact@dailyloom.in', sameAs: ['https://www.instagram.com/dailyloom.in'],
+  contactPoint: {'@type': 'ContactPoint', contactType: 'customer service', email: 'contact@dailyloom.in', telephone: '+91-92204-42722', areaServed: 'IN', availableLanguage: ['English', 'Hindi']},
 };
 export const WEBSITE = {'@context': 'https://schema.org', '@type': 'WebSite', name: SITE, url: ORIGIN};
 
-/** schema.org: the returns policy (7 days from delivery, for products that arrive damaged). */
+/** schema.org: the returns policy (7 days from delivery, for products that arrive damaged; pickup is free). */
 export const RETURN_POLICY = {
   '@type': 'MerchantReturnPolicy', applicableCountry: 'IN', returnPolicyCategory: 'https://schema.org/MerchantReturnFiniteReturnWindow',
-  merchantReturnDays: 7, returnMethod: 'https://schema.org/ReturnByMail', merchantReturnLink: ORIGIN + '/help',
+  merchantReturnDays: 7, returnMethod: 'https://schema.org/ReturnByMail', returnFees: 'https://schema.org/FreeReturn', merchantReturnLink: ORIGIN + '/policies/refund-policy',
+};
+
+/** schema.org: complimentary delivery across India, dispatched within 48 hours, 3–8 days in transit (remote areas can take longer). */
+export const SHIPPING = {
+  '@type': 'OfferShippingDetails', shippingRate: {'@type': 'MonetaryAmount', value: 0, currency: 'INR'},
+  shippingDestination: {'@type': 'DefinedRegion', addressCountry: 'IN'},
+  deliveryTime: {'@type': 'ShippingDeliveryTime',
+    handlingTime: {'@type': 'QuantitativeValue', minValue: 0, maxValue: 2, unitCode: 'DAY'},
+    transitTime: {'@type': 'QuantitativeValue', minValue: 3, maxValue: 8, unitCode: 'DAY'}},
 };

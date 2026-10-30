@@ -2,6 +2,6 @@
 import {ORIGIN} from '~/dl/seo/meta';
 
 export async function loader() {
-  const body = ['User-agent: *', 'Disallow: /account', 'Disallow: /cart', 'Disallow: /notify', '', `Sitemap: ${ORIGIN}/sitemap.xml`, ''].join('\n');
+  const body = ['User-agent: *', 'Disallow: /account', 'Disallow: /cart', 'Disallow: /notify', 'Disallow: /pincode', '', `Sitemap: ${ORIGIN}/sitemap.xml`, ''].join('\n');
   return new Response(body, {headers: {'Content-Type': 'text/plain', 'Cache-Control': 'public, max-age=86400'}});
 }

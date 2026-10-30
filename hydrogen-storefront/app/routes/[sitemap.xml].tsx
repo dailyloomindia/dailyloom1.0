@@ -5,7 +5,7 @@ import {HANDLE, urlFor} from '~/dl/routing';
 import {photosOf} from '~/dl/Shell';
 import {getLive} from '~/dl/shop/catalog.server';
 import {inStore, updatedOf} from '~/dl/shop/live';
-import {storyHero} from '~/dl/preload';
+import {storyHero, storyHeroMobile} from '~/dl/preload';
 import {ORIGIN} from '~/dl/seo/meta';
 
 const POLICIES = `#graphql
@@ -22,7 +22,7 @@ export async function loader({context}: LoaderFunctionArgs) {
   const pids = [...new Set(CATS.flatMap((c: any) => c.items.filter((x: any) => !x.soon && inStore(live, x.pid)).map((x: any) => x.pid)))] as string[];
   const pages: [string, string[], string?][] = [
     ['/', []],
-    ...Object.entries(HANDLE).map(([k, h]) => [`/collections/${h}`, [storyHero(k)].filter(Boolean)] as [string, string[]]),
+    ...Object.entries(HANDLE).map(([k, h]) => [`/collections/${h}`, [storyHero(k), storyHeroMobile(k)].filter(Boolean)] as [string, string[]]),
     ...pids.map(pid => [urlFor('product', undefined, pid), photosOf(live, pid).slice(0, 10), updatedOf(live, pid)] as [string, string[], string]),
     ['/help', []],
     ...Object.values(shop || {}).filter(Boolean).map((p: any) => [`/policies/${p.handle}`, []] as [string, string[]]),
