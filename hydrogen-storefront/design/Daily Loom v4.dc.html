@@ -1550,7 +1550,8 @@ class Component extends DCLogic {
     void opts;
     const accDefs = [['Details', p.details], ['Care', p.care], ['Delivery & returns', DELIV]];
     const acc = accDefs.map(([t, b]) => { const open = s.acc === t; return {title:t, body:b, rows: open ? '1fr' : '0fr', rot: open ? 'rotate(45deg)' : 'none', toggle: () => this.setState(stt => ({acc: stt.acc === t ? '' : t}))}; });
-    const recs = (RECS[p.cat] || []).map((rid, i) => { const ci = CATS.findIndex(c => c.items.some(x => x.pid === rid)); const ii = CATS[ci].items.findIndex(x => x.pid === rid); return {name:P[rid].name, price:'From ' + fmt(this.priceOf(rid, this.defSel(rid))), slotId:`col-${CATS[ci].k}-${ii}`, src: SRC[`col-${CATS[ci].k}-${ii}`] || '', ph:`${P[rid].name} · product image`, delay:i * 120, onClick: () => this.openProduct(rid)}; });
+    // The product on show is never recommended to itself; towels lead with the three-piece set. Three at most.
+    const recs = (p.cat === 'towels' ? ['cotton-towel-set', ...RECS.towels] : RECS[p.cat] || []).filter(rid => rid !== pid).slice(0, 3).map((rid, i) => { const ci = CATS.findIndex(c => c.items.some(x => x.pid === rid)); const ii = CATS[ci].items.findIndex(x => x.pid === rid); return {name:P[rid].name, price:'From ' + fmt(this.priceOf(rid, this.defSel(rid))), slotId:`col-${CATS[ci].k}-${ii}`, src: SRC[`col-${CATS[ci].k}-${ii}`] || '', ph:`${P[rid].name} · product image`, delay:i * 120, onClick: () => this.openProduct(rid)}; });
     const tcn = TCS[s.tc].n;
     const tPid = s.tMat ? 'bamboo-towel' : 'cotton-towel';
     const TL = s.tMat ? TOWEL_B : TOWEL_C, tci = Math.min(s.tCol, TL.length - 1);
