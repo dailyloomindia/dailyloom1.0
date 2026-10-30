@@ -11,7 +11,7 @@ import {CAT_BY_HANDLE, productFor} from '~/dl/routing';
 import {preloadHeader} from '~/dl/preload';
 import {analyticsProduct, availableOf, combos, compareOf, dealVals, fromDeal, inStore, priceOf, variantOf} from '~/dl/shop/live';
 import {HANDLE} from '~/dl/routing';
-import {ORIGIN, RETURN_POLICY, breadcrumbs, seo} from '~/dl/seo/meta';
+import {ORIGIN, RETURN_POLICY, SHIPPING, breadcrumbs, seo} from '~/dl/seo/meta';
 import {PRODUCT_SEO} from '~/dl/seo/keywords';
 import {getLive} from '~/dl/shop/catalog.server';
 
@@ -33,7 +33,7 @@ export async function loader({params, request, context}: LoaderFunctionArgs) {
       '@type': 'Offer', url: ORIGIN + path, priceCurrency: 'INR', price: priceOf(live, pid, s), itemCondition: 'https://schema.org/NewCondition',
       availability: availableOf(live, pid, s) ? 'https://schema.org/InStock' : 'https://schema.org/OutOfStock',
       ...(v ? {sku: v.sku || v.id.split('/').pop(), name: v.title === 'Default Title' ? P[pid].name : `${P[pid].name} · ${v.title}`} : {}),
-      seller: {'@type': 'Organization', name: 'Daily Loom'}, hasMerchantReturnPolicy: RETURN_POLICY,
+      seller: {'@type': 'Organization', name: 'Daily Loom'}, hasMerchantReturnPolicy: RETURN_POLICY, shippingDetails: SHIPPING,
     });
   }
   const photos = photosOf(live, pid).slice(0, 8), kw = PRODUCT_SEO[pid];

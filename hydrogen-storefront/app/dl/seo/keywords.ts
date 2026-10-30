@@ -20,8 +20,8 @@ export const CAT_SEO: Record<string, {title: string; description: string}> = {
     description: 'Pure natural latex pillows: the classic pillow and the contour pillow for neck support. Orthopedic, pin-core cooled and lump-free, in a soft knitted cover.',
   },
   towels: {
-    title: '650 GSM Cotton Bath, Hand & Face Towels and Towel Sets',
-    description: '650 GSM pure cotton bath, hand and face towels, and a 3-piece cotton towel gift set. Thick, absorbent white terry, cut and hemmed in our workshop.',
+    title: '650 GSM Cotton Towels, Bamboo Bath Towels & Towel Sets',
+    description: '650 GSM pure cotton bath, hand and face towels, a 3-piece cotton towel gift set, and 100% bamboo bath towels in five colours. Thick, absorbent and quick to dry.',
   },
 };
 
@@ -41,7 +41,7 @@ export const PRODUCT_SEO: Record<string, {title: string; description: string}> =
   },
   'bed-set': {
     title: 'The Complete Bed: Cotton Duvet Cover, Bedsheet & 2 Pillow Covers',
-    description: 'Duvet cover, flat sheet and two pillow covers in 100% virgin Indian cotton, matched in thread count and colour. King size bedding set.',
+    description: 'Duvet cover, flat sheet and two pillow covers in 100% virgin Indian cotton, 300 TC percale, matched in colour. King size bedding set in dark taupe and charcoal grey.',
   },
   'latex-pillow': {
     title: 'Natural Latex Pillow: Orthopedic, Cooling, Lump-Free',
@@ -59,9 +59,13 @@ export const PRODUCT_SEO: Record<string, {title: string; description: string}> =
     title: '3-Piece Cotton Towel Set: Bath, Hand & Face Towel (Gift Set)',
     description: 'One bath, one hand and one face towel in 650 GSM pure white cotton. A thoughtful towel gift set.',
   },
+  'bamboo-towel': {
+    title: '100% Bamboo Bath Towel, 75 × 150 cm, in Five Colours',
+    description: 'Pure bamboo bath towel in a sculpted, textured weave. Soft, absorbent, light and quick to dry. 75 × 150 cm, in sand brown, ash grey, lilac grey, dark blue and dark brown.',
+  },
 };
 
 export const HOME_SEO = {
   title: 'Daily Loom | Pure Cotton Bedsheets, Winter Duvets, Latex Pillows & Towels',
-  description: 'Shop 100% virgin Indian cotton bedsheets and duvet covers, winter duvets (razai), natural latex pillows and 650 GSM cotton towels. Complimentary delivery across India.',
+  description: 'Shop 100% virgin Indian cotton bedsheets and duvet covers, winter duvets (razai), natural latex pillows, 650 GSM cotton towels and bamboo bath towels. Complimentary delivery across India.',
 };
