@@ -92,6 +92,8 @@ function pdpVals(sh: ShellLogic, pid: string, p: any, sel: any){
       sh.setState({notifying: true, notifyErr: ''});
       sh.sendNotify(`${p.name} · ${summary}`, sh.props.signedIn ? '' : email).then((err: string) => sh.setState({notifying: false, notifyErr: err, notified: !err}));
     },
+    // Festive-season shipping delay on pillows, shown until the end of 11 Nov 2026 (India time).
+    festiveDelay: p.cat === 'pillows' && Date.now() < Date.parse('2026-11-12T00:00:00+05:30'),
     notifyLabel: s.notifying ? 'Sending…' : s.notified ? 'Noted ✓' : 'Notify me', notifyHasErr: !!s.notifyErr, notifyErr: s.notifyErr || '',
     barTf: showBar ? 'translate(-50%, 0)' : 'translate(-50%, 140%)', barOp: showBar ? 1 : 0, barPe: showBar ? 'auto' : 'none',
     barImg: cur.url || '', barBg: cur.url ? 'url("' + cur.url + '")' : 'none', barHasImg: !!cur.url, barTint: cur.tint || '#E2D6C2', barSummary: summary,

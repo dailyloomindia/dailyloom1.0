@@ -424,6 +424,14 @@ export function ProductView({vals}: {vals: any}) {
                       {"Complimentary delivery, dispatched within 48 hours · Secure checkout with UPI, cards and net banking"}
                     </span>
                     {"\n            "}
+                    {vals.festiveDelay ? (
+                      <>
+                      <span style={{color: "#7E5232"}}>
+                        {"Due to the festive season, we are experiencing a delay in shipping pillows."}
+                      </span>
+                      </>
+                    ) : null}
+                    {"\n            "}
                     <span>
                       {"Need help choosing? Write to "}
                       <a href="mailto:contact@dailyloom.in" style={{color: "#7E5232"}}>

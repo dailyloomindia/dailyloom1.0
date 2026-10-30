@@ -13,7 +13,7 @@ const WEIGHT_KG = 1;
 // Shiprocket tokens last 10 days; one is kept for 8, in memory and in the worker cache so every
 // request does not log in again. Answers for a pincode are kept for 12 hours.
 const TOKEN_KEY = 'https://cache.dailyloom.internal/shiprocket/token';
-const pinKey = (pin: string) => `https://cache.dailyloom.internal/shiprocket/pin/${pin}`;
+const pinKey = (pin: string) => `https://cache.dailyloom.internal/shiprocket/pin2/${pin}`;
 const TOKEN_TTL = 8 * 24 * 3600, PIN_TTL = 12 * 3600;
 let memo: {token: string; exp: number} | null = null;
 
@@ -45,8 +45,22 @@ function daysFrom(d: any): number | null {
   return (rec ? +rec.estimated_delivery_days : sorted[Math.floor(sorted.length / 2)]) + DISPATCH_DAYS;
 }
 
-/** {ok: true, days} when couriers deliver to the pincode; {ok: false} when none do. Throws when Shiprocket can't be reached. */
-export async function deliveryFor(env: any, pin: string): Promise<{ok: boolean; days?: number}> {
+const title = (x: string) => x.toLowerCase().replace(/\b[a-z]/g, c => c.toUpperCase());
+
+/** The town and state a pincode belongs to, e.g. "New Delhi, Delhi": from Shiprocket's couriers, else India Post's directory. */
+async function placeOf(pin: string, d: any): Promise<string> {
+  const c = ((d && d.data && d.data.available_courier_companies) || []).find((x: any) => x.city);
+  if (c) return [c.city, c.state].filter(Boolean).map((x: string) => title(String(x).trim())).join(', ');
+  try {
+    const r = await fetch(`https://api.postalpincode.in/pincode/${pin}`, {signal: AbortSignal.timeout(3000)});
+    const po = ((await r.json())[0] || {}).PostOffice;
+    if (po && po[0]) return [po[0].District, po[0].State].filter(Boolean).join(', ');
+  } catch (e) {}
+  return '';
+}
+
+/** {ok: true, days, place} when couriers deliver to the pincode; {ok: false, place} when none do. Throws when Shiprocket can't be reached. */
+export async function deliveryFor(env: any, pin: string): Promise<{ok: boolean; days?: number; place?: string}> {
   const cached = await cacheGet(pinKey(pin));
   if (cached) return cached;
   const url = `${API}/courier/serviceability/?pickup_postcode=${PICKUP_PIN}&delivery_postcode=${pin}&weight=${WEIGHT_KG}&cod=0`;
@@ -56,7 +70,7 @@ export async function deliveryFor(env: any, pin: string): Promise<{ok: boolean; 
   const d: any = await r.json().catch(() => null);
   if (!d) throw new Error('Shiprocket serviceability: ' + r.status);
   if (r.status >= 500 || r.status === 401 || r.status === 403) throw new Error('Shiprocket serviceability: ' + r.status);
-  const days = daysFrom(d), out = days ? {ok: true, days} : {ok: false};
+  const days = daysFrom(d), place = await placeOf(pin, d), out = days ? {ok: true, days, place} : {ok: false, place};
   await cachePut(pinKey(pin), out, PIN_TTL);
   return out;
 }
