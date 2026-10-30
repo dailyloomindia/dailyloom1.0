@@ -30,7 +30,7 @@ async function token(env: any, fresh = false): Promise<string> {
   if (!env.SHIPROCKET_EMAIL || !env.SHIPROCKET_PASSWORD) throw new Error('Shiprocket API user not set');
   const r = await fetch(API + '/auth/login', {method: 'POST', headers: {'Content-Type': 'application/json'}, body: JSON.stringify({email: env.SHIPROCKET_EMAIL, password: env.SHIPROCKET_PASSWORD})});
   const d: any = await r.json().catch(() => ({}));
-  if (!r.ok || !d.token) throw new Error('Shiprocket login failed: ' + r.status);
+  if (!r.ok || !d.token) throw new Error('Shiprocket login failed: ' + r.status + (d.message ? ' ' + d.message : ''));
   memo = {token: d.token, exp: Date.now() + TOKEN_TTL * 1000};
   await cachePut(TOKEN_KEY, {token: d.token}, TOKEN_TTL);
   return d.token;
