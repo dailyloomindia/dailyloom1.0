@@ -32,7 +32,8 @@ export async function loader({params, request, context}: LoaderFunctionArgs) {
     offers.push({
       '@type': 'Offer', url: ORIGIN + path, priceCurrency: 'INR', price: priceOf(live, pid, s), itemCondition: 'https://schema.org/NewCondition',
       availability: availableOf(live, pid, s) ? 'https://schema.org/InStock' : 'https://schema.org/OutOfStock',
-      ...(v ? {sku: v.sku || v.id.split('/').pop(), name: v.title === 'Default Title' ? P[pid].name : `${P[pid].name} · ${v.title}`} : {}),
+      // Named as the page names the selection (e.g. "Cotton Towel · Face pair · White"), not by Shopify's variant title.
+      ...(v ? {sku: v.sku || v.id.split('/').pop(), name: [P[pid].name, ...P[pid].opts.filter((o: any) => o.n !== 'Monogram' && (o.vals.length > 1 || o.swatch)).map((o: any) => valLabel(o.vals[s[o.n] ?? 0]))].join(' · ')} : {}),
       seller: {'@type': 'Organization', name: 'Daily Loom'}, hasMerchantReturnPolicy: RETURN_POLICY, shippingDetails: SHIPPING,
     });
   }
