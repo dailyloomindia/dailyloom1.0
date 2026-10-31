@@ -108,8 +108,8 @@ export const P: any = {
 };
 export const CATS: any = [
   {k:'duvets', name:'Duvets', items:[{pid:'winter-duvet'},{soon:true, name:'Summer Comforter'}]},
-  {k:'covers', name:'Duvet Covers', items:[{pid:'duvet-cover',sel:{'Thread count':0},label:'300 TC · soft and airy'},{pid:'bed-set',badge:'Complete the bed',label:'Cover, sheet and two pillow covers'}]},
-  {k:'sheets', name:'Bedsheets', items:[{pid:'bedsheet',sel:{'Thread count':0},label:'300 TC · soft and airy'},{pid:'bed-set',badge:'Complete the bed',label:'Cover, sheet and two pillow covers'}]},
+  {k:'covers', name:'Duvet Covers', items:[{pid:'duvet-cover',sel:{'Thread count':0},photoCol:'Charcoal grey',label:'300 TC · soft and airy'},{pid:'bed-set',badge:'Complete the bed',photoCol:'Charcoal grey',label:'Cover, sheet and two pillow covers'}]},
+  {k:'sheets', name:'Bedsheets', items:[{pid:'bedsheet',sel:{'Thread count':0},photoCol:'Dark taupe',label:'300 TC · soft and airy'},{pid:'bed-set',badge:'Complete the bed',photoCol:'Charcoal grey',label:'Cover, sheet and two pillow covers'}]},
   {k:'pillows', name:'Pillows', items:[{pid:'latex-pillow', label:'Classic · an even, all-round feel'},{pid:'contour-pillow', label:'Contour · keeps the neck in its natural curve'}]},
   {k:'towels', name:'Towels', items:[{pid:'cotton-towel', badge:'Signature', sel:{Type:2}, label:'Pure white · face, hand or bath'},{pid:'cotton-towel-set', label:'Bath, hand and face · the complete set'},{pid:'bamboo-towel', sel:{Type:0}, label:'Five colours · bath towel'}]}
 ];
