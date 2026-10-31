@@ -34,7 +34,7 @@ const RESET = {zoom:false, nf:null, notifyErr:'', barHidden:false, menuOpen:fals
 /** The option preset a collection card opens a product with. */
 const presetFor = (pid: string) => (CATS.flatMap((c: any) => c.items).find((x: any) => x.pid === pid) || {}).sel;
 
-type ShellProps = {route: Route; locKey: string; navigate: (to: string) => void; live: Live | null; bag: Bag | null; signedIn?: boolean; onCart?: (cart: any) => void; children: ReactNode};
+type ShellProps = {route: Route; locKey: string; navigate: (to: string) => void; live: Live | null; bag: Bag | null; signedIn?: boolean; mobile?: boolean; onCart?: (cart: any) => void; children: ReactNode};
 type Ctx = {sh: ShellLogic; base: any};
 const ShellContext = createContext<Ctx | null>(null);
 
@@ -49,8 +49,8 @@ export function Shell({view, onCart, children}: {view?: View; onCart?: (cart: an
   const location = useLocation();
   const navigate = useNavigate();
   const route = view ? {view} : parseRoute(location.pathname, location.search);
-  const data = useRouteLoaderData('root') as {live: Live | null; bag: Bag | null; signedIn?: boolean} | undefined;
-  return <ShellLogic route={route} locKey={location.key} navigate={navigate} live={data ? data.live : null} bag={data ? data.bag : null} signedIn={!!(data && data.signedIn)} onCart={onCart}>{children}</ShellLogic>;
+  const data = useRouteLoaderData('root') as {live: Live | null; bag: Bag | null; signedIn?: boolean; mobile?: boolean} | undefined;
+  return <ShellLogic route={route} locKey={location.key} navigate={navigate} live={data ? data.live : null} bag={data ? data.bag : null} signedIn={!!(data && data.signedIn)} mobile={!!(data && data.mobile)} onCart={onCart}>{children}</ShellLogic>;
 }
 
 export class ShellLogic extends Component<ShellProps, any> {
@@ -59,7 +59,7 @@ export class ShellLogic extends Component<ShellProps, any> {
     super(p);
     // Browser-kept state (account, last category) is restored in componentDidMount,
     // so the server render and the first client render are identical.
-    this.state = {cat: p.route.cat || 'duvets', pid: p.route.pid || 'winter-duvet', sel:{}, selPid:null, qty:1, bag:bagItems(p.bag), checkoutUrl:(p.bag && p.bag.checkoutUrl) || '', bagOpen:false, tc:0, tMat:0, tType:2, tCol:0, cl:0, pin:'', pinMsg:'', added:false, acc:'Details', checkingOut:false, acct:{}, acForm:{}, acErr:'', retOpen:false};
+    this.state = {cat: p.route.cat || 'duvets', pid: p.route.pid || 'winter-duvet', sel:{}, selPid:null, qty:1, bag:bagItems(p.bag), checkoutUrl:(p.bag && p.bag.checkoutUrl) || '', bagOpen:false, tc:0, tMat:0, tType:2, tCol:0, cl:0, pin:'', pinMsg:'', added:false, acc:'Details', checkingOut:false, acct:{}, acForm:{}, acErr:'', retOpen:false, mobile:!!p.mobile};
     ['ctaRef','rootRef','navRef','curtainRef','trackRef','clothRef','rollRef','tagRef','bagBtnRef'].forEach(k => this[k] = createRef());
   }
   view(){ return this.props.route.view; }
@@ -77,12 +77,14 @@ export class ShellLogic extends Component<ShellProps, any> {
     window.addEventListener('mousemove', this.onMouse, {passive:true});
     window.addEventListener('resize', this.onScroll);
     this.applySb(); this.observe(); this.onScroll(); this.snap();
-    // The server-rendered page starts behind the curtain (see root.tsx); hand it to the animation.
-    document.getElementById('dl-boot')?.remove();
-    const c = this.curtainRef.current;
-    if (c && c.animate && PROPS.motion !== 'reduced' && document.visibilityState === 'visible') {
-      c.animate([{transform:'translateY(0)'},{transform:DOWN}], {duration:1000, delay:450, easing:EASE, fill:'backwards'});
-    }
+    // The server-rendered page starts behind the curtain (see root.tsx): lift it now if it has not lifted
+    // yet, and hand the curtain back to the app once the lift has played.
+    const boot = document.getElementById('dl-boot'), c = this.curtainRef.current;
+    if (boot && c && PROPS.motion !== 'reduced' && document.visibilityState === 'visible') {
+      const w = window as any; w.__dlLift ? w.__dlLift() : document.documentElement.setAttribute('data-lift', '');
+      const end = () => boot.remove();
+      c.addEventListener('animationend', end, {once:true}); setTimeout(end, 1600);
+    } else boot?.remove();
   }
   componentWillUnmount(){ window.removeEventListener('scroll', this.onScrolled); window.removeEventListener('mousemove', this.onMouse); window.removeEventListener('resize', this.onScroll); window.removeEventListener('resize', this.onResize); this.io && this.io.disconnect(); }
   snap(){ const {bag} = this.state; this._prev = {view:this.view(), cat:this.cat(), pid:this.pid(), key:this.props.locKey, bag, sb:PROPS.scrollbar}; }
