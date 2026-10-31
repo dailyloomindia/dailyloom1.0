@@ -15,4 +15,9 @@ export function productPath(handle: string): string | null {
 }
 
 /** /pages/<handle> → this site's page. */
-export const PAGES: Record<string, string> = {contact: '/help', bedsheets: '/collections/bed-sheet-set'};
+export const PAGES: Record<string, string> = {contact: '/help', bedsheets: '/collections/bed-sheet-set', returns: '/help',
+  refunds: '/policies/refund-policy', privacy: '/policies/privacy-policy'};
+
+/** /store?type=<type> → the collection page for that type; /store alone → the home page. */
+export const STORE_TYPES: Record<string, string> = {duvets: '/collections/duvets', 'duvet covers': '/collections/duvet-covers',
+  bedsheets: '/collections/bed-sheet-set', pillows: '/collections/pillows', towels: '/collections/towels'};
